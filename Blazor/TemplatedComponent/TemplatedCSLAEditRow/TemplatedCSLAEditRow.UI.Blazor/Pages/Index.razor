@@ -1,0 +1,79 @@
+﻿@page "/"
+@page "/{id}"
+@using TemplatedCSLAEditRow.Objects
+@inject TemplatedCSLAEditRow.Objects.Blazor.ViewModel<PersonEdit> vm
+@inject NavigationManager NavigationManager
+
+<h1>Edit Person</h1>
+
+<p>This component demonstrates editing a BusinessBase-derived object.</p>
+
+<p style="background-color:red;color:white">@vm.ViewModelErrorText</p>
+
+@if (vm.Model == null)
+{
+	<p>Loading Person...</p>
+}
+else
+{
+	<p>
+		<a href="listpersons">List of people</a>
+	</p>
+	<table class="table">
+		<thead>
+			<tr>
+				<th></th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>Id</td>
+				<td>@vm.Model.Id</td>
+			</tr>
+
+			<EditRow Property="vm.GetPropertyInfo<string>(nameof(vm.Model.Name))">
+				<TextInput />
+			</EditRow>
+
+			<tr>
+				<td>Name length</td>
+				<td>@vm.Model.NameLength</td>
+			</tr>
+			<tr>
+				<td>IsNew</td>
+				<td>@vm.Model.IsNew</td>
+			</tr>
+			<tr>
+				<td>IsSavable</td>
+				<td>@vm.Model.IsSavable</td>
+			</tr>
+		</tbody>
+	</table>
+	<button @onclick="vm.SaveAsync" disabled="@(!vm.Model.IsSavable)">Save person</button>
+}
+
+@code {
+	[Parameter]
+	public string id { get; set; }
+
+	protected override void OnInitialized()
+	{
+		vm.Saved += () => NavigationManager.NavigateTo("success");
+		vm.ModelChanging += (o, n) =>
+		{
+			if (o != null)
+				o.PropertyChanged -= async (s, e) => await InvokeAsync(() => StateHasChanged());
+			if (n != null)
+				n.PropertyChanged += async (s, e) => await InvokeAsync(() => StateHasChanged());
+		};
+	}
+
+	protected override async Task OnParametersSetAsync()
+	{
+		if (string.IsNullOrWhiteSpace(id))
+			await vm.RefreshAsync();
+		else
+			await vm.RefreshAsync(int.Parse(id));
+	}
+}

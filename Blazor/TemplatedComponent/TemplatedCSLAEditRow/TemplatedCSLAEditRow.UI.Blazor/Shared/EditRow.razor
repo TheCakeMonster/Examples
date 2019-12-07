@@ -1,0 +1,23 @@
+﻿@using TemplatedCSLAEditRow.Objects.Blazor
+@typeparam T
+
+@if (Property.CanRead)
+{
+
+	<tr>
+		<td>@(Property.FriendlyName)</td>
+		<td>
+			<CascadingValue Value="@Property">
+				@ChildContent
+			</CascadingValue>
+		</td>
+	</tr>
+}
+
+@code {
+
+	[Parameter] public PropertyInfo<T> Property { get; set; }
+
+	[Parameter] public RenderFragment ChildContent { get; set; }
+
+}

@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Csla.Blazor" Version="5.1.0-R19110701" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TemplatedCSLAEditRow.Objects\TemplatedCSLAEditRow.Objects.csproj" />
+  </ItemGroup>
+
+</Project>
