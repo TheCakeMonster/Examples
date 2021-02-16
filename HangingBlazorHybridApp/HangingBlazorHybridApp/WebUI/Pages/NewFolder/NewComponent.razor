@@ -1,0 +1,22 @@
+﻿@page "/"
+@*@layout NewLayout*@
+
+<h3>New Component</h3>
+
+<div>
+	@_message
+</div>
+
+<div>
+	<button @onclick="ButtonClicked">Click Me!</button>
+</div>
+
+@code {
+	string _message = string.Empty;
+
+	private void ButtonClicked()
+	{
+		_message = "Button Clicked!";
+	}
+
+}
