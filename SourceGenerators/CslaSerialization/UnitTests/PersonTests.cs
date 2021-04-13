@@ -87,7 +87,7 @@ namespace CslaSerialization.UnitTests
 			DateTime expected = new DateTime(2021, 04, 12, 16, 57, 53);
 			IMobileObject mobileObject;
 			Person person = new Person();
-			person.DateOfBirth = new DateTime(2021, 04, 12, 16, 57, 53);
+			person.SetDateOfBirth( new DateTime(2021, 04, 12, 16, 57, 53));
 
 			// Act
 			mobileObject = person as IMobileObject;
@@ -119,6 +119,7 @@ namespace CslaSerialization.UnitTests
 			serializationInfo.AddValue("FirstName", "");
 			serializationInfo.AddValue("LastName", "");
 			serializationInfo.AddValue("DateOfBirth", DateTime.MinValue);
+			serializationInfo.AddValue("PrivateSerializedText", "Fred");
 			mobileObject = person as IMobileObject;
 			mobileObject.SetState(serializationInfo);
 			actual = person.PersonId;
@@ -144,6 +145,7 @@ namespace CslaSerialization.UnitTests
 			serializationInfo.AddValue("FirstName", "Joe");
 			serializationInfo.AddValue("LastName", "");
 			serializationInfo.AddValue("DateOfBirth", DateTime.MinValue);
+			serializationInfo.AddValue("PrivateSerializedText", "Fred");
 			mobileObject = person as IMobileObject;
 			mobileObject.SetState(serializationInfo);
 			actual = person.FirstName;
@@ -169,6 +171,7 @@ namespace CslaSerialization.UnitTests
 			serializationInfo.AddValue("FirstName", "");
 			serializationInfo.AddValue("LastName", "Smith");
 			serializationInfo.AddValue("DateOfBirth", DateTime.MinValue);
+			serializationInfo.AddValue("PrivateSerializedText", "Fred");
 			mobileObject = person as IMobileObject;
 			mobileObject.SetState(serializationInfo);
 			actual = person.LastName;
@@ -194,9 +197,93 @@ namespace CslaSerialization.UnitTests
 			serializationInfo.AddValue("FirstName", "");
 			serializationInfo.AddValue("LastName", "");
 			serializationInfo.AddValue("DateOfBirth", new DateTime(2021, 04, 12, 18, 27, 43));
+			serializationInfo.AddValue("PrivateSerializedText", "Fred");
 			mobileObject = person as IMobileObject;
 			mobileObject.SetState(serializationInfo);
-			actual = person.DateOfBirth;
+			actual = person.GetDateOfBirth();
+
+			// Assert
+			Assert.AreEqual(expected, actual);
+
+		}
+
+		[TestMethod]
+		public void SetState_WithNonSerializedTextFred_ReturnsEmptyString()
+		{
+
+			// Arrange
+			SerializationInfo serializationInfo = new SerializationInfo();
+			string actual;
+			string expected = string.Empty;
+			Person person = new Person();
+			IMobileObject mobileObject;
+
+			// Act
+			serializationInfo.AddValue("PersonId", 0);
+			serializationInfo.AddValue("FirstName", "");
+			serializationInfo.AddValue("LastName", "");
+			serializationInfo.AddValue("DateOfBirth", DateTime.MinValue);
+			serializationInfo.AddValue("NonSerializedText", "Fred");
+			serializationInfo.AddValue("PrivateSerializedText", "Fred");
+			mobileObject = person as IMobileObject;
+			mobileObject.SetState(serializationInfo);
+			actual = person.NonSerialisedText;
+
+			// Assert
+			Assert.AreEqual(expected, actual);
+
+		}
+
+		[TestMethod]
+		public void SetState_WithPrivateTextFred_ReturnsEmptyString()
+		{
+
+			// Arrange
+			SerializationInfo serializationInfo = new SerializationInfo();
+			string actual;
+			string expected = string.Empty;
+			Person person = new Person();
+			IMobileObject mobileObject;
+
+			// Act
+			serializationInfo.AddValue("PersonId", 0);
+			serializationInfo.AddValue("FirstName", "");
+			serializationInfo.AddValue("LastName", "");
+			serializationInfo.AddValue("DateOfBirth", DateTime.MinValue);
+			serializationInfo.AddValue("NonSerializedText", "Fred");
+			serializationInfo.AddValue("PrivateText", "Fred");
+			serializationInfo.AddValue("PrivateSerializedText", "Fred");
+			mobileObject = person as IMobileObject;
+			mobileObject.SetState(serializationInfo);
+			actual = person.GetPrivateText();
+
+			// Assert
+			Assert.AreEqual(expected, actual);
+
+		}
+
+		[TestMethod]
+		public void SetState_WithPrivateSerializedTextFred_ReturnsFred()
+		{
+
+			// Arrange
+			SerializationInfo serializationInfo = new SerializationInfo();
+			string actual;
+			string expected = "Fred";
+			Person person = new Person();
+			IMobileObject mobileObject;
+
+			// Act
+			serializationInfo.AddValue("PersonId", 0);
+			serializationInfo.AddValue("FirstName", "");
+			serializationInfo.AddValue("LastName", "");
+			serializationInfo.AddValue("DateOfBirth", DateTime.MinValue);
+			serializationInfo.AddValue("NonSerializedText", "");
+			serializationInfo.AddValue("PrivateText", "");
+			serializationInfo.AddValue("PrivateSerializedText", "Fred");
+			mobileObject = person as IMobileObject;
+			mobileObject.SetState(serializationInfo);
+			actual = person.GetPrivateSerializedText();
 
 			// Assert
 			Assert.AreEqual(expected, actual);

@@ -50,13 +50,26 @@ namespace CslaSerialization.Generators
 		private static IReadOnlyList<PropertyDeclarationSyntax> GetSerializablePropertyDeclarations(GeneratorExecutionContext context, TypeDeclarationSyntax targetTypeDeclaration)
 		{
 			List<PropertyDeclarationSyntax> serializableProperties;
+			List<PropertyDeclarationSyntax> opedInSerializableProperties;
 
+			// Get public or internal properties that are not specifically opted out with the [AutoSerializationExcluded] attribute
 			serializableProperties = targetTypeDeclaration.Members.Where(m => m is PropertyDeclarationSyntax propertyDeclaration &&
+				propertyDeclaration.Modifiers.Any(m => m.ValueText.Equals("public") || m.ValueText.Equals("internal")) &&
 				!propertyDeclaration.AttributeLists.Any(
 					al => al.Attributes.Any(
 					attr => attr.ToString().Equals("AutoSerializationExcluded"))))
 				.Cast<PropertyDeclarationSyntax>()
 				.ToList();
+
+			// Add any private or protected properties that are opted in with the use of the [AutoSerializationIncluded] attribute
+			opedInSerializableProperties = targetTypeDeclaration.Members.Where(m => m is PropertyDeclarationSyntax propertyDeclaration &&
+				propertyDeclaration.Modifiers.Any(m => !m.ValueText.Equals("public") && !m.ValueText.Equals("internal")) &&
+				propertyDeclaration.AttributeLists.Any(
+					al => al.Attributes.Any(
+					attr => attr.ToString().Equals("AutoSerializationIncluded"))))
+				.Cast<PropertyDeclarationSyntax>()
+				.ToList();
+			serializableProperties.AddRange(opedInSerializableProperties);
 
 			return serializableProperties;
 		}
