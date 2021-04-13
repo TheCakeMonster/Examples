@@ -19,7 +19,7 @@ namespace CslaSerialization.Objects
 		public string LastName { get; set; }
 
 		[AutoSerializationExcluded]
-		public string NonSerialisedText { get; set; } = string.Empty;
+		public string NonSerializedText { get; set; } = string.Empty;
 
 		[AutoSerializationIncluded]
 		private string PrivateSerializedText { get; set; } = string.Empty;

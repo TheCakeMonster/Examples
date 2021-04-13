@@ -29,7 +29,6 @@ namespace CslaSerialization.Generators
 			//	Debugger.Launch();
 			//}
 #endif
-			return;
 		}
 
 		/// <summary>
@@ -38,34 +37,38 @@ namespace CslaSerialization.Generators
 		/// <param name="context">The execution context provided by the Roslyn compiler</param>
 		public void Execute(GeneratorExecutionContext context)
 		{
+			List<TypeDeclarationSyntax> serializableTypes;
 			SerializationPartialGenerator generator;
 
 			try
-			{ 
-				var syntaxTrees = context.Compilation.SyntaxTrees;
+			{
+				var syntaxTrees = context.Compilation?.SyntaxTrees;
 
-				foreach (SyntaxTree syntaxTree in syntaxTrees)
+				if (syntaxTrees is not null)
 				{
-					// Identify the types that are to be acted upon by this generator and pass to the builder
-					var serializableTypes = syntaxTree.GetRoot().DescendantNodes().OfType<TypeDeclarationSyntax>()
-						.Where(t => t.AttributeLists.Any(
-							al => al.Attributes.Any(
-							attr => attr.Name.ToString().Equals("AutoSerializable"))))
-						.ToList();
-					if (serializableTypes.Count > 0)
+					foreach (SyntaxTree syntaxTree in syntaxTrees)
 					{
-						// Generate a partial class for each of the types identified
-						foreach (TypeDeclarationSyntax typeDefinition in serializableTypes)
+						// Identify the types that are to be acted upon by this generator and pass to the builder
+						serializableTypes = syntaxTree.GetRoot().DescendantNodes().OfType<TypeDeclarationSyntax>()
+							.Where(t => t.AttributeLists.Any(
+								al => al.Attributes.Any(
+								attr => attr.Name.ToString().Equals("AutoSerializable"))))
+							.ToList();
+						if (serializableTypes is not null && serializableTypes.Count > 0)
 						{
-							generator = new SerializationPartialGenerator();
-							generator.GeneratePartialClass(context, typeDefinition);
+							// Generate a partial class for each of the types identified
+							foreach (TypeDeclarationSyntax typeDefinition in serializableTypes)
+							{
+								generator = new SerializationPartialGenerator();
+								generator.GeneratePartialClass(context, typeDefinition);
+							}
 						}
 					}
 				}
 			}
 			catch (Exception ex)
 			{
-				Debug.WriteLine($"Exception in SerializationPartialGenerator!\r\n{ex.ToString()}");
+				// Debug.WriteLine($"Exception in SerializationPartialGenerator!\r\n{ex.ToString()}");
 			}
 		}
 
