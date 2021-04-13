@@ -94,7 +94,7 @@ namespace CslaSerialization.Generators
 		/// <param name="stringBuilder">The StringBuilder instance to which to append the method definition</param>
 		private void AppendGetChildrenMethod(ExtractedClassDefinition classDefinition, StringBuilder stringBuilder)
 		{
-			stringBuilder.AppendLine("\t\tpublic void GetChildren(SerializationInfo info, MobileFormatter formatter)");
+			stringBuilder.AppendLine("\t\tvoid IMobileObject.GetChildren(SerializationInfo info, MobileFormatter formatter)");
 			stringBuilder.AppendLine("\t\t{");
 			stringBuilder.AppendLine("\t\t}");
 			stringBuilder.AppendLine();
@@ -107,7 +107,7 @@ namespace CslaSerialization.Generators
 		/// <param name="stringBuilder">The StringBuilder instance to which to append the method definition</param>
 		private void AppendSetChildrenMethod(ExtractedClassDefinition classDefinition, StringBuilder stringBuilder)
 		{
-			stringBuilder.AppendLine("\t\tpublic void SetChildren(SerializationInfo info, MobileFormatter formatter)");
+			stringBuilder.AppendLine("\t\tvoid IMobileObject.SetChildren(SerializationInfo info, MobileFormatter formatter)");
 			stringBuilder.AppendLine("\t\t{");
 			stringBuilder.AppendLine("\t\t}");
 			stringBuilder.AppendLine();
@@ -120,7 +120,7 @@ namespace CslaSerialization.Generators
 		/// <param name="stringBuilder">The StringBuilder instance to which to append the method definition</param>
 		private void AppendGetStateMethod(ExtractedClassDefinition classDefinition, StringBuilder stringBuilder)
 		{
-			stringBuilder.AppendLine("\t\tpublic void GetState(SerializationInfo info)");
+			stringBuilder.AppendLine("\t\tvoid IMobileObject.GetState(SerializationInfo info)");
 			stringBuilder.AppendLine("\t\t{");
 
 			foreach (ExtractedPropertyDefinition propertyDefinition in classDefinition.Properties)
@@ -143,7 +143,7 @@ namespace CslaSerialization.Generators
 		/// <param name="stringBuilder">The StringBuilder instance to which to append the method definition</param>
 		private void AppendSetStateMethod(ExtractedClassDefinition classDefinition, StringBuilder stringBuilder)
 		{
-			stringBuilder.AppendLine("\t\tpublic void SetState(SerializationInfo info)");
+			stringBuilder.AppendLine("\t\tvoid IMobileObject.SetState(SerializationInfo info)");
 			stringBuilder.AppendLine("\t\t{");
 
 			foreach (ExtractedPropertyDefinition propertyDefinition in classDefinition.Properties)
