@@ -18,7 +18,7 @@ namespace CslaSerialization.Generators
 		/// Extract information about a single property from its declaration in the syntax tree
 		/// </summary>
 		/// <param name="context">The execution context in which the source generator is running</param>
-		/// <param name="targetTypeDeclaration">The TypeDeclarationSyntax from which to extract the necessary data</param>
+		/// <param name="targetTypeDeclaration">The PropertyDeclarationSyntax from which to extract the necessary data</param>
 		/// <returns>A readonly list of ExtractedPropertyDefinition containing the data extracted from the syntax tree</returns>
 		public static ExtractedPropertyDefinition ExtractPropertyDefinition(GeneratorExecutionContext context, PropertyDeclarationSyntax propertyDeclaration)
 		{

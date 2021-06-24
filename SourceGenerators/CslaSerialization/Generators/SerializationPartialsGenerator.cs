@@ -24,10 +24,10 @@ namespace CslaSerialization.Generators
 		{
 #if (DEBUG)
 			// Uncomment this to enable debugging of the source generator
-			//if (!Debugger.IsAttached)
-			//{
-			//	Debugger.Launch();
-			//}
+			if (!Debugger.IsAttached)
+			{
+				Debugger.Launch();
+			}
 #endif
 		}
 

@@ -33,6 +33,10 @@ namespace CslaSerialization.Generators
 			{
 				definition.Properties.Add(propertyDefinition);
 			}
+			//foreach (ExtractedPropertyDefinition propertyDefinition in FieldDefinitionsExtractor.ExtractFieldDefinitions(context, targetTypeDeclaration))
+			//{
+			//	definition.Properties.Add(propertyDefinition);
+			//}
 
 			return definition;
 		}

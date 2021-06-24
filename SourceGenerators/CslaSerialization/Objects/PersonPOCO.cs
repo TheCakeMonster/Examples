@@ -9,8 +9,10 @@ namespace CslaSerialization.Objects
 	/// </summary>
 	/// <remarks>The class is decorated with the AutoSerializable attribute so that it is picked up by our source generator</remarks>
 	[AutoSerializable]
-	public partial class Person
+	public partial class PersonPOCO
 	{
+
+		private string _fieldTest = "foo";
 
 		public int PersonId { get; set; }
 

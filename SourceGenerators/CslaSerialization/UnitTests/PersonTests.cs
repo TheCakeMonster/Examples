@@ -20,7 +20,7 @@ namespace CslaSerialization.UnitTests
 			int actual;
 			int expected = 5;
 			IMobileObject mobileObject;
-			Person person = new Person();
+			PersonPOCO person = new PersonPOCO();
 			person.PersonId = 5;
 
 			// Act
@@ -42,7 +42,7 @@ namespace CslaSerialization.UnitTests
 			string actual;
 			string expected = "Joe";
 			IMobileObject mobileObject;
-			Person person = new Person();
+			PersonPOCO person = new PersonPOCO();
 			person.FirstName = "Joe";
 
 			// Act
@@ -64,7 +64,7 @@ namespace CslaSerialization.UnitTests
 			string actual;
 			string expected = "Smith";
 			IMobileObject mobileObject;
-			Person person = new Person();
+			PersonPOCO person = new PersonPOCO();
 			person.LastName = "Smith";
 
 			// Act
@@ -86,7 +86,7 @@ namespace CslaSerialization.UnitTests
 			DateTime actual;
 			DateTime expected = new DateTime(2021, 04, 12, 16, 57, 53);
 			IMobileObject mobileObject;
-			Person person = new Person();
+			PersonPOCO person = new PersonPOCO();
 			person.SetDateOfBirth( new DateTime(2021, 04, 12, 16, 57, 53));
 
 			// Act
@@ -111,7 +111,7 @@ namespace CslaSerialization.UnitTests
 			SerializationInfo serializationInfo = new SerializationInfo();
 			int actual;
 			int expected = 5;
-			Person person = new Person();
+			PersonPOCO person = new PersonPOCO();
 			IMobileObject mobileObject;
 
 			// Act
@@ -139,7 +139,7 @@ namespace CslaSerialization.UnitTests
 			SerializationInfo serializationInfo = new SerializationInfo();
 			string actual;
 			string expected = "Joe";
-			Person person = new Person();
+			PersonPOCO person = new PersonPOCO();
 			IMobileObject mobileObject;
 
 			// Act
@@ -167,7 +167,7 @@ namespace CslaSerialization.UnitTests
 			SerializationInfo serializationInfo = new SerializationInfo();
 			string actual;
 			string expected = "Smith";
-			Person person = new Person();
+			PersonPOCO person = new PersonPOCO();
 			IMobileObject mobileObject;
 
 			// Act
@@ -195,7 +195,7 @@ namespace CslaSerialization.UnitTests
 			SerializationInfo serializationInfo = new SerializationInfo();
 			DateTime actual;
 			DateTime expected = new DateTime(2021, 04, 12, 18, 27, 43);
-			Person person = new Person();
+			PersonPOCO person = new PersonPOCO();
 			IMobileObject mobileObject;
 
 			// Act
@@ -223,7 +223,7 @@ namespace CslaSerialization.UnitTests
 			SerializationInfo serializationInfo = new SerializationInfo();
 			string actual;
 			string expected = string.Empty;
-			Person person = new Person();
+			PersonPOCO person = new PersonPOCO();
 			IMobileObject mobileObject;
 
 			// Act
@@ -251,7 +251,7 @@ namespace CslaSerialization.UnitTests
 			SerializationInfo serializationInfo = new SerializationInfo();
 			string actual;
 			string expected = string.Empty;
-			Person person = new Person();
+			PersonPOCO person = new PersonPOCO();
 			IMobileObject mobileObject;
 
 			// Act
@@ -279,7 +279,7 @@ namespace CslaSerialization.UnitTests
 			SerializationInfo serializationInfo = new SerializationInfo();
 			string actual;
 			string expected = "Fred";
-			Person person = new Person();
+			PersonPOCO person = new PersonPOCO();
 			IMobileObject mobileObject;
 
 			// Act
