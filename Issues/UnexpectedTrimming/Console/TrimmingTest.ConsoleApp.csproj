@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <PublishTrimmed>true</PublishTrimmed>
+    <TrimMode>link</TrimMode>
+    <SuppressTrimAnalysisWarnings>false</SuppressTrimAnalysisWarnings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LinkerFriendlyNet6Library\LinkerFriendlyNet6Library.csproj" />
+    <ProjectReference Include="..\LinkerFriendlyNetStandardLibrary\LinkerFriendlyNetStandardLibrary.csproj" />
+  </ItemGroup>
+
+</Project>

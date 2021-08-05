@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31410.223
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrimmingTest.Server", "BlazorWASM\Server\TrimmingTest.Server.csproj", "{C335BF8D-CDC1-4AC4-967C-9FDB3B397005}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrimmingTest.Client", "BlazorWASM\Client\TrimmingTest.Client.csproj", "{3EA9F46D-9692-4F36-8BB0-8E5268CB8FC3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LinkerFriendlyNetStandardLibrary", "LinkerFriendlyNetStandardLibrary\LinkerFriendlyNetStandardLibrary.csproj", "{F8B63F70-F3A5-4567-B009-06E8DC99126B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LinkerFriendlyNet6Library", "LinkerFriendlyNet6Library\LinkerFriendlyNet6Library.csproj", "{1CF1E3EE-ABC1-416B-B8D6-5679FA758E2F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrimmingTest.ConsoleApp", "Console\TrimmingTest.ConsoleApp.csproj", "{90EA869D-59A0-4C5F-BF19-0F517CC051EB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BlazorWASM", "BlazorWASM", "{7A1FFBEA-9271-4A08-9A7A-3E3EE872F8D9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C335BF8D-CDC1-4AC4-967C-9FDB3B397005}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C335BF8D-CDC1-4AC4-967C-9FDB3B397005}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C335BF8D-CDC1-4AC4-967C-9FDB3B397005}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C335BF8D-CDC1-4AC4-967C-9FDB3B397005}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3EA9F46D-9692-4F36-8BB0-8E5268CB8FC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3EA9F46D-9692-4F36-8BB0-8E5268CB8FC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3EA9F46D-9692-4F36-8BB0-8E5268CB8FC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3EA9F46D-9692-4F36-8BB0-8E5268CB8FC3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8B63F70-F3A5-4567-B009-06E8DC99126B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8B63F70-F3A5-4567-B009-06E8DC99126B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8B63F70-F3A5-4567-B009-06E8DC99126B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8B63F70-F3A5-4567-B009-06E8DC99126B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1CF1E3EE-ABC1-416B-B8D6-5679FA758E2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CF1E3EE-ABC1-416B-B8D6-5679FA758E2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1CF1E3EE-ABC1-416B-B8D6-5679FA758E2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1CF1E3EE-ABC1-416B-B8D6-5679FA758E2F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90EA869D-59A0-4C5F-BF19-0F517CC051EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90EA869D-59A0-4C5F-BF19-0F517CC051EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90EA869D-59A0-4C5F-BF19-0F517CC051EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90EA869D-59A0-4C5F-BF19-0F517CC051EB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C335BF8D-CDC1-4AC4-967C-9FDB3B397005} = {7A1FFBEA-9271-4A08-9A7A-3E3EE872F8D9}
+		{3EA9F46D-9692-4F36-8BB0-8E5268CB8FC3} = {7A1FFBEA-9271-4A08-9A7A-3E3EE872F8D9}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DE227FB1-925E-432A-8870-619328E59103}
+	EndGlobalSection
+EndGlobal
