@@ -1,0 +1,4 @@
+﻿[*.cs]
+
+# CSLA0003: Find CSLA Business Objects That do not Have Public No-Arugment Constructors
+dotnet_diagnostic.CSLA0003.severity = none
