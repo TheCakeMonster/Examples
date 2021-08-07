@@ -1,6 +1,8 @@
 ﻿using Csla.Configuration;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 
 namespace DeadlockingCSLADemo.ConsoleUI
@@ -13,7 +15,7 @@ namespace DeadlockingCSLADemo.ConsoleUI
 			IServiceProvider serviceProvider;
 
 			// Configure DI
-			ConfigureServices(services);
+			ConfigureServices(services, args);
 
 			// Build the configured service provider
 			serviceProvider = services.BuildServiceProvider();
@@ -25,12 +27,22 @@ namespace DeadlockingCSLADemo.ConsoleUI
 
 		}
 
-		private static void ConfigureServices(IServiceCollection services)
+		private static void ConfigureServices(IServiceCollection services, string[] args)
 		{
+			IConfiguration configuration;
+
 			services.AddHttpClient("backend", c =>
 			{
 				c.BaseAddress = new Uri("https://localhost:44329");
 			});
+
+			configuration = new ConfigurationBuilder()
+				.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+				.AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: true)
+				.AddEnvironmentVariables()
+				.AddCommandLine(args)
+				.Build();
+			services.AddSingleton<IConfiguration>(configuration);
 
 			// Register the repositories
 			services.AddDataAccessRepositories();

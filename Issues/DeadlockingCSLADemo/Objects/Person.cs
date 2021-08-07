@@ -250,7 +250,7 @@ namespace DeadlockingCSLADemo.Objects
 		}
 
 		[Insert]
-		// [Transactional(TransactionalTypes.TransactionScope, TransactionIsolationLevel.ReadCommitted, TransactionScopeAsyncFlowOption.Enabled)]
+		[Transactional(TransactionalTypes.TransactionScope, TransactionIsolationLevel.ReadCommitted, TransactionScopeAsyncFlowOption.Enabled)]
 		private async Task DataPortal_InsertAsync([Inject] IPersonRepository repository)
 		{
 			PersonDTO data;
@@ -266,7 +266,7 @@ namespace DeadlockingCSLADemo.Objects
 		}
 
 		[Update]
-		// [Transactional(TransactionalTypes.TransactionScope, TransactionIsolationLevel.ReadCommitted, TransactionScopeAsyncFlowOption.Enabled)]
+		[Transactional(TransactionalTypes.TransactionScope, TransactionIsolationLevel.ReadCommitted, TransactionScopeAsyncFlowOption.Enabled)]
 		private async Task DataPortal_UpdateAsync([Inject] IPersonRepository repository)
 		{
 			PersonDTO data;

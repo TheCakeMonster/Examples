@@ -14,12 +14,14 @@ namespace DeadlockingCSLADemo.DataAccess
 	public class EmploymentHistoryRepository : IEmploymentHistoryRepository
 	{
 		private readonly IHttpClientFactory _clientFactory;
+		private readonly SQLQueryExecutor _queryExecutor;
 
 		#region Constructors
 
-		public EmploymentHistoryRepository(IHttpClientFactory clientFactory)
+		public EmploymentHistoryRepository(IHttpClientFactory clientFactory, SQLQueryExecutor queryExecutor)
 		{
 			_clientFactory = clientFactory;
+			_queryExecutor = queryExecutor;
 		}
 
 		#endregion
@@ -133,7 +135,8 @@ namespace DeadlockingCSLADemo.DataAccess
 			//// I'm using an http call as this can be simulated with no external infrastructure
 			//httpClient = _clientFactory.CreateClient("backend");
 			//_ = await httpClient.GetAsync("api/DoSomeSlowDataAccess");
-			await Task.Delay(10);
+			// await Task.Delay(10);
+			await _queryExecutor.PerformDataAccessAsync();
 
 		}
 

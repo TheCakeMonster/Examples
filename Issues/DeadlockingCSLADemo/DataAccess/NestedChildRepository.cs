@@ -8,18 +8,21 @@ using System.Threading.Tasks;
 using System.Transactions;
 using Csla.Data;
 using DeadlockingCSLADemo.Objects.DataAccess;
+using Microsoft.Extensions.Configuration;
 
 namespace DeadlockingCSLADemo.DataAccess
 {
 	public class NestedChildRepository : INestedChildRepository
 	{
 		private readonly IHttpClientFactory _clientFactory;
+		private readonly SQLQueryExecutor _queryExecutor;
 
 		#region Constructors
 
-		public NestedChildRepository(IHttpClientFactory clientFactory)
+		public NestedChildRepository(IHttpClientFactory clientFactory, SQLQueryExecutor queryExecutor)
 		{
 			_clientFactory = clientFactory;
+			_queryExecutor = queryExecutor;
 		}
 
 		#endregion
@@ -59,7 +62,8 @@ namespace DeadlockingCSLADemo.DataAccess
 		/// <returns>A list of DTOs representing the required data</returns>
 		public async Task<IList<NestedChildDTO>> FetchNestedListAsync(int parentNestedChildId)
 		{
-			int maxDepth = 6;
+			int maxDepth = 5;
+			int childrenRequired;
 			List<NestedChildDTO> list = new List<NestedChildDTO>();
 			NestedChildDTO data;
 
@@ -67,7 +71,8 @@ namespace DeadlockingCSLADemo.DataAccess
 
 			if (parentNestedChildId < maxDepth)
 			{
-				for (int numberOfChildren = 0; numberOfChildren < 2; numberOfChildren++)
+				childrenRequired = Math.Max(1, parentNestedChildId);
+				for (int numberOfChildren = 0; numberOfChildren < childrenRequired; numberOfChildren++)
 				{ 
 					data = new NestedChildDTO();
 					data.NestedChildId = parentNestedChildId + 1;
@@ -163,7 +168,8 @@ namespace DeadlockingCSLADemo.DataAccess
 			//// I'm using an http call as this can be simulated with no external infrastructure
 			//httpClient = _clientFactory.CreateClient("backend");
 			//_ = await httpClient.GetAsync("api/DoSomeSlowDataAccess");
-			await Task.Delay(3);
+			// await Task.Delay(3);
+			await _queryExecutor.PerformDataAccessAsync();
 
 		}
 

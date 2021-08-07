@@ -21,6 +21,9 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// <returns>IServiceCollection, to support method chaining if required</returns>
 		public static IServiceCollection AddDataAccessRepositories(this IServiceCollection services)
 		{
+			// Add registrations for utility classes
+			services.AddTransient<SQLQueryExecutor>();
+
 			// Add registrations for our Repository classes
 			services.AddTransient<IPersonRepository, PersonRepository>();
 			services.AddTransient<ICustomPropertyRepository, CustomPropertyRepository>();

@@ -14,12 +14,14 @@ namespace DeadlockingCSLADemo.DataAccess
 	public class CustomPropertyRepository : ICustomPropertyRepository
 	{
 		private readonly IHttpClientFactory _clientFactory;
+		private readonly SQLQueryExecutor _queryExecutor;
 
 		#region Constructors
 
-		public CustomPropertyRepository(IHttpClientFactory clientFactory)
+		public CustomPropertyRepository(IHttpClientFactory clientFactory, SQLQueryExecutor queryExecutor)
 		{
 			_clientFactory = clientFactory;
+			_queryExecutor = queryExecutor;
 		}
 
 		#endregion
@@ -131,7 +133,8 @@ namespace DeadlockingCSLADemo.DataAccess
 			//// I'm using an http call as this can be simulated with no external infrastructure
 			//httpClient = _clientFactory.CreateClient("backend");
 			//_ = await httpClient.GetAsync("api/DoSomeSlowDataAccess");
-			await Task.Delay(6);
+			// await Task.Delay(6);
+			await _queryExecutor.PerformDataAccessAsync();
 
 		}
 
