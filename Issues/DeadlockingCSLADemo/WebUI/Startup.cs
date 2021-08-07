@@ -11,8 +11,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-// Generated from the built-in Scriban Blazor Server CSLA Startup template
-
 namespace DeadlockingCSLADemo.WebUI
 {
 	public class Startup

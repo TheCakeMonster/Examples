@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Text;
 
-// Generated from the built-in Scriban MutableDTO template
-
 namespace DeadlockingCSLADemo.Objects.DataAccess
 {
 	[Serializable]

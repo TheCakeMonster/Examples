@@ -108,12 +108,13 @@ namespace DeadlockingCSLADemo.DataAccess
 
 		private async Task DoSlowDataAccess()
 		{
-			HttpClient httpClient;
+			//HttpClient httpClient;
 
-			// Do some slow data access operation - a call to SQL database for example
-			// I'm using an http call as this can be simulated with no external infrastructure
-			httpClient = _clientFactory.CreateClient("backend");
-			_ = await httpClient.GetAsync("api/DoSomeSlowDataAccess");
+			//// Do some slow data access operation - a call to SQL database for example
+			//// I'm using an http call as this can be simulated with no external infrastructure
+			//httpClient = _clientFactory.CreateClient("backend");
+			//_ = await httpClient.GetAsync("api/DoSomeSlowDataAccess");
+			await Task.Delay(20);
 
 		}
 

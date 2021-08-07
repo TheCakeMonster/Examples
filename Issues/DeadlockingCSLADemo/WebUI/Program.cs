@@ -9,8 +9,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-// Generated from the built-in Scriban Program template
-
 namespace DeadlockingCSLADemo.WebUI
 {
 	public class Program

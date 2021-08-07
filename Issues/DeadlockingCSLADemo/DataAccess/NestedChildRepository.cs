@@ -11,13 +11,13 @@ using DeadlockingCSLADemo.Objects.DataAccess;
 
 namespace DeadlockingCSLADemo.DataAccess
 {
-	public class EmploymentHistoryRepository : IEmploymentHistoryRepository
+	public class NestedChildRepository : INestedChildRepository
 	{
 		private readonly IHttpClientFactory _clientFactory;
 
 		#region Constructors
 
-		public EmploymentHistoryRepository(IHttpClientFactory clientFactory)
+		public NestedChildRepository(IHttpClientFactory clientFactory)
 		{
 			_clientFactory = clientFactory;
 		}
@@ -30,20 +30,19 @@ namespace DeadlockingCSLADemo.DataAccess
 		/// Get a list of items from the data store
 		/// </summary>
 		/// <returns>A list of DTOs representing the required data</returns>
-		public async Task<IList<EmploymentHistoryDTO>> FetchListAsync(int personId)
+		public async Task<IList<NestedChildDTO>> FetchListAsync(int personId)
 		{
-			List<EmploymentHistoryDTO> list = new List<EmploymentHistoryDTO>();
-			EmploymentHistoryDTO data;
+			List<NestedChildDTO> list = new List<NestedChildDTO>();
+			NestedChildDTO data;
 
 			await DoSlowDataAccessAsync();
 
-			for (int iteration = 0; iteration < 10; iteration++)
+			for (int iteration = 0; iteration < 2; iteration++)
 			{
-				data = new EmploymentHistoryDTO();
+				data = new NestedChildDTO();
 				data.PersonId = personId;
-				data.EmployerName = $"Company {iteration}";
-				data.JoinedOn = DateTime.Now.AddYears(-15 + iteration);
-				data.DepartedOn = DateTime.Now.AddYears(-14 + iteration);
+				data.ChildName = $"Child {iteration}";
+				data.ParentNestedChildId = 1;
 				data.CreatedBy = "Joe Smith";
 				data.CreatedAt = DateTime.Now.AddHours(-9);
 				data.UpdatedBy = "Joe Smith";
@@ -55,27 +54,58 @@ namespace DeadlockingCSLADemo.DataAccess
 		}
 
 		/// <summary>
-		/// Get a single item from the data store using the unique identifiers provided
+		/// Get a list of items from the data store
 		/// </summary>
-		/// <returns>A DTO containing the data for the requested item</returns>
-		public async Task<EmploymentHistoryDTO> FetchAsync(int employmentHistoryId)
+		/// <returns>A list of DTOs representing the required data</returns>
+		public async Task<IList<NestedChildDTO>> FetchNestedListAsync(int parentNestedChildId)
 		{
-			EmploymentHistoryDTO data;
+			int maxDepth = 6;
+			List<NestedChildDTO> list = new List<NestedChildDTO>();
+			NestedChildDTO data;
 
 			await DoSlowDataAccessAsync();
 
-			data = new EmploymentHistoryDTO()
-			{ 
-				EmploymentHistoryId = employmentHistoryId, 
-				PersonId = 1, 
-				EmployerName = "Company X", 
-				JoinedOn = DateTime.Now.AddYears(-15), 
-				DepartedOn = DateTime.Now.AddYears(-14),
+			if (parentNestedChildId < maxDepth)
+			{
+				for (int numberOfChildren = 0; numberOfChildren < 2; numberOfChildren++)
+				{ 
+					data = new NestedChildDTO();
+					data.NestedChildId = parentNestedChildId + 1;
+					data.PersonId = 1;
+					data.ParentNestedChildId = parentNestedChildId;
+					data.ChildName = $"Child {data.NestedChildId}";
+					data.CreatedBy = "Joe Smith";
+					data.CreatedAt = DateTime.Now.AddHours(-9);
+					data.UpdatedBy = "Joe Smith";
+					data.UpdatedAt = DateTime.Now.AddHours(-9);
+					list.Add(data);
+				}
+			}
+
+			return list;
+		}
+
+		/// <summary>
+		/// Get a single item from the data store using the unique identifiers provided
+		/// </summary>
+		/// <returns>A DTO containing the data for the requested item</returns>
+		public async Task<NestedChildDTO> FetchAsync(int personId)
+		{
+			NestedChildDTO data;
+
+			await DoSlowDataAccessAsync();
+
+			data = new NestedChildDTO()
+			{
+				PersonId = personId,
+				ChildName = "Child X",
+				ParentNestedChildId = 1,
 				CreatedBy = "Joe Smith",
 				CreatedAt = DateTime.Now.AddHours(-9),
 				UpdatedBy = "Joe Smith",
 				UpdatedAt = DateTime.Now.AddHours(-9)
 			};
+
 			return data;
 		}
 
@@ -84,7 +114,7 @@ namespace DeadlockingCSLADemo.DataAccess
 		/// </summary>
 		/// <param name="data">The data to be written to the store</param>
 		/// <returns>The original DTO, including any updates from the data store</returns>
-		public async Task<EmploymentHistoryDTO> InsertAsync(EmploymentHistoryDTO data)
+		public async Task<NestedChildDTO> InsertAsync(NestedChildDTO data)
 		{
 			await DoSlowDataAccessAsync();
 
@@ -96,7 +126,7 @@ namespace DeadlockingCSLADemo.DataAccess
 		/// </summary>
 		/// <param name="data">The data to be written to the store</param>
 		/// <returns>The original DTO, including any updates from the data store</returns>
-		public async Task<EmploymentHistoryDTO> UpdateAsync(EmploymentHistoryDTO data)
+		public async Task<NestedChildDTO> UpdateAsync(NestedChildDTO data)
 		{
 			await DoSlowDataAccessAsync();
 
@@ -106,7 +136,7 @@ namespace DeadlockingCSLADemo.DataAccess
 		/// <summary>
 		/// Delete a single item from the data store
 		/// </summary>
-		public async Task DeleteAsync(int employmentHistoryId)
+		public async Task DeleteAsync(int personId)
 		{
 			await DoSlowDataAccessAsync();
 		}
@@ -133,7 +163,7 @@ namespace DeadlockingCSLADemo.DataAccess
 			//// I'm using an http call as this can be simulated with no external infrastructure
 			//httpClient = _clientFactory.CreateClient("backend");
 			//_ = await httpClient.GetAsync("api/DoSomeSlowDataAccess");
-			await Task.Delay(10);
+			await Task.Delay(3);
 
 		}
 

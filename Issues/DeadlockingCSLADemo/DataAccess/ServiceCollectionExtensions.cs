@@ -25,6 +25,7 @@ namespace Microsoft.Extensions.DependencyInjection
 			services.AddTransient<IPersonRepository, PersonRepository>();
 			services.AddTransient<ICustomPropertyRepository, CustomPropertyRepository>();
 			services.AddTransient<IEmploymentHistoryRepository, EmploymentHistoryRepository>();
+			services.AddTransient<INestedChildRepository, NestedChildRepository>();
 
 			return services;
 		}

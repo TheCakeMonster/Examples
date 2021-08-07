@@ -11,7 +11,7 @@ namespace DeadlockingCSLADemo.ConsoleUI
 
 		internal static async Task DoTestsAsync()
 		{
-			int maxDOP = 10;
+			int maxDOP = 1;
 			Task[] tasks;
 
 			// Setup the tests
@@ -37,9 +37,11 @@ namespace DeadlockingCSLADemo.ConsoleUI
 
 				// Load, modify and then save the changes
 				person = await Person.GetPersonAsync(1);
-				ModifyPerson(person);
-				person = await person.SaveAsync();
+				Console.WriteLine($"Task {taskNumber}: Person {iteration} loaded successfully");
 
+				ModifyPerson(person);
+
+				person = await person.SaveAsync();
 				Console.WriteLine($"Task {taskNumber}: Person {iteration} saved successfully");
 
 				iteration++;
@@ -60,6 +62,20 @@ namespace DeadlockingCSLADemo.ConsoleUI
 				customProperty.PropertyValue = "123";
 			}
 
+			foreach (NestedChild nestedChild in person.NestedChildren)
+			{
+				nestedChild.ChildName = "ABC 123";
+				ModifyNestedChild(nestedChild);
+			}
+		}
+
+		private static void ModifyNestedChild(NestedChild nestedChild)
+		{
+			foreach (NestedChild nestedGrandChild in nestedChild.NestedChildren)
+			{
+				nestedGrandChild.ChildName = "Grandchild 123";
+				ModifyNestedChild(nestedGrandChild);
+			}
 		}
 
 	}

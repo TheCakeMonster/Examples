@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-// Generated from the built-in Scriban RepositoryInterface template
-
 namespace DeadlockingCSLADemo.Objects.DataAccess
 {
 	public interface IEmploymentHistoryRepository

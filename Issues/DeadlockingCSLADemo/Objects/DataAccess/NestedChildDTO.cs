@@ -5,16 +5,16 @@ using System.Text;
 namespace DeadlockingCSLADemo.Objects.DataAccess
 {
 	[Serializable]
-	public class CustomPropertyDTO
+	public class NestedChildDTO
 	{
 
-		public int CustomPropertyId { get; set; }
+		public int NestedChildId { get; set; }
+
+		public int? ParentNestedChildId { get; set; }
 
 		public int PersonId { get; set; }
 
-		public string PropertyName { get; set; }
-
-		public string PropertyValue { get; set; }
+		public string ChildName { get; set; }
 
 		public DateTime CreatedAt { get; set; }
 

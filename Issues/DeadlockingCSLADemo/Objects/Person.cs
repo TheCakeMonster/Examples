@@ -14,7 +14,7 @@ namespace DeadlockingCSLADemo.Objects
 {
 
 	[Serializable]
-	public class Person : BusinessBase<Person>
+	public class Person : BusinessBase<Person>, INestedChildParent
 	{
 
 		public static readonly PropertyInfo<int> _personIdProperty = RegisterProperty<int>(nameof(PersonId));
@@ -26,6 +26,7 @@ namespace DeadlockingCSLADemo.Objects
 		public static readonly PropertyInfo<string> _updatedByProperty = RegisterProperty<string>(nameof(UpdatedBy));
 		public static readonly PropertyInfo<EmploymentHistories> _employmentHistoriesProperty = RegisterProperty<EmploymentHistories>(nameof(EmploymentHistories));
 		public static readonly PropertyInfo<CustomProperties> _customPropertiesProperty = RegisterProperty<CustomProperties>(nameof(CustomProperties));
+		public static readonly PropertyInfo<NestedChildren> _nestedChildrenProperty = RegisterProperty<NestedChildren>(nameof(NestedChildren));
 
 		#region Exposed Properties and Methods
 
@@ -91,6 +92,13 @@ namespace DeadlockingCSLADemo.Objects
 		{ 
 			get { return GetProperty(_customPropertiesProperty); } 
 		}
+
+		public NestedChildren NestedChildren
+		{
+			get { return GetProperty(_nestedChildrenProperty); }
+		}
+
+		public int? ParentNestedChildId { get { return null; } }
 
 		#endregion
 
@@ -201,6 +209,7 @@ namespace DeadlockingCSLADemo.Objects
 				LoadProperty(_updatedAtProperty, DateTime.Now);
 				LoadProperty(_employmentHistoriesProperty, DataPortal.CreateChild<EmploymentHistories>());
 				LoadProperty(_customPropertiesProperty, DataPortal.CreateChild<CustomProperties>());
+				LoadProperty(_nestedChildrenProperty, DataPortal.CreateChild<NestedChildren>());
 			}
 			BusinessRules.CheckRules();
 
@@ -233,6 +242,7 @@ namespace DeadlockingCSLADemo.Objects
 				// Complete the load by requesting any children load themselves
 				LoadProperty(_employmentHistoriesProperty, await DataPortal.FetchChildAsync<EmploymentHistories>(data.PersonId));
 				LoadProperty(_customPropertiesProperty, await DataPortal.FetchChildAsync<CustomProperties>(data.PersonId));
+				LoadProperty(_nestedChildrenProperty, await DataPortal.FetchChildAsync<NestedChildren>(data.PersonId));
 			}
 
 			// Check that the object retrieved from the store meets the latest business rules
@@ -240,7 +250,7 @@ namespace DeadlockingCSLADemo.Objects
 		}
 
 		[Insert]
-		[Transactional(TransactionalTypes.TransactionScope, TransactionIsolationLevel.ReadCommitted, TransactionScopeAsyncFlowOption.Enabled)]
+		// [Transactional(TransactionalTypes.TransactionScope, TransactionIsolationLevel.ReadCommitted, TransactionScopeAsyncFlowOption.Enabled)]
 		private async Task DataPortal_InsertAsync([Inject] IPersonRepository repository)
 		{
 			PersonDTO data;
@@ -256,7 +266,7 @@ namespace DeadlockingCSLADemo.Objects
 		}
 
 		[Update]
-		[Transactional(TransactionalTypes.TransactionScope, TransactionIsolationLevel.ReadCommitted, TransactionScopeAsyncFlowOption.Enabled)]
+		// [Transactional(TransactionalTypes.TransactionScope, TransactionIsolationLevel.ReadCommitted, TransactionScopeAsyncFlowOption.Enabled)]
 		private async Task DataPortal_UpdateAsync([Inject] IPersonRepository repository)
 		{
 			PersonDTO data;
