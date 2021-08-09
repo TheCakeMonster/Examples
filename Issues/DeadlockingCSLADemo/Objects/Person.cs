@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using System.Transactions;
 using Csla;
-using DotNotStandard.Validation.Core;
+//using DotNotStandard.Validation.Core;
 using DeadlockingCSLADemo.Objects.DataAccess;
 using System.Net.Http;
 
@@ -35,7 +35,7 @@ namespace DeadlockingCSLADemo.Objects
 
 		[Required]
 		[MaxLength(100)]
-		[CharacterSet(BuiltInRules.CharacterSet.LatinAlphanumeric)]
+		//[CharacterSet(BuiltInRules.CharacterSet.LatinAlphanumeric)]
 		public string FirstName
 		{
 			get { return GetProperty(_firstNameProperty); }
@@ -44,7 +44,7 @@ namespace DeadlockingCSLADemo.Objects
 
 		[Required]
 		[MaxLength(100)]
-		[CharacterSet(BuiltInRules.CharacterSet.LatinAlphanumeric)]
+		//[CharacterSet(BuiltInRules.CharacterSet.LatinAlphanumeric)]
 		public string LastName
 		{
 			get { return GetProperty(_lastNameProperty); }
@@ -59,7 +59,7 @@ namespace DeadlockingCSLADemo.Objects
 
 		[Required]
 		[MaxLength(100)]
-		[CharacterSet(BuiltInRules.CharacterSet.LatinAlphanumeric)]
+		//[CharacterSet(BuiltInRules.CharacterSet.LatinAlphanumeric)]
 		public string CreatedBy
 		{
 			get { return GetProperty(_createdByProperty); }
@@ -74,7 +74,7 @@ namespace DeadlockingCSLADemo.Objects
 
 		[Required]
 		[MaxLength(100)]
-		[CharacterSet(BuiltInRules.CharacterSet.LatinAlphanumeric)]
+		//[CharacterSet(BuiltInRules.CharacterSet.LatinAlphanumeric)]
 		public string UpdatedBy
 		{
 			get { return GetProperty(_updatedByProperty); }
@@ -92,9 +92,8 @@ namespace DeadlockingCSLADemo.Objects
 
 		#region Factory Methods
 
-		private Person() 
+		public Person() 
 		{
-			// Enforce use of factory methods
 		}
 
 		/// <summary>

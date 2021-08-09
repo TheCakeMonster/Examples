@@ -26,9 +26,6 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.2" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="5.0.0" />
     <PackageReference Include="Csla" Version="5.5.0" />
-    <PackageReference Include="DotNotStandard.Validation" Version="0.9.0" />
-    <PackageReference Include="DotNotStandard.Validation.Repositories.InMemoryRepository" Version="0.9.0" />
-    <PackageReference Include="Csla" Version="5.5.0" />
   </ItemGroup>
 
   <ItemGroup>

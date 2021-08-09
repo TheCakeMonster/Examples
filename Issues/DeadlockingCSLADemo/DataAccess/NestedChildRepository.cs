@@ -16,7 +16,7 @@ namespace DeadlockingCSLADemo.DataAccess
 	{
 		private readonly IHttpClientFactory _clientFactory;
 		private readonly SQLQueryExecutor _queryExecutor;
-		private static int[] Sizes = new int[] { 1, 2, 10, 3, 2, 1, 3, 2, 1, 3, 2, 1, 2, 6, 1 };
+		private static int[] Sizes = new int[] { 1, 2, 5, 1, 2, 1, 3, 2, 1, 3, 2, 1, 2, 6, 1 };
 
 		#region Constructors
 

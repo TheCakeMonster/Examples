@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Transactions;
 using Csla;
 using DeadlockingCSLADemo.Objects.DataAccess;
-using DotNotStandard.Validation.Core;
+//using DotNotStandard.Validation.Core;
 
 // Built to be of the CSLA EditableChild stereotype
 
@@ -46,7 +46,7 @@ namespace DeadlockingCSLADemo.Objects
 
 		[Required]
 		[MaxLength(100)]
-		[CharacterSet(BuiltInRules.CharacterSet.LatinAlphanumeric)]
+		//[CharacterSet(BuiltInRules.CharacterSet.LatinAlphanumeric)]
 		public string ChildName
 		{
 			get { return GetProperty(_childNameProperty); }
@@ -88,9 +88,8 @@ namespace DeadlockingCSLADemo.Objects
 
 		#region Factory Methods
 
-		private NestedChild() 
+		public NestedChild() 
 		{
-			// Enforce use of factory methods
 		}
 
 		#endregion

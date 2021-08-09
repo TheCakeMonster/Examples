@@ -67,7 +67,7 @@ namespace DeadlockingCSLADemo.ConsoleUI
 			
 			while (iteration < 100)
 			{
-				await Task.Delay(2500);
+				await Task.Delay(300);
 				Console.WriteLine($"Task 0: Monitoring iteration {iteration} completed");
 
 				iteration++;

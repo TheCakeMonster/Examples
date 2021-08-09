@@ -68,9 +68,6 @@ namespace DeadlockingCSLADemo.ConsoleUI
 			// Register the repositories
 			services.AddDataAccessRepositories();
 
-			// Initialise the validation services
-			services.AddValidationInMemoryRepositories();
-
 			// Configure CSLA to use the local proxy
 			CslaConfiguration.Configure().
 				DataPortal().DefaultProxy(typeof(Csla.DataPortalClient.LocalProxy), "");
