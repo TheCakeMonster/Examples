@@ -2,7 +2,9 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Numerics;
 using System.Reflection.Metadata.Ecma335;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace DeadlockingCSLADemo.ConsoleUI
@@ -11,8 +13,12 @@ namespace DeadlockingCSLADemo.ConsoleUI
 	{
 		static async Task Main(string[] args)
 		{
+			bool valid = false;
+			int maxDOP = 1;
+			string maxDOPEntry;
 			IServiceCollection services = new ServiceCollection();
 			IServiceProvider serviceProvider;
+			DataAccessTester tester;
 
 			// Configure DI
 			ConfigureServices(services, args);
@@ -23,7 +29,22 @@ namespace DeadlockingCSLADemo.ConsoleUI
 			// Configure the application pipeline
 			Configure(serviceProvider);
 
-			await DataAccessTester.DoTestsAsync();
+			// Enforce restricted resources to demonstrate the problem
+			ThreadPool.SetMaxThreads(10, 50000);
+
+			while (!valid)
+			{
+				Console.WriteLine("Enter the degree of parallelism (an integer) and press 'Enter' to start");
+				maxDOPEntry = Console.ReadLine();
+				valid = int.TryParse(maxDOPEntry, out maxDOP) && maxDOP > 0;
+			}
+
+			// Start the test
+			tester = new DataAccessTester(maxDOP);
+			await tester.DoTestsAsync();
+
+			Console.WriteLine("Tests are complete. Press 'Enter' to quit");
+			Console.ReadLine();
 
 		}
 
@@ -65,7 +86,6 @@ namespace DeadlockingCSLADemo.ConsoleUI
 
 		private static void Configure(IServiceProvider serviceProvider)
 		{
-
 			CslaConfiguration.Configure().ServiceProviderScope(serviceProvider);
 		}
 

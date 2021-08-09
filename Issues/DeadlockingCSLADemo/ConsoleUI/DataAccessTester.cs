@@ -6,19 +6,26 @@ using System.Threading.Tasks;
 
 namespace DeadlockingCSLADemo.ConsoleUI
 {
-	internal static class DataAccessTester
+	internal class DataAccessTester
 	{
 
-		internal static async Task DoTestsAsync()
+		private readonly int _maxDOP;
+
+		public DataAccessTester(int maxDOP)
 		{
-			int maxDOP = 1;
+			_maxDOP = maxDOP;
+		}
+
+		internal async Task DoTestsAsync()
+		{
 			Task[] tasks;
 
 			// Setup the tests
-			tasks = new Task[maxDOP];
-			for (int taskNumber = 0; taskNumber < maxDOP; taskNumber++)
+			tasks = new Task[_maxDOP + 1];
+			tasks[0] = DoMonitoringIterationAsync();
+			for (int taskNumber = 1; taskNumber < _maxDOP + 1; taskNumber++)
 			{
-				tasks[taskNumber] = DoIterationAsync(taskNumber);
+				tasks[taskNumber] = DoDataAccessIterationAsync(taskNumber);
 			}
 
 			// Run the tests and wait for completion
@@ -26,41 +33,51 @@ namespace DeadlockingCSLADemo.ConsoleUI
 
 		}
 
-		internal static async Task DoIterationAsync(int taskNumber)
+		internal async Task DoDataAccessIterationAsync(int taskNumber)
 		{
 			int iteration = 0;
 			Person person;
 
 			// Run the test
-			while (iteration < 10000)
+			while (iteration < 10)
 			{
 
 				// Load, modify and then save the changes
+				Console.WriteLine($"Task {taskNumber}: Loading person {iteration}");
 				person = await Person.GetPersonAsync(1);
 				Console.WriteLine($"Task {taskNumber}: Person {iteration} loaded successfully");
 
+				Console.WriteLine($"Task {taskNumber}: Modifying person {iteration}");
 				ModifyPerson(person);
+				Console.WriteLine($"Task {taskNumber}: Person {iteration} modified successfully");
 
+				Console.WriteLine($"Task {taskNumber}: Saving person {iteration}");
 				person = await person.SaveAsync();
 				Console.WriteLine($"Task {taskNumber}: Person {iteration} saved successfully");
 
 				iteration++;
 			}
 
+			Console.WriteLine($"Task {taskNumber}: All iterations completed");
 		}
 
-		private static void ModifyPerson(Person person)
+		private async Task DoMonitoringIterationAsync()
 		{
-
-			foreach (EmploymentHistory employmentHistory in person.EmploymentHistories)
+			int iteration = 0;
+			
+			while (iteration < 100)
 			{
-				employmentHistory.EmployerName = "Company Y";
+				await Task.Delay(2500);
+				Console.WriteLine($"Task 0: Monitoring iteration {iteration} completed");
+
+				iteration++;
 			}
 
-			foreach (CustomProperty customProperty in person.CustomProperties)
-			{
-				customProperty.PropertyValue = "123";
-			}
+			Console.WriteLine($"Task 0: All monitoring iterations completed");
+		}
+
+		private void ModifyPerson(Person person)
+		{
 
 			foreach (NestedChild nestedChild in person.NestedChildren)
 			{
@@ -69,7 +86,7 @@ namespace DeadlockingCSLADemo.ConsoleUI
 			}
 		}
 
-		private static void ModifyNestedChild(NestedChild nestedChild)
+		private void ModifyNestedChild(NestedChild nestedChild)
 		{
 			foreach (NestedChild nestedGrandChild in nestedChild.NestedChildren)
 			{

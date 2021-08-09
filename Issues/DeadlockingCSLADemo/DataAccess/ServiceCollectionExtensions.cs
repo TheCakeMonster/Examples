@@ -26,8 +26,6 @@ namespace Microsoft.Extensions.DependencyInjection
 
 			// Add registrations for our Repository classes
 			services.AddTransient<IPersonRepository, PersonRepository>();
-			services.AddTransient<ICustomPropertyRepository, CustomPropertyRepository>();
-			services.AddTransient<IEmploymentHistoryRepository, EmploymentHistoryRepository>();
 			services.AddTransient<INestedChildRepository, NestedChildRepository>();
 
 			return services;

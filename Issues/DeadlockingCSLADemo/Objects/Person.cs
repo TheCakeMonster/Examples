@@ -24,8 +24,6 @@ namespace DeadlockingCSLADemo.Objects
 		public static readonly PropertyInfo<string> _createdByProperty = RegisterProperty<string>(nameof(CreatedBy));
 		public static readonly PropertyInfo<DateTime> _updatedAtProperty = RegisterProperty<DateTime>(nameof(UpdatedAt));
 		public static readonly PropertyInfo<string> _updatedByProperty = RegisterProperty<string>(nameof(UpdatedBy));
-		public static readonly PropertyInfo<EmploymentHistories> _employmentHistoriesProperty = RegisterProperty<EmploymentHistories>(nameof(EmploymentHistories));
-		public static readonly PropertyInfo<CustomProperties> _customPropertiesProperty = RegisterProperty<CustomProperties>(nameof(CustomProperties));
 		public static readonly PropertyInfo<NestedChildren> _nestedChildrenProperty = RegisterProperty<NestedChildren>(nameof(NestedChildren));
 
 		#region Exposed Properties and Methods
@@ -81,16 +79,6 @@ namespace DeadlockingCSLADemo.Objects
 		{
 			get { return GetProperty(_updatedByProperty); }
 			set { SetProperty(_updatedByProperty, value); }
-		}
-
-		public EmploymentHistories EmploymentHistories
-		{
-			get { return GetProperty(_employmentHistoriesProperty); }
-		}
-
-		public CustomProperties CustomProperties 
-		{ 
-			get { return GetProperty(_customPropertiesProperty); } 
 		}
 
 		public NestedChildren NestedChildren
@@ -207,8 +195,6 @@ namespace DeadlockingCSLADemo.Objects
 				LoadProperty(_updatedByProperty, Csla.ApplicationContext.User?.Identity?.Name);
 				LoadProperty(_createdAtProperty, DateTime.Now);
 				LoadProperty(_updatedAtProperty, DateTime.Now);
-				LoadProperty(_employmentHistoriesProperty, DataPortal.CreateChild<EmploymentHistories>());
-				LoadProperty(_customPropertiesProperty, DataPortal.CreateChild<CustomProperties>());
 				LoadProperty(_nestedChildrenProperty, DataPortal.CreateChild<NestedChildren>());
 			}
 			BusinessRules.CheckRules();
@@ -240,8 +226,6 @@ namespace DeadlockingCSLADemo.Objects
 				LoadProperty(_updatedAtProperty, data.UpdatedAt);
 				LoadProperty(_updatedByProperty, data.UpdatedBy);
 				// Complete the load by requesting any children load themselves
-				LoadProperty(_employmentHistoriesProperty, await DataPortal.FetchChildAsync<EmploymentHistories>(data.PersonId));
-				LoadProperty(_customPropertiesProperty, await DataPortal.FetchChildAsync<CustomProperties>(data.PersonId));
 				LoadProperty(_nestedChildrenProperty, await DataPortal.FetchChildAsync<NestedChildren>(data.PersonId));
 			}
 
