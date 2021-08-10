@@ -1,0 +1,36 @@
+﻿{{~ capture isEmpty ~}}{{ TestHelper.EmptyString() == "" }}{{~ end ~}}
+{{~ capture isNotEmpty ~}}{{ TestHelper.EmptyString() != "" }}{{~ end ~}}
+{{~ capture isFull ~}}{{ TestHelper.FullString() != "" }}{{~ end ~}}
+{{~ capture isNotFull ~}}{{ TestHelper.FullString() == "" }}{{~ end ~}}
+
+**** TEST 1 ****
+{{~ if isEmpty ~}}
+Test 1: It's an empty string!
+{{~ end ~}}
+{{~ if !isEmpty ~}}
+Test 1: It's NOT an empty string!
+{{~ end ~}}
+
+**** TEST 2 ****
+{{~ if isNotEmpty ~}}
+Test 2: It's NOT an empty string!
+{{~ end ~}}
+{{~ if !isNotEmpty ~}}
+Test 2: It IS an empty string!
+{{~ end ~}}
+
+**** TEST 3 ****
+{{~ if isFull ~}}
+Test 3: It's a full string!
+{{~ end ~}}
+{{~ if !isFull ~}}
+Test 3: It's NOT a full string!
+{{~ end ~}}
+
+**** TEST 4 ****
+{{~ if isNotFull ~}}
+Test 4: It's NOT a full string!
+{{~ end ~}}
+{{~ if !isNotFull ~}}
+Test 4: It IS a full string!
+{{~ end ~}}
