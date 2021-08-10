@@ -11,6 +11,7 @@
   <ItemGroup>
     <ProjectReference Include="..\LinkerFriendlyNet6Library\LinkerFriendlyNet6Library.csproj" />
     <ProjectReference Include="..\LinkerFriendlyNetStandardLibrary\LinkerFriendlyNetStandardLibrary.csproj" />
+    <ProjectReference Include="..\TrimmingChecker\TrimmingChecker.csproj" />
   </ItemGroup>
 
 </Project>

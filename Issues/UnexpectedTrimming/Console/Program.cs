@@ -11,30 +11,33 @@ namespace TrimmingTest.ConsoleApp
 			bool net6MethodExists;
 			bool net6TypeExists;
 
-			netStandardMethodExists = LinkerFriendlyNetStandardLibrary.ReflectionChecker.IsMethodPresent(
-				"LinkerFriendlyNetStandardLibrary.TestClass",
+			LinkerFriendlyNetStandardLibrary.TrimmingTargetAttributed.DoSomething();
+			LinkerFriendlyNet6Library.TrimmingTargetAttributed.DoSomething();
+
+			netStandardMethodExists = TrimmingChecker.PresenceTester.IsMethodPresent(
+				"LinkerFriendlyNetStandardLibrary.TrimmingTargetAttributed, LinkerFriendlyNetStandardLibrary",
 				"ThisMightBeRemovedByTheLinker",
 				System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic
 				);
-			netStandardTypeExists = LinkerFriendlyNetStandardLibrary.ReflectionChecker.IsTypePresent(
+			netStandardTypeExists = TrimmingChecker.PresenceTester.IsTypePresent(
 				"LinkerFriendlyNetStandardLibrary.RandomIntGenerator, LinkerFriendlyNetStandardLibrary"
 				);
 
-			net6MethodExists = LinkerFriendlyNet6Library.ReflectionChecker.IsMethodPresent(
-				"LinkerFriendlyNet6Library.TestClass",
+			net6MethodExists = TrimmingChecker.PresenceTester.IsMethodPresent(
+				"LinkerFriendlyNet6Library.TrimmingTargetAttributed, LinkerFriendlyNet6Library",
 				"ThisMightBeRemovedByTheLinker",
 				System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic
 				);
-			net6TypeExists = LinkerFriendlyNetStandardLibrary.ReflectionChecker.IsTypePresent(
+			net6TypeExists = TrimmingChecker.PresenceTester.IsTypePresent(
 				"LinkerFriendlyNet6Library.RandomIntGenerator, LinkerFriendlyNet6Library"
 				);
 
-			Console.WriteLine("I expect all of the following to be true:");
+			Console.WriteLine("After publishing, I expect all of the following to be true:");
 			Console.WriteLine();
-			Console.WriteLine($"Net Standard method exists: {netStandardMethodExists}");
-			Console.WriteLine($"Net Standard type exists: {netStandardTypeExists}");
-			Console.WriteLine($"Net 6 method exists: {net6MethodExists}");
-			Console.WriteLine($"Net 6 type exists: {net6TypeExists}");
+			Console.WriteLine($"Net Standard method 'ThisMightBeRemovedByTheLinker' exists: {netStandardMethodExists}");
+			Console.WriteLine($"Net Standard type 'RandomIntGenerator' exists: {netStandardTypeExists}");
+			Console.WriteLine($"Net 6 method 'ThisMightBeRemovedByTheLinker' exists: {net6MethodExists}");
+			Console.WriteLine($"Net 6 type 'RandomIntGenerator' exists: {net6TypeExists}");
 			Console.WriteLine();
 			Console.WriteLine("Press Enter to exit the application");
 

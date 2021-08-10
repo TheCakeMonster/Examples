@@ -3,7 +3,7 @@
 
 <h1>Unexpected Trimming</h1>
 
-I expect all of the following to be true:
+After publishing, I expect all of the following to be true:
 
 <div>
 	<div>Net 6 Method exists: @_isNet6MethodPresent</div>
@@ -24,22 +24,23 @@ I expect all of the following to be true:
 
 		base.OnInitialized();
 
-		LinkerFriendlyNet6Library.TestClass.DoSomething();
+		LinkerFriendlyNetStandardLibrary.TrimmingTargetAttributed.DoSomething();
+		LinkerFriendlyNet6Library.TrimmingTargetAttributed.DoSomething();
 
-		_isNetStandardMethodPresent = LinkerFriendlyNetStandardLibrary.ReflectionChecker.IsMethodPresent(
-			"LinkerFriendlyNetStandardLibrary.TestClass, LinkerFriendlyNetStandardLibrary", 
-			"ThisMightBeRemovedByTheLinker", 
+		_isNetStandardMethodPresent = TrimmingChecker.PresenceTester.IsMethodPresent(
+			"LinkerFriendlyNetStandardLibrary.TrimmingTargetAttributed, LinkerFriendlyNetStandardLibrary",
+			"ThisMightBeRemovedByTheLinker",
 			BindingFlags.Instance | BindingFlags.NonPublic);
 
-		_isNetStandardTypePresent = LinkerFriendlyNetStandardLibrary.ReflectionChecker.IsTypePresent(
+		_isNetStandardTypePresent = TrimmingChecker.PresenceTester.IsTypePresent(
 			"LinkerFriendlyNetStandardLibrary.RandomIntGenerator, LinkerFriendlyNetStandardLibrary");
 
-		_isNet6MethodPresent = LinkerFriendlyNet6Library.ReflectionChecker.IsMethodPresent(
-			"LinkerFriendlyNet6Library.TestClass, LinkerFriendlyNet6Library", 
-			"ThisMightBeRemovedByTheLinker", 
+		_isNet6MethodPresent = TrimmingChecker.PresenceTester.IsMethodPresent(
+			"LinkerFriendlyNet6Library.TrimmingTargetAttributed, LinkerFriendlyNet6Library",
+			"ThisMightBeRemovedByTheLinker",
 			BindingFlags.Instance | BindingFlags.NonPublic);
 
-		_isNet6TypePresent = LinkerFriendlyNet6Library.ReflectionChecker.IsTypePresent(
+		_isNet6TypePresent = TrimmingChecker.PresenceTester.IsTypePresent(
 			"LinkerFriendlyNet6Library.RandomIntGenerator, LinkerFriendlyNet6Library");
 
 	}

@@ -5,7 +5,7 @@ namespace LinkerFriendlyNet6Library
 {
 
 	[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-	public class TestClass
+	public class TrimmingTargetAttributed
 	{
 
 		public static void DoSomething()

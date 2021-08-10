@@ -5,10 +5,10 @@ namespace LinkerFriendlyNetStandardLibrary
 {
 
 	[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-	public class TestClass
+	public class TrimmingTargetAttributed
 	{
 
-		public void DoNothing()
+		public static void DoSomething()
 		{
 
 		}
