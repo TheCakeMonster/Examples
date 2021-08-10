@@ -14,6 +14,20 @@ namespace TrimmingTest.ConsoleApp
 			LinkerFriendlyNetStandardLibrary.TrimmingTargetAttributed.DoSomething();
 			LinkerFriendlyNet6Library.TrimmingTargetAttributed.DoSomething();
 
+			netStandardTypeExists = TrimmingChecker.PresenceTester.IsTypePresent(
+				"LinkerFriendlyNetStandardLibrary.UnusedType, LinkerFriendlyNetStandardLibrary"
+				);
+
+			net6TypeExists = TrimmingChecker.PresenceTester.IsTypePresent(
+				"LinkerFriendlyNet6Library.UnusedType, LinkerFriendlyNet6Library"
+				);
+
+			Console.WriteLine("After publishing, I expect all of the following to be false:");
+			Console.WriteLine();
+			Console.WriteLine($"Net Standard type 'UnusedType' exists: {netStandardTypeExists}");
+			Console.WriteLine($"Net 6 type 'UnusedType' exists: {net6TypeExists}");
+			Console.WriteLine();
+
 			netStandardMethodExists = TrimmingChecker.PresenceTester.IsMethodPresent(
 				"LinkerFriendlyNetStandardLibrary.TrimmingTargetAttributed, LinkerFriendlyNetStandardLibrary",
 				"ThisMightBeRemovedByTheLinker",
