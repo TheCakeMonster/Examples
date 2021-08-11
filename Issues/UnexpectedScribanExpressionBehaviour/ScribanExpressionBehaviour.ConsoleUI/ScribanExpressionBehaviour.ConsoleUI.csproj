@@ -6,10 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="CorrectedTemplate.txt" />
     <None Remove="Template.txt" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="CorrectedTemplate.txt" />
     <EmbeddedResource Include="Template.txt" />
   </ItemGroup>
 

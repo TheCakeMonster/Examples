@@ -20,6 +20,13 @@ namespace ScribanExpressionBehaviour.ConsoleUI.Generation
 		/// <returns>A non-empty string, used for a comparison in the template</returns>
 		public static string FullString() => "Full!";
 
+		/// <summary>
+		/// Test method, which is used to test what happens in a comparison 
+		/// when a method returns an empty string. This is a dumbed down example!
+		/// </summary>
+		/// <returns>An empty string, used for a comparison in the template</returns>
+		public static bool IsEmptyString(string testValue) => string.IsNullOrEmpty(testValue);
+
 	}
 
 }

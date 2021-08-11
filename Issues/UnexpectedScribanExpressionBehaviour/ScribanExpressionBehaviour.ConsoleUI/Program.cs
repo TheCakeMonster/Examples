@@ -26,7 +26,7 @@ namespace ScribanExpressionBehaviour.ConsoleUI
 				generator = new Generator();
 
 				// Get the text of the template
-				compilationParameters.TemplateText = await textRetriever.RetrieveTemplateTextAsync("ScribanExpressionBehaviour.ConsoleUI.Template.txt");
+				compilationParameters.TemplateText = await textRetriever.RetrieveTemplateTextAsync("ScribanExpressionBehaviour.ConsoleUI.CorrectedTemplate.txt");
 
 				// Compile the template
 				compilationResults = await generator.CompileAsync(compilationParameters);
