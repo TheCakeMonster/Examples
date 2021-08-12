@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "UncontrolledTrimming.ConsoleUI": {
+      "commandName": "Project",
+      "commandLineArgs": "\"Executors.TestExecutor, Executors\" \"PerformSomeAction\""
+    }
+  }
+}
