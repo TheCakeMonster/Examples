@@ -1,7 +1,9 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -23,25 +25,37 @@ namespace CslaSerialization.Generators.AutoSerialization
 		/// <returns>Generated code to fulfil the required serialization</returns>
 		internal GenerationResults BuildPartialClass(ExtractedClassDefinition classDefinition)
 		{
-			StringBuilder stringBuilder = new StringBuilder();
+			GenerationResults generationResults;
+			IndentedTextWriter textWriter;
 
-			AppendDefaultUsingStatements(classDefinition, stringBuilder);
-			AppendNamespaceDefinition(classDefinition, stringBuilder);
-			stringBuilder.Append("{\r\n");
-			AppendClassDefinition(classDefinition, stringBuilder);
-			stringBuilder.Append("\t{\r\n");
-			AppendGetChildrenMethod(classDefinition, stringBuilder);
-			AppendGetStateMethod(classDefinition, stringBuilder);
-			AppendSetChildrenMethod(classDefinition, stringBuilder);
-			AppendSetStateMethod(classDefinition, stringBuilder);
-			stringBuilder.Append("\t}\r\n");
-			stringBuilder.Append("}\r\n");
+			using (StringWriter stringWriter = new StringWriter())
+			{ 
+				textWriter = new IndentedTextWriter(stringWriter, "\t");
 
-			return new GenerationResults()
-			{
-				ClassName = classDefinition.ClassName,
-				GeneratedSource = stringBuilder.ToString()
-			};
+				AppendDefaultUsingStatements(classDefinition, textWriter);
+				AppendNamespaceDefinition(classDefinition, textWriter);
+				textWriter.WriteLine("{");
+				textWriter.Indent++;
+				AppendClassDefinition(classDefinition, textWriter);
+				textWriter.WriteLine("{");
+				textWriter.Indent++;
+				AppendGetChildrenMethod(classDefinition, textWriter);
+				AppendGetStateMethod(classDefinition, textWriter);
+				AppendSetChildrenMethod(classDefinition, textWriter);
+				AppendSetStateMethod(classDefinition, textWriter);
+				textWriter.Indent--;
+				textWriter.WriteLine("}");
+				textWriter.Indent--;
+				textWriter.WriteLine("}");
+
+				generationResults = new GenerationResults()
+				{
+					ClassName = classDefinition.ClassName,
+					GeneratedSource = stringWriter.ToString()
+				};
+			}
+
+			return generationResults;
 		}
 
 		#region Private Helper Methods
@@ -51,114 +65,116 @@ namespace CslaSerialization.Generators.AutoSerialization
 		/// order for it to compile the code we have generated
 		/// </summary>
 		/// <param name="classDefinition">The definition of the class for which we are generating</param>
-		/// <param name="stringBuilder">The StringBuilder instance to which to append the usings</param>
-		private static void AppendDefaultUsingStatements(ExtractedClassDefinition classDefinition, StringBuilder stringBuilder)
+		/// <param name="textWriter">The IndentedTextWriter instance to which to append the usings</param>
+		private static void AppendDefaultUsingStatements(ExtractedClassDefinition classDefinition, IndentedTextWriter textWriter)
 		{
-			stringBuilder.AppendLine("using System;");
-			stringBuilder.AppendLine("using Csla.Serialization.Mobile;");
-			stringBuilder.AppendLine();
+			textWriter.WriteLine("using System;");
+			textWriter.WriteLine("using Csla.Serialization.Mobile;");
+			textWriter.WriteLine();
 		}
 
 		/// <summary>
 		/// Append the definition of the namespace in which the partial class is to reside
 		/// </summary>
 		/// <param name="classDefinition">The definition of the class for which we are generating</param>
-		/// <param name="stringBuilder">The StringBuilder instance to which to append the usings</param>
-		private void AppendNamespaceDefinition(ExtractedClassDefinition classDefinition, StringBuilder stringBuilder)
+		/// <param name="textWriter">The IndentedTextWriter instance to which to append the usings</param>
+		private void AppendNamespaceDefinition(ExtractedClassDefinition classDefinition, IndentedTextWriter textWriter)
 		{
-			stringBuilder.Append("namespace ");
-			stringBuilder.Append(classDefinition.Namespace);
-			stringBuilder.Append("\r\n");
+			textWriter.Write("namespace ");
+			textWriter.Write(classDefinition.Namespace);
+			textWriter.WriteLine();
 		}
 
 		/// <summary>
 		/// Append the class definition of the partial class we are generating
 		/// </summary>
 		/// <param name="classDefinition">The definition of the class for which we are generating</param>
-		/// <param name="stringBuilder">The StringBuilder instance to which to append the class definition</param>
-		private static void AppendClassDefinition(ExtractedClassDefinition classDefinition, StringBuilder stringBuilder)
+		/// <param name="textWriter">The IndentedTextWriter instance to which to append the class definition</param>
+		private static void AppendClassDefinition(ExtractedClassDefinition classDefinition, IndentedTextWriter textWriter)
 		{
-			stringBuilder.Append("\t[Serializable]\r\n");
-			stringBuilder.Append("\t");
-			stringBuilder.Append(classDefinition.Scope);
-			stringBuilder.Append(" partial class ");
-			stringBuilder.Append(classDefinition.ClassName);
-			stringBuilder.Append(" : IMobileObject");
-			stringBuilder.Append("\r\n");
+			textWriter.WriteLine("[Serializable]");
+			textWriter.Write(classDefinition.Scope);
+			textWriter.Write(" partial class ");
+			textWriter.Write(classDefinition.ClassName);
+			textWriter.Write(" : IMobileObject");
+			textWriter.WriteLine();
 		}
 
 		/// <summary>
 		/// Append the definition of the GetChildren method required to fulfil the IMobileObject interface
 		/// </summary>
 		/// <param name="classDefinition">The definition of the class for which we are generating</param>
-		/// <param name="stringBuilder">The StringBuilder instance to which to append the method definition</param>
-		private void AppendGetChildrenMethod(ExtractedClassDefinition classDefinition, StringBuilder stringBuilder)
+		/// <param name="textWriter">The IndentedTextWriter instance to which to append the method definition</param>
+		private void AppendGetChildrenMethod(ExtractedClassDefinition classDefinition, IndentedTextWriter textWriter)
 		{
-			stringBuilder.AppendLine("\t\tvoid IMobileObject.GetChildren(SerializationInfo info, MobileFormatter formatter)");
-			stringBuilder.AppendLine("\t\t{");
-			stringBuilder.AppendLine("\t\t}");
-			stringBuilder.AppendLine();
+			textWriter.WriteLine("void IMobileObject.GetChildren(SerializationInfo info, MobileFormatter formatter)");
+			textWriter.WriteLine("{");
+			textWriter.WriteLine("}");
+			textWriter.WriteLine();
 		}
 
 		/// <summary>
 		/// Append the definition of the SetChildren method required to fulfil the IMobileObject interface
 		/// </summary>
 		/// <param name="classDefinition">The definition of the class for which we are generating</param>
-		/// <param name="stringBuilder">The StringBuilder instance to which to append the method definition</param>
-		private void AppendSetChildrenMethod(ExtractedClassDefinition classDefinition, StringBuilder stringBuilder)
+		/// <param name="textWriter">The IndentedTextWriter instance to which to append the method definition</param>
+		private void AppendSetChildrenMethod(ExtractedClassDefinition classDefinition, IndentedTextWriter textWriter)
 		{
-			stringBuilder.AppendLine("\t\tvoid IMobileObject.SetChildren(SerializationInfo info, MobileFormatter formatter)");
-			stringBuilder.AppendLine("\t\t{");
-			stringBuilder.AppendLine("\t\t}");
-			stringBuilder.AppendLine();
+			textWriter.WriteLine("void IMobileObject.SetChildren(SerializationInfo info, MobileFormatter formatter)");
+			textWriter.WriteLine("{");
+			textWriter.WriteLine("}");
+			textWriter.WriteLine();
 		}
 
 		/// <summary>
 		/// Append the definition of the GetState method required to fulfil the IMobileObject interface
 		/// </summary>
 		/// <param name="classDefinition">The definition of the class for which we are generating</param>
-		/// <param name="stringBuilder">The StringBuilder instance to which to append the method definition</param>
-		private void AppendGetStateMethod(ExtractedClassDefinition classDefinition, StringBuilder stringBuilder)
+		/// <param name="textWriter">The IndentedTextWriter instance to which to append the method definition</param>
+		private void AppendGetStateMethod(ExtractedClassDefinition classDefinition, IndentedTextWriter textWriter)
 		{
-			stringBuilder.AppendLine("\t\tvoid IMobileObject.GetState(SerializationInfo info)");
-			stringBuilder.AppendLine("\t\t{");
+			textWriter.WriteLine("void IMobileObject.GetState(SerializationInfo info)");
+			textWriter.WriteLine("{");
+			textWriter.Indent++;
 
 			foreach (ExtractedPropertyDefinition propertyDefinition in classDefinition.Properties)
 			{
-				stringBuilder.Append("\t\t\tinfo.AddValue(nameof(");
-				stringBuilder.Append(propertyDefinition.PropertyName);
-				stringBuilder.Append("), ");
-				stringBuilder.Append(propertyDefinition.PropertyName);
-				stringBuilder.Append(");\r\n");
+				textWriter.Write("info.AddValue(nameof(");
+				textWriter.Write(propertyDefinition.PropertyName);
+				textWriter.Write("), ");
+				textWriter.Write(propertyDefinition.PropertyName);
+				textWriter.WriteLine(");");
 			}
 
-			stringBuilder.AppendLine("\t\t}");
-			stringBuilder.AppendLine();
+			textWriter.Indent--;
+			textWriter.WriteLine("}");
+			textWriter.WriteLine();
 		}
 
 		/// <summary>
 		/// Append the definition of the SetState method required to fulfil the IMobileObject interface
 		/// </summary>
 		/// <param name="classDefinition">The definition of the class for which we are generating</param>
-		/// <param name="stringBuilder">The StringBuilder instance to which to append the method definition</param>
-		private void AppendSetStateMethod(ExtractedClassDefinition classDefinition, StringBuilder stringBuilder)
+		/// <param name="textWriter">The IndentedTextWriter instance to which to append the method definition</param>
+		private void AppendSetStateMethod(ExtractedClassDefinition classDefinition, IndentedTextWriter textWriter)
 		{
-			stringBuilder.AppendLine("\t\tvoid IMobileObject.SetState(SerializationInfo info)");
-			stringBuilder.AppendLine("\t\t{");
+			textWriter.WriteLine("void IMobileObject.SetState(SerializationInfo info)");
+			textWriter.WriteLine("{");
+			textWriter.Indent++;
 
 			foreach (ExtractedPropertyDefinition propertyDefinition in classDefinition.Properties)
 			{
-				stringBuilder.Append("\t\t\t");
-				stringBuilder.Append(propertyDefinition.PropertyName);
-				stringBuilder.Append(" = info.GetValue<");
-				stringBuilder.Append(propertyDefinition.PropertyTypeName);
-				stringBuilder.Append(">(nameof(");
-				stringBuilder.Append(propertyDefinition.PropertyName);
-				stringBuilder.Append("));\r\n");
+				textWriter.Write(propertyDefinition.PropertyName);
+				textWriter.Write(" = info.GetValue<");
+				textWriter.Write(propertyDefinition.PropertyTypeName);
+				textWriter.Write(">(nameof(");
+				textWriter.Write(propertyDefinition.PropertyName);
+				textWriter.WriteLine("));");
 			}
 
-			stringBuilder.AppendLine("\t\t}");
-			stringBuilder.AppendLine();
+			textWriter.Indent--;
+			textWriter.WriteLine("}");
+			textWriter.WriteLine();
 		}
 
 		#endregion
