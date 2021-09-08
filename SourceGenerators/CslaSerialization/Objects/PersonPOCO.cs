@@ -1,5 +1,5 @@
 ﻿using System;
-using CslaSerialization.Generators.AutoSerialization;
+using CslaSerialization.Core;
 
 namespace CslaSerialization.Objects
 {

@@ -9,6 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Core\CslaSerialization.Core.csproj" />
     <ProjectReference Include="..\Generators\CslaSerialization.Generators.csproj" OutputItemType="Analyzer" />
   </ItemGroup>
 
