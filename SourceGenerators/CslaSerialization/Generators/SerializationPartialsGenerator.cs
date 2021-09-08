@@ -28,7 +28,9 @@ namespace CslaSerialization.Generators
 			{
 				Debugger.Launch();
 			}
+
 #endif
+			context.RegisterForSyntaxNotifications(() => new AutoSerializableReceiver());
 		}
 
 		/// <summary>
@@ -37,32 +39,17 @@ namespace CslaSerialization.Generators
 		/// <param name="context">The execution context provided by the Roslyn compiler</param>
 		public void Execute(GeneratorExecutionContext context)
 		{
-			List<TypeDeclarationSyntax> serializableTypes;
 			SerializationPartialGenerator generator;
 
 			try
 			{
-				var syntaxTrees = context.Compilation?.SyntaxTrees;
-
-				if (syntaxTrees is not null)
+				if (context.SyntaxContextReceiver is AutoSerializableReceiver receiver)
 				{
-					foreach (SyntaxTree syntaxTree in syntaxTrees)
+					// Generate a partial class for each of the types identified
+					foreach (TypeDeclarationSyntax classDefinition in receiver.Targets)
 					{
-						// Identify the types that are to be acted upon by this generator and pass to the builder
-						serializableTypes = syntaxTree.GetRoot().DescendantNodes().OfType<TypeDeclarationSyntax>()
-							.Where(t => t.AttributeLists.Any(
-								al => al.Attributes.Any(
-								attr => attr.Name.ToString().Equals("AutoSerializable"))))
-							.ToList();
-						if (serializableTypes is not null && serializableTypes.Count > 0)
-						{
-							// Generate a partial class for each of the types identified
-							foreach (TypeDeclarationSyntax typeDefinition in serializableTypes)
-							{
-								generator = new SerializationPartialGenerator();
-								generator.GeneratePartialClass(context, typeDefinition);
-							}
-						}
+						generator = new SerializationPartialGenerator();
+						generator.GeneratePartialClass(context, classDefinition);
 					}
 				}
 			}

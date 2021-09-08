@@ -14,35 +14,36 @@ namespace CslaSerialization.Generators
 	/// </summary>
 	public class AutoSerializableReceiver : ISyntaxContextReceiver
 	{
-		public IList<ClassDeclarationSyntax> Targets = new List<ClassDeclarationSyntax>();
+		public IList<TypeDeclarationSyntax> Targets = new List<TypeDeclarationSyntax>();
 
 		public void OnVisitSyntaxNode(GeneratorSyntaxContext context)
 		{
 			INamedTypeSymbol matchingAttributeSymbol;
+			SyntaxNode syntaxNode = context.Node;
+			SemanticModel model = context.SemanticModel;
 
-			if (context.Node is not ClassDeclarationSyntax classDeclarationSyntax) return;
-			
-			matchingAttributeSymbol = context.SemanticModel.Compilation.GetTypeByMetadataName(typeof(AutoSerializableAttribute).FullName);
-			// var typeSymbol = context.SemanticModel.GetDeclaredSymbol(context.Node) as INamedTypeSymbol;
+			if (syntaxNode is not TypeDeclarationSyntax typeDeclarationSyntax) return;
 
-			if (RepresentsClassOfInterest(classDeclarationSyntax, matchingAttributeSymbol))
+			matchingAttributeSymbol = context.SemanticModel.Compilation.GetTypeByMetadataName(typeof(AutoSerializableAttribute).FullName) as INamedTypeSymbol;
+			var typeSymbol = model.GetDeclaredSymbol(syntaxNode) as INamedTypeSymbol;
+
+			if (RepresentsClassOfInterest(typeSymbol, matchingAttributeSymbol))
 			{
-				Targets.Add(classDeclarationSyntax);
+				Targets.Add(typeDeclarationSyntax);
 			}
 		}
 
 		#region Private Helper Methods
 
-		private bool RepresentsClassOfInterest(ClassDeclarationSyntax classDeclarationSyntax, INamedTypeSymbol matchingAttributeSymbol)
+		private bool RepresentsClassOfInterest(INamedTypeSymbol typeSymbol, INamedTypeSymbol matchingAttributeSymbol)
 		{
-			return classDeclarationSyntax.AttributeLists.Any(
-				al => al.Attributes.Any(
-					a => RepresentsAttributeOfInterest(a.Name, matchingAttributeSymbol)));
+			return typeSymbol.GetAttributes().Any(
+				attr => RepresentsAttributeOfInterest(attr.AttributeClass, matchingAttributeSymbol));
 		}
 
-		private bool RepresentsAttributeOfInterest(TypeSyntax typeSyntax, INamedTypeSymbol matchingAttributeSymbol)
+		private bool RepresentsAttributeOfInterest(INamedTypeSymbol attributeSyntax, INamedTypeSymbol matchingAttributeSymbol)
 		{
-			return SymbolEqualityComparer.Default.Equals((ISymbol)typeSyntax, matchingAttributeSymbol);
+			return SymbolEqualityComparer.Default.Equals(attributeSyntax, matchingAttributeSymbol);
 		}
 
 		#endregion

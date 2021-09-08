@@ -8,7 +8,7 @@ using System.Text;
 namespace CslaSerialization.Objects
 {
 
-    [AutoSerializable]
+    [Serializable]
     public partial class BusinessPerson : BusinessBase<BusinessPerson>
 	{
 
