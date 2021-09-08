@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace CslaSerialization.Generators
+namespace CslaSerialization.Generators.AutoSerialization
 {
 
 	/// <summary>
@@ -20,7 +20,7 @@ namespace CslaSerialization.Generators
 		/// <param name="context">The execution context in which the source generator is running</param>
 		/// <param name="targetTypeDeclaration">The PropertyDeclarationSyntax from which to extract the necessary data</param>
 		/// <returns>A readonly list of ExtractedPropertyDefinition containing the data extracted from the syntax tree</returns>
-		public static ExtractedPropertyDefinition ExtractPropertyDefinition(GeneratorExecutionContext context, PropertyDeclarationSyntax propertyDeclaration)
+		public static ExtractedPropertyDefinition ExtractPropertyDefinition(GeneratorSyntaxContext context, PropertyDeclarationSyntax propertyDeclaration)
 		{
 			ExtractedPropertyDefinition propertyDefinition = new ExtractedPropertyDefinition();
 
@@ -38,7 +38,7 @@ namespace CslaSerialization.Generators
 		/// <param name="context">The execution context in which the source generator is running</param>
 		/// <param name="targetTypeDeclaration">The PropertyDeclarationSyntax from which to extract the necessary information</param>
 		/// <returns>The name of the property for which we are extracting information</returns>
-		private static string GetPropertyName(GeneratorExecutionContext context, PropertyDeclarationSyntax propertyDeclaration)
+		private static string GetPropertyName(GeneratorSyntaxContext context, PropertyDeclarationSyntax propertyDeclaration)
 		{
 			return propertyDeclaration.Identifier.ValueText;
 		}
@@ -49,7 +49,7 @@ namespace CslaSerialization.Generators
 		/// <param name="context">The execution context in which the source generator is running</param>
 		/// <param name="targetTypeDeclaration">The PropertyDeclarationSyntax from which to extract the necessary information</param>
 		/// <returns>The type name of the property for which we are extracting information</returns>
-		private static string GetPropertyTypeName(GeneratorExecutionContext context, PropertyDeclarationSyntax propertyDeclaration)
+		private static string GetPropertyTypeName(GeneratorSyntaxContext context, PropertyDeclarationSyntax propertyDeclaration)
 		{
 			return propertyDeclaration.Type.ToString();
 		}

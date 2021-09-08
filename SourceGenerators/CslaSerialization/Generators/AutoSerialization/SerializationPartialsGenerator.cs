@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace CslaSerialization.Generators
+namespace CslaSerialization.Generators.AutoSerialization
 {
 
 	/// <summary>
@@ -23,11 +23,11 @@ namespace CslaSerialization.Generators
 		public void Initialize(GeneratorInitializationContext context)
 		{
 #if (DEBUG)
-			// Uncomment this to enable debugging of the source generator
-			if (!Debugger.IsAttached)
-			{
-				Debugger.Launch();
-			}
+			//// Uncomment this to enable debugging of the source generator
+			//if (!Debugger.IsAttached)
+			//{
+			//	Debugger.Launch();
+			//}
 
 #endif
 			context.RegisterForSyntaxNotifications(() => new AutoSerializableReceiver());
@@ -46,7 +46,7 @@ namespace CslaSerialization.Generators
 				if (context.SyntaxContextReceiver is AutoSerializableReceiver receiver)
 				{
 					// Generate a partial class for each of the types identified
-					foreach (TypeDeclarationSyntax classDefinition in receiver.Targets)
+					foreach (ExtractedClassDefinition classDefinition in receiver.Targets)
 					{
 						generator = new SerializationPartialGenerator();
 						generator.GeneratePartialClass(context, classDefinition);
@@ -55,7 +55,7 @@ namespace CslaSerialization.Generators
 			}
 			catch (Exception ex)
 			{
-				// Debug.WriteLine($"Exception in SerializationPartialGenerator!\r\n{ex.ToString()}");
+				Debug.WriteLine($"Exception in SerializationPartialsGenerator!\r\n{ex.ToString()}");
 			}
 		}
 

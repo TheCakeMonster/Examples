@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Net.Mime;
 using System.Text;
 
-namespace CslaSerialization.Generators
+namespace CslaSerialization.Generators.AutoSerialization
 {
 
 	/// <summary>
@@ -21,7 +21,7 @@ namespace CslaSerialization.Generators
 		/// <param name="context">The execution context in which the source generator is running</param>
 		/// <param name="targetTypeDeclaration">The TypeDeclarationSyntax from which to extract the necessary data</param>
 		/// <returns>ExtractedClassDefinition containing the data extracted from the syntax tree</returns>
-		public static ExtractedClassDefinition ExtractClassDefinition(GeneratorExecutionContext context, TypeDeclarationSyntax targetTypeDeclaration)
+		public static ExtractedClassDefinition ExtractClassDefinition(GeneratorSyntaxContext context, TypeDeclarationSyntax targetTypeDeclaration)
 		{
 			ExtractedClassDefinition definition = new ExtractedClassDefinition();
 
@@ -33,10 +33,6 @@ namespace CslaSerialization.Generators
 			{
 				definition.Properties.Add(propertyDefinition);
 			}
-			//foreach (ExtractedPropertyDefinition propertyDefinition in FieldDefinitionsExtractor.ExtractFieldDefinitions(context, targetTypeDeclaration))
-			//{
-			//	definition.Properties.Add(propertyDefinition);
-			//}
 
 			return definition;
 		}
@@ -49,7 +45,7 @@ namespace CslaSerialization.Generators
 		/// <param name="context">The execution context in which the source generator is running</param>
 		/// <param name="targetTypeDeclaration">The TypeDeclarationSyntax from which to extract the necessary information</param>
 		/// <returns>The namespace of the type for which generation is being performed</returns>
-		private static string GetNamespaceName(GeneratorExecutionContext context, TypeDeclarationSyntax targetTypeDeclaration)
+		private static string GetNamespaceName(GeneratorSyntaxContext context, TypeDeclarationSyntax targetTypeDeclaration)
 		{
 			string namespaceName = string.Empty;
 			NamespaceDeclarationSyntax namespaceDeclaration;
@@ -69,7 +65,7 @@ namespace CslaSerialization.Generators
 		/// <param name="context">The execution context in which the source generator is running</param>
 		/// <param name="targetTypeDeclaration">The TypeDeclarationSyntax from which to extract the necessary information</param>
 		/// <returns>The scope of the type for which generation is being performed</returns>
-		private static string GetScopeName(GeneratorExecutionContext context, TypeDeclarationSyntax targetTypeDeclaration)
+		private static string GetScopeName(GeneratorSyntaxContext context, TypeDeclarationSyntax targetTypeDeclaration)
 		{
 			return "public";
 		}
@@ -80,7 +76,7 @@ namespace CslaSerialization.Generators
 		/// <param name="context">The execution context in which the source generator is running</param>
 		/// <param name="targetTypeDeclaration">The TypeDeclarationSyntax from which to extract the necessary information</param>
 		/// <returns>The class name of the type for which generation is being performed</returns>
-		private static string GetClassName(GeneratorExecutionContext context, TypeDeclarationSyntax targetTypeDeclaration)
+		private static string GetClassName(GeneratorSyntaxContext context, TypeDeclarationSyntax targetTypeDeclaration)
 		{
 			return targetTypeDeclaration.Identifier.ToString();
 		}

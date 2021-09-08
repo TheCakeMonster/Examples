@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace CslaSerialization.Generators
+namespace CslaSerialization.Generators.AutoSerialization
 {
 
 	/// <summary>

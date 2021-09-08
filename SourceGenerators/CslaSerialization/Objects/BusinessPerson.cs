@@ -1,5 +1,4 @@
 ﻿using Csla;
-using CslaSerialization.Core;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
