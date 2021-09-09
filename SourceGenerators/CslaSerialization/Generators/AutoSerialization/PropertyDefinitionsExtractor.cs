@@ -21,19 +21,19 @@ namespace CslaSerialization.Generators.AutoSerialization
 		/// <summary>
 		/// Extract information about the properties which must be serialized from a part of the syntax tree
 		/// </summary>
-		/// <param name="context">The execution context in which the source generator is running</param>
+		/// <param name="extractionContext">The definition extraction context in which the extraction is being performed</param>
 		/// <param name="targetTypeDeclaration">The TypeDeclarationSyntax from which to extract the necessary data</param>
 		/// <returns>A readonly list of ExtractedPropertyDefinition containing the data extracted from the syntax tree</returns>
-		public static IReadOnlyList<ExtractedPropertyDefinition> ExtractPropertyDefinitions(GeneratorSyntaxContext context, TypeDeclarationSyntax targetTypeDeclaration)
+		public static IReadOnlyList<ExtractedPropertyDefinition> ExtractPropertyDefinitions(DefinitionExtractionContext extractionContext, TypeDeclarationSyntax targetTypeDeclaration)
 		{
 			List<ExtractedPropertyDefinition> propertyDefinitions = new List<ExtractedPropertyDefinition>();
 			ExtractedPropertyDefinition propertyDefinition;
 			IReadOnlyList<PropertyDeclarationSyntax> serializableProperties;
 
-			serializableProperties = GetSerializablePropertyDeclarations(context, targetTypeDeclaration);
+			serializableProperties = GetSerializablePropertyDeclarations(extractionContext, targetTypeDeclaration);
 			foreach (PropertyDeclarationSyntax propertyDeclaration in serializableProperties)
 			{
-				propertyDefinition = PropertyDefinitionExtractor.ExtractPropertyDefinition(context, propertyDeclaration);
+				propertyDefinition = PropertyDefinitionExtractor.ExtractPropertyDefinition(extractionContext, propertyDeclaration);
 				propertyDefinitions.Add(propertyDefinition);
 			}
 
@@ -45,61 +45,55 @@ namespace CslaSerialization.Generators.AutoSerialization
 		/// <summary>
 		/// Get the property declarations for all properties which are to be serialized
 		/// </summary>
-		/// <param name="context">The execution context in which the source generator is running</param>
+		/// <param name="extractionContext">The definition extraction context in which the extraction is being performed</param>
 		/// <param name="targetTypeDeclaration">The TypeDeclarationSyntax from which to extract the necessary data</param>
 		/// <returns>A readonly list of property declarations to be included in serialization</returns>
-		private static IReadOnlyList<PropertyDeclarationSyntax> GetSerializablePropertyDeclarations(GeneratorSyntaxContext context, TypeDeclarationSyntax targetTypeDeclaration)
+		private static IReadOnlyList<PropertyDeclarationSyntax> GetSerializablePropertyDeclarations(DefinitionExtractionContext extractionContext, TypeDeclarationSyntax targetTypeDeclaration)
 		{
 			List<PropertyDeclarationSyntax> serializableProperties;
 			List<PropertyDeclarationSyntax> optedInSerializableProperties;
 
 			// Get public or internal properties that are not specifically opted out with the [AutoSerializationExcluded] attribute
-			serializableProperties = GetPublicNonExcludedProperties(context, targetTypeDeclaration);
+			serializableProperties = GetPublicNonExcludedProperties(extractionContext, targetTypeDeclaration);
 
 			// Add any private or protected properties that are opted in with the use of the [AutoSerializationIncluded] attribute
-			optedInSerializableProperties = GetNonPublicIncludedProperties(context, targetTypeDeclaration);
+			optedInSerializableProperties = GetNonPublicIncludedProperties(extractionContext, targetTypeDeclaration);
 			serializableProperties.AddRange(optedInSerializableProperties);
 
 			return serializableProperties;
 		}
 
-		private static List<PropertyDeclarationSyntax> GetPublicNonExcludedProperties(GeneratorSyntaxContext context, TypeDeclarationSyntax targetTypeDeclaration)
+		private static List<PropertyDeclarationSyntax> GetPublicNonExcludedProperties(DefinitionExtractionContext extractionContext, TypeDeclarationSyntax targetTypeDeclaration)
 		{
 			List<PropertyDeclarationSyntax> serializableProperties;
-			INamedTypeSymbol excludeAttributeSymbol;
-
-			excludeAttributeSymbol = context.SemanticModel.Compilation.GetTypeByMetadataName(typeof(AutoSerializationExcludedAttribute).FullName);
 
 			// Get public or internal properties that are not specifically opted out with the [AutoSerializationExcluded] attribute
 			serializableProperties = targetTypeDeclaration.Members.Where(
 				m => m is PropertyDeclarationSyntax propertyDeclaration &&
-				HasOneOfScopes(context, propertyDeclaration, "public", "internal") &&
-				!IsDecoratedWith(context, propertyDeclaration, excludeAttributeSymbol))
+				HasOneOfScopes(extractionContext, propertyDeclaration, "public", "internal") &&
+				!extractionContext.IsPropertyAutoSerializationExcluded(propertyDeclaration))
 				.Cast<PropertyDeclarationSyntax>()
 				.ToList();
 
 			return serializableProperties;
 		}
 
-		private static List<PropertyDeclarationSyntax> GetNonPublicIncludedProperties(GeneratorSyntaxContext context, TypeDeclarationSyntax targetTypeDeclaration)
+		private static List<PropertyDeclarationSyntax> GetNonPublicIncludedProperties(DefinitionExtractionContext extractionContext, TypeDeclarationSyntax targetTypeDeclaration)
 		{
 			List<PropertyDeclarationSyntax> serializableProperties;
-			INamedTypeSymbol includeAttributeSymbol;
-
-			includeAttributeSymbol = context.SemanticModel.Compilation.GetTypeByMetadataName(typeof(AutoSerializationIncludedAttribute).FullName);
 
 			// Get private or protected properties that are specifically opted in with the [AutoSerializationIncluded] attribute
 			serializableProperties = targetTypeDeclaration.Members.Where(
 				m => m is PropertyDeclarationSyntax propertyDeclaration &&
-				!HasOneOfScopes(context, propertyDeclaration, "public", "internal") &&
-				IsDecoratedWith(context, propertyDeclaration, includeAttributeSymbol))
+				!HasOneOfScopes(extractionContext, propertyDeclaration, "public", "internal") &&
+				extractionContext.IsPropertyAutoSerializationIncluded(propertyDeclaration))
 				.Cast<PropertyDeclarationSyntax>()
 				.ToList();
 
 			return serializableProperties;
 		}
 
-		private static bool HasOneOfScopes(GeneratorSyntaxContext context, PropertyDeclarationSyntax propertyDeclaration, params string[] scopes)
+		private static bool HasOneOfScopes(DefinitionExtractionContext context, PropertyDeclarationSyntax propertyDeclaration, params string[] scopes)
 		{
 			foreach (string scope in scopes)
 			{
@@ -110,26 +104,6 @@ namespace CslaSerialization.Generators.AutoSerialization
 			}
 
 			return false;
-		}
-
-		private static bool IsDecoratedWith(GeneratorSyntaxContext context, PropertyDeclarationSyntax propertyDeclaration, INamedTypeSymbol desiredAttributeSymbol)
-		{
-			INamedTypeSymbol appliedAttributeSymbol;
-
-			foreach (AttributeSyntax attributeSyntax in propertyDeclaration.AttributeLists.SelectMany(al => al.Attributes))
-			{
-				appliedAttributeSymbol = context.SemanticModel.GetTypeInfo(attributeSyntax).Type as INamedTypeSymbol;
-				if (IsMatchingTypeSymbol(appliedAttributeSymbol, desiredAttributeSymbol))
-				{
-					return true;
-				}
-			}
-			return false;
-		}
-
-		private static bool IsMatchingTypeSymbol(INamedTypeSymbol appliedSymbol, INamedTypeSymbol desiredSymbol)
-		{
-			return SymbolEqualityComparer.Default.Equals(appliedSymbol, desiredSymbol);
 		}
 
 		#endregion

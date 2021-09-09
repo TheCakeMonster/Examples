@@ -17,15 +17,17 @@ namespace CslaSerialization.Generators.AutoSerialization
 		/// <summary>
 		/// Extract information about a single property from its declaration in the syntax tree
 		/// </summary>
-		/// <param name="context">The execution context in which the source generator is running</param>
+		/// <param name="extractionContext">The definition extraction context in which the extraction is being performed</param>
 		/// <param name="fieldDeclaration">The FieldDeclarationSyntax from which to extract the necessary data</param>
 		/// <returns>A readonly list of ExtractedPropertyDefinition containing the data extracted from the syntax tree</returns>
-		public static ExtractedPropertyDefinition ExtractFieldDefinition(GeneratorExecutionContext context, FieldDeclarationSyntax fieldDeclaration)
+		public static ExtractedPropertyDefinition ExtractFieldDefinition(DefinitionExtractionContext extractionContext, FieldDeclarationSyntax fieldDeclaration)
 		{
 			ExtractedPropertyDefinition propertyDefinition = new ExtractedPropertyDefinition();
 
-			propertyDefinition.PropertyName = GetFieldName(context, fieldDeclaration);
-			propertyDefinition.PropertyTypeName = GetFieldTypeName(context, fieldDeclaration);
+			propertyDefinition.PropertyName = GetFieldName(extractionContext, fieldDeclaration);
+			propertyDefinition.PropertyTypeName = GetFieldTypeName(extractionContext, fieldDeclaration);
+			propertyDefinition.IsAutoSerializable = extractionContext.IsTypeAutoSerializable(fieldDeclaration.Declaration.Type);
+			// propertyDefinition.IsIMobileObject = ???
 
 			return propertyDefinition;
 		}
@@ -35,10 +37,10 @@ namespace CslaSerialization.Generators.AutoSerialization
 		/// <summary>
 		/// Extract the name of the field for which we are building information
 		/// </summary>
-		/// <param name="context">The execution context in which the source generator is running</param>
+		/// <param name="extractionContext">The definition extraction context in which the extraction is being performed</param>
 		/// <param name="targetTypeDeclaration">The FieldDeclarationSyntax from which to extract the necessary information</param>
 		/// <returns>The name of the field for which we are extracting information</returns>
-		private static string GetFieldName(GeneratorExecutionContext context, FieldDeclarationSyntax fieldDeclaration)
+		private static string GetFieldName(DefinitionExtractionContext extractionContext, FieldDeclarationSyntax fieldDeclaration)
 		{
 			return fieldDeclaration.ToString();
 		}
@@ -46,10 +48,10 @@ namespace CslaSerialization.Generators.AutoSerialization
 		/// <summary>
 		/// Extract the type name of the field for which we are building information
 		/// </summary>
-		/// <param name="context">The execution context in which the source generator is running</param>
+		/// <param name="extractionContext">The definition extraction context in which the extraction is being performed</param>
 		/// <param name="targetTypeDeclaration">The FieldDeclarationSyntax from which to extract the necessary information</param>
 		/// <returns>The type name of the field for which we are extracting information</returns>
-		private static string GetFieldTypeName(GeneratorExecutionContext context, FieldDeclarationSyntax fieldDeclaration)
+		private static string GetFieldTypeName(DefinitionExtractionContext extractionContext, FieldDeclarationSyntax fieldDeclaration)
 		{
 			return fieldDeclaration.Declaration.Type.ToString();
 		}

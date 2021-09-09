@@ -20,55 +20,25 @@ namespace CslaSerialization.Generators.AutoSerialization
 		/// Test syntax nodes to see if they represent a type for which we must generate code
 		/// </summary>
 		/// <param name="context">The generator context supplied by Roslyn</param>
-		public void OnVisitSyntaxNode(GeneratorSyntaxContext context)
+		public void OnVisitSyntaxNode(GeneratorSyntaxContext generatorSyntaxContext)
 		{
-			INamedTypeSymbol desiredAttributeSymbol;
-			INamedTypeSymbol typeSymbol;
-			ExtractedClassDefinition classDefinition;
 			SyntaxNode syntaxNode;
 			SemanticModel model;
+			DefinitionExtractionContext context;
+			ExtractedClassDefinition classDefinition;
 
-			syntaxNode = context.Node;
-			model = context.SemanticModel;
+			syntaxNode = generatorSyntaxContext.Node;
+			model = generatorSyntaxContext.SemanticModel;
 
 			if (syntaxNode is not TypeDeclarationSyntax typeDeclarationSyntax) return;
-			typeSymbol = model.GetDeclaredSymbol(syntaxNode) as INamedTypeSymbol;
+			context = new DefinitionExtractionContext(generatorSyntaxContext);
 
-			desiredAttributeSymbol = context.SemanticModel.Compilation.GetTypeByMetadataName(typeof(AutoSerializableAttribute).FullName);
-
-			if (IsTypeDecoratedBy(typeSymbol, desiredAttributeSymbol))
+			if (context.IsTypeAutoSerializable(typeDeclarationSyntax))
 			{
 				classDefinition = ClassDefinitionExtractor.ExtractClassDefinition(context, typeDeclarationSyntax);
 				Targets.Add(classDefinition);
 			}
 		}
-
-		#region Private Helper Methods
-
-		/// <summary>
-		/// Determine if the type symbol represents a type decorated by an attribute of interest
-		/// </summary>
-		/// <param name="typeSymbol">The symbol representing the type</param>
-		/// <param name="desiredAttributeSymbol">The symbol representing the attribute of interest</param>
-		/// <returns>Boolean true if the type is decorated with the attribute, otherwise false</returns>
-		private bool IsTypeDecoratedBy(INamedTypeSymbol typeSymbol, INamedTypeSymbol desiredAttributeSymbol)
-		{
-			return typeSymbol.GetAttributes().Any(
-				attr => IsMatchingAttribute(attr.AttributeClass, desiredAttributeSymbol));
-		}
-
-		/// <summary>
-		/// Determine if two symbols represent the same attribute
-		/// </summary>
-		/// <param name="appliedAttributeSymbol">The attribute applied to the type we are testing</param>
-		/// <param name="desiredAttributeSymbol">The attribute whose presence we are testing for</param>
-		/// <returns>Boolean true if the two symbols represent the same types</returns>
-		private bool IsMatchingAttribute(INamedTypeSymbol appliedAttributeSymbol, INamedTypeSymbol desiredAttributeSymbol)
-		{
-			return SymbolEqualityComparer.Default.Equals(appliedAttributeSymbol, desiredAttributeSymbol);
-		}
-
-		#endregion
 
 	}
 }

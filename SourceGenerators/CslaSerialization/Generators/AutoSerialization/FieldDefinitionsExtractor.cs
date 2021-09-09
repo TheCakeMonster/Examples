@@ -20,19 +20,19 @@ namespace CslaSerialization.Generators.AutoSerialization
 		/// <summary>
 		/// Extract information about the properties which must be serialized from a part of the syntax tree
 		/// </summary>
-		/// <param name="context">The execution context in which the source generator is running</param>
+		/// <param name="extractionContext">The definition extraction context in which the extraction is being performed</param>
 		/// <param name="targetTypeDeclaration">The TypeDeclarationSyntax from which to extract the necessary data</param>
 		/// <returns>A readonly list of ExtractedPropertyDefinition containing the data extracted from the syntax tree</returns>
-		public static IReadOnlyList<ExtractedPropertyDefinition> ExtractFieldDefinitions(GeneratorExecutionContext context, TypeDeclarationSyntax targetTypeDeclaration)
+		public static IReadOnlyList<ExtractedPropertyDefinition> ExtractFieldDefinitions(DefinitionExtractionContext extractionContext, TypeDeclarationSyntax targetTypeDeclaration)
 		{
 			List<ExtractedPropertyDefinition> propertyDefinitions = new List<ExtractedPropertyDefinition>();
 			ExtractedPropertyDefinition fieldDefinition;
 			IReadOnlyList<FieldDeclarationSyntax> serializableFields;
 
-			serializableFields = GetSerializableFieldDeclarations(context, targetTypeDeclaration);
+			serializableFields = GetSerializableFieldDeclarations(extractionContext, targetTypeDeclaration);
 			foreach (FieldDeclarationSyntax fieldDeclaration in serializableFields)
 			{
-				fieldDefinition = FieldDefinitionExtractor.ExtractFieldDefinition(context, fieldDeclaration);
+				fieldDefinition = FieldDefinitionExtractor.ExtractFieldDefinition(extractionContext, fieldDeclaration);
 				propertyDefinitions.Add(fieldDefinition);
 			}
 
@@ -42,33 +42,50 @@ namespace CslaSerialization.Generators.AutoSerialization
 		#region Private Helper Methods
 
 		/// <summary>
-		/// Get the property declarations for all properties which are to be serialized
+		/// Get the property declarations for all fields which are to be serialized
 		/// </summary>
-		/// <param name="context">The execution context in which the source generator is running</param>
+		/// <param name="extractionContext">The definition extraction context in which the extraction is being performed</param>
 		/// <param name="targetTypeDeclaration">The TypeDeclarationSyntax from which to extract the necessary data</param>
-		/// <returns>A readonly list of property declarations to be included in serialization</returns>
-		private static IReadOnlyList<FieldDeclarationSyntax> GetSerializableFieldDeclarations(GeneratorExecutionContext context, TypeDeclarationSyntax targetTypeDeclaration)
+		/// <returns>A readonly list of field declarations to be included in serialization</returns>
+		private static IReadOnlyList<FieldDeclarationSyntax> GetSerializableFieldDeclarations(DefinitionExtractionContext extractionContext, TypeDeclarationSyntax targetTypeDeclaration)
 		{
 			List<FieldDeclarationSyntax> serializableFields;
-			List<PropertyDeclarationSyntax> optedInSerializableProperties;
+			List<FieldDeclarationSyntax> optedInSerializableFields;
+
+			// Get all fields that are not specifically opted out with the [AutoSerializationExcluded] attribute
+			serializableFields = GetPublicNonExcludedFields(extractionContext, targetTypeDeclaration);
+
+			// Add any private or protected fields that are opted in with the use of the [AutoSerializationIncluded] attribute
+			optedInSerializableFields = GetNonPublicIncludedFields(extractionContext, targetTypeDeclaration);
+			serializableFields.AddRange(optedInSerializableFields);
+
+			return serializableFields;
+		}
+
+		private static List<FieldDeclarationSyntax> GetPublicNonExcludedFields(DefinitionExtractionContext extractionContext, TypeDeclarationSyntax targetTypeDeclaration)
+		{
+			List<FieldDeclarationSyntax> serializableFields;
 
 			// Get all fields that are not specifically opted out with the [AutoSerializationExcluded] attribute
 			serializableFields = targetTypeDeclaration.Members.Where(m => m is FieldDeclarationSyntax fieldDeclaration &&
-				!fieldDeclaration.AttributeLists.Any(
-					al => al.Attributes.Any(
-					attr => attr.ToString().Equals("AutoSerializationExcluded"))))
+				fieldDeclaration.Modifiers.Any(m => !m.ValueText.Equals("public") && !m.ValueText.Equals("internal")) &&
+				!extractionContext.IsFieldAutoSerializationExcluded(fieldDeclaration))
 				.Cast<FieldDeclarationSyntax>()
 				.ToList();
 
-			// Add any private or protected properties that are opted in with the use of the [AutoSerializationIncluded] attribute
-			optedInSerializableProperties = targetTypeDeclaration.Members.Where(m => m is PropertyDeclarationSyntax propertyDeclaration &&
-				propertyDeclaration.Modifiers.Any(m => !m.ValueText.Equals("public") && !m.ValueText.Equals("internal")) &&
-				propertyDeclaration.AttributeLists.Any(
-					al => al.Attributes.Any(
-					attr => attr.ToString().Equals("AutoSerializationIncluded"))))
-				.Cast<PropertyDeclarationSyntax>()
+			return serializableFields;
+		}
+
+		private static List<FieldDeclarationSyntax> GetNonPublicIncludedFields(DefinitionExtractionContext extractionContext, TypeDeclarationSyntax targetTypeDeclaration)
+		{
+			List<FieldDeclarationSyntax> serializableFields;
+
+			// Get any private or protected fields that are opted in with the use of the [AutoSerializationIncluded] attribute
+			serializableFields = targetTypeDeclaration.Members.Where(m => m is FieldDeclarationSyntax fieldDeclaration &&
+				!fieldDeclaration.Modifiers.Any(m => !m.ValueText.Equals("public") && !m.ValueText.Equals("internal")) &&
+				extractionContext.IsFieldAutoSerializationIncluded(fieldDeclaration))
+				.Cast<FieldDeclarationSyntax>()
 				.ToList();
-			// serializableFields.AddRange(optedInSerializableProperties);
 
 			return serializableFields;
 		}

@@ -21,6 +21,16 @@ namespace CslaSerialization.Generators.AutoSerialization
 		/// </summary>
 		public string PropertyTypeName { get; set; }
 
+		/// <summary>
+		/// Whether this property is of a type that is itself auto serializable
+		/// </summary>
+		public bool IsAutoSerializable { get; set; } = false;
+
+		/// <summary>
+		/// Whether this property is of a type that implements IMobileObject
+		/// </summary>
+		public bool IsIMobileObject { get; set; } = false;
+
 	}
 
 }

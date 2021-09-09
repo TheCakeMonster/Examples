@@ -24,7 +24,7 @@ namespace CslaSerialization.UnitTests
 			person.PersonId = 5;
 
 			// Act
-			mobileObject = person as IMobileObject;
+			mobileObject = (IMobileObject)person;
 			mobileObject.GetState(serializationInfo);
 			actual = serializationInfo.GetValue<int>("PersonId");
 
@@ -46,7 +46,7 @@ namespace CslaSerialization.UnitTests
 			person.FirstName = "Joe";
 
 			// Act
-			mobileObject = person as IMobileObject;
+			mobileObject = (IMobileObject)person;
 			mobileObject.GetState(serializationInfo);
 			actual = serializationInfo.GetValue<string>("FirstName");
 
@@ -68,7 +68,7 @@ namespace CslaSerialization.UnitTests
 			person.LastName = "Smith";
 
 			// Act
-			mobileObject = person as IMobileObject;
+			mobileObject = (IMobileObject)person;
 			mobileObject.GetState(serializationInfo);
 			actual = serializationInfo.GetValue<string>("LastName");
 
@@ -90,7 +90,7 @@ namespace CslaSerialization.UnitTests
 			person.SetDateOfBirth( new DateTime(2021, 04, 12, 16, 57, 53));
 
 			// Act
-			mobileObject = person as IMobileObject;
+			mobileObject = (IMobileObject)person;
 			mobileObject.GetState(serializationInfo);
 			actual = serializationInfo.GetValue<DateTime>("DateOfBirth");
 
@@ -122,7 +122,7 @@ namespace CslaSerialization.UnitTests
 			serializationInfo.AddValue("NonSerializedText", "");
 			serializationInfo.AddValue("PrivateText", "");
 			serializationInfo.AddValue("PrivateSerializedText", "");
-			mobileObject = person as IMobileObject;
+			mobileObject = (IMobileObject)person;
 			mobileObject.SetState(serializationInfo);
 			actual = person.PersonId;
 
@@ -150,7 +150,7 @@ namespace CslaSerialization.UnitTests
 			serializationInfo.AddValue("NonSerializedText", "");
 			serializationInfo.AddValue("PrivateText", "");
 			serializationInfo.AddValue("PrivateSerializedText", "");
-			mobileObject = person as IMobileObject;
+			mobileObject = (IMobileObject)person;
 			mobileObject.SetState(serializationInfo);
 			actual = person.FirstName;
 
@@ -178,7 +178,7 @@ namespace CslaSerialization.UnitTests
 			serializationInfo.AddValue("NonSerializedText", "");
 			serializationInfo.AddValue("PrivateText", "");
 			serializationInfo.AddValue("PrivateSerializedText", "");
-			mobileObject = person as IMobileObject;
+			mobileObject = (IMobileObject)person;
 			mobileObject.SetState(serializationInfo);
 			actual = person.LastName;
 
@@ -206,7 +206,7 @@ namespace CslaSerialization.UnitTests
 			serializationInfo.AddValue("NonSerializedText", "");
 			serializationInfo.AddValue("PrivateText", "");
 			serializationInfo.AddValue("PrivateSerializedText", "");
-			mobileObject = person as IMobileObject;
+			mobileObject = (IMobileObject)person;
 			mobileObject.SetState(serializationInfo);
 			actual = person.GetDateOfBirth();
 
@@ -234,7 +234,7 @@ namespace CslaSerialization.UnitTests
 			serializationInfo.AddValue("NonSerializedText", "Fred");
 			serializationInfo.AddValue("PrivateText", "");
 			serializationInfo.AddValue("PrivateSerializedText", "");
-			mobileObject = person as IMobileObject;
+			mobileObject = (IMobileObject)person;
 			mobileObject.SetState(serializationInfo);
 			actual = person.NonSerializedText;
 
@@ -262,7 +262,7 @@ namespace CslaSerialization.UnitTests
 			serializationInfo.AddValue("NonSerializedText", "");
 			serializationInfo.AddValue("PrivateText", "Fred");
 			serializationInfo.AddValue("PrivateSerializedText", "");
-			mobileObject = person as IMobileObject;
+			mobileObject = (IMobileObject)person;
 			mobileObject.SetState(serializationInfo);
 			actual = person.GetPrivateText();
 
@@ -290,7 +290,7 @@ namespace CslaSerialization.UnitTests
 			serializationInfo.AddValue("NonSerializedText", "");
 			serializationInfo.AddValue("PrivateText", "");
 			serializationInfo.AddValue("PrivateSerializedText", "Fred");
-			mobileObject = person as IMobileObject;
+			mobileObject = (IMobileObject)person;
 			mobileObject.SetState(serializationInfo);
 			actual = person.GetPrivateSerializedText();
 

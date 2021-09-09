@@ -17,15 +17,17 @@ namespace CslaSerialization.Generators.AutoSerialization
 		/// <summary>
 		/// Extract information about a single property from its declaration in the syntax tree
 		/// </summary>
-		/// <param name="context">The execution context in which the source generator is running</param>
+		/// <param name="extractionContext">The definition extraction context in which the extraction is being performed</param>
 		/// <param name="targetTypeDeclaration">The PropertyDeclarationSyntax from which to extract the necessary data</param>
 		/// <returns>A readonly list of ExtractedPropertyDefinition containing the data extracted from the syntax tree</returns>
-		public static ExtractedPropertyDefinition ExtractPropertyDefinition(GeneratorSyntaxContext context, PropertyDeclarationSyntax propertyDeclaration)
+		public static ExtractedPropertyDefinition ExtractPropertyDefinition(DefinitionExtractionContext extractionContext, PropertyDeclarationSyntax propertyDeclaration)
 		{
 			ExtractedPropertyDefinition propertyDefinition = new ExtractedPropertyDefinition();
 
-			propertyDefinition.PropertyName = GetPropertyName(context, propertyDeclaration);
-			propertyDefinition.PropertyTypeName = GetPropertyTypeName(context, propertyDeclaration);
+			propertyDefinition.PropertyName = GetPropertyName(extractionContext, propertyDeclaration);
+			propertyDefinition.PropertyTypeName = GetPropertyTypeName(extractionContext, propertyDeclaration);
+			propertyDefinition.IsAutoSerializable = extractionContext.IsTypeAutoSerializable(propertyDeclaration.Type);
+			// propertyDefinition.IsIMobileObject = ???
 
 			return propertyDefinition;
 		}
@@ -35,10 +37,10 @@ namespace CslaSerialization.Generators.AutoSerialization
 		/// <summary>
 		/// Extract the name of the property for which we are building information
 		/// </summary>
-		/// <param name="context">The execution context in which the source generator is running</param>
+		/// <param name="extractionContext">The definition extraction context in which the extraction is being performed</param>
 		/// <param name="targetTypeDeclaration">The PropertyDeclarationSyntax from which to extract the necessary information</param>
 		/// <returns>The name of the property for which we are extracting information</returns>
-		private static string GetPropertyName(GeneratorSyntaxContext context, PropertyDeclarationSyntax propertyDeclaration)
+		private static string GetPropertyName(DefinitionExtractionContext extractionContext, PropertyDeclarationSyntax propertyDeclaration)
 		{
 			return propertyDeclaration.Identifier.ValueText;
 		}
@@ -46,10 +48,10 @@ namespace CslaSerialization.Generators.AutoSerialization
 		/// <summary>
 		/// Extract the type name of the property for which we are building information
 		/// </summary>
-		/// <param name="context">The execution context in which the source generator is running</param>
+		/// <param name="extractionContext">The definition extraction context in which the extraction is being performed</param>
 		/// <param name="targetTypeDeclaration">The PropertyDeclarationSyntax from which to extract the necessary information</param>
 		/// <returns>The type name of the property for which we are extracting information</returns>
-		private static string GetPropertyTypeName(GeneratorSyntaxContext context, PropertyDeclarationSyntax propertyDeclaration)
+		private static string GetPropertyTypeName(DefinitionExtractionContext extractionContext, PropertyDeclarationSyntax propertyDeclaration)
 		{
 			return propertyDeclaration.Type.ToString();
 		}
