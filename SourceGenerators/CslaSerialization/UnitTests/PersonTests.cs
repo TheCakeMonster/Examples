@@ -78,13 +78,13 @@ namespace CslaSerialization.UnitTests
 		}
 
 		[TestMethod]
-		public void GetState_WithDateOfBirth210412_ReturnsInfoContaining210412()
+		public void GetState_WithInternalDateOfBirth210412_ReturnsInfoWithoutDateOfBirth()
 		{
 
 			// Arrange
 			SerializationInfo serializationInfo = new SerializationInfo();
-			DateTime actual;
-			DateTime expected = new DateTime(2021, 04, 12, 16, 57, 53);
+			bool actual;
+			bool expected = false;
 			IMobileObject mobileObject;
 			PersonPOCO person = new PersonPOCO();
 			person.SetDateOfBirth( new DateTime(2021, 04, 12, 16, 57, 53));
@@ -92,7 +92,7 @@ namespace CslaSerialization.UnitTests
 			// Act
 			mobileObject = (IMobileObject)person;
 			mobileObject.GetState(serializationInfo);
-			actual = serializationInfo.GetValue<DateTime>("DateOfBirth");
+			actual = serializationInfo.Values.ContainsKey("DateOfBirth");
 
 			// Assert
 			Assert.AreEqual(expected, actual);
@@ -188,13 +188,13 @@ namespace CslaSerialization.UnitTests
 		}
 
 		[TestMethod]
-		public void SetState_WithDateOfBirth210412_ReturnsPersonWithDateOfBirth210412()
+		public void SetState_WithInternalDateOfBirth210412_ReturnsPersonWithNoDateOfBirth()
 		{
 
 			// Arrange
 			SerializationInfo serializationInfo = new SerializationInfo();
 			DateTime actual;
-			DateTime expected = new DateTime(2021, 04, 12, 18, 27, 43);
+			DateTime expected = DateTime.MinValue;
 			PersonPOCO person = new PersonPOCO();
 			IMobileObject mobileObject;
 
