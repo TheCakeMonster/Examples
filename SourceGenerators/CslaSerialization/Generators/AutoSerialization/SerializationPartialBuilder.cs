@@ -33,16 +33,19 @@ namespace CslaSerialization.Generators.AutoSerialization
 				textWriter = new IndentedTextWriter(stringWriter, "\t");
 
 				AppendDefaultUsingStatements(classDefinition, textWriter);
+
 				AppendNamespaceDefinition(classDefinition, textWriter);
 				textWriter.WriteLine("{");
 				textWriter.Indent++;
 				AppendClassDefinition(classDefinition, textWriter);
 				textWriter.WriteLine("{");
 				textWriter.Indent++;
+
 				AppendGetChildrenMethod(classDefinition, textWriter);
 				AppendGetStateMethod(classDefinition, textWriter);
 				AppendSetChildrenMethod(classDefinition, textWriter);
 				AppendSetStateMethod(classDefinition, textWriter);
+
 				textWriter.Indent--;
 				textWriter.WriteLine("}");
 				textWriter.Indent--;
@@ -109,6 +112,28 @@ namespace CslaSerialization.Generators.AutoSerialization
 		{
 			textWriter.WriteLine("void IMobileObject.GetChildren(SerializationInfo info, MobileFormatter formatter)");
 			textWriter.WriteLine("{");
+			textWriter.Indent++;
+			if (classDefinition.Properties.Any(p => p.IsAutoSerializable || p.IsIMobileObject))
+			{
+				textWriter.WriteLine("IMobileObject mobileObject;");
+				textWriter.WriteLine("SerializationInfo childInfo;");
+				textWriter.WriteLine();
+			}
+
+			foreach (ExtractedPropertyDefinition propertyDefinition in classDefinition.Properties)
+			{
+				if (!propertyDefinition.IsAutoSerializable && !propertyDefinition.IsIMobileObject) continue;
+				
+				textWriter.Write("mobileObject = ");
+				textWriter.Write(propertyDefinition.PropertyName);
+				textWriter.WriteLine(" as IMobileObject;");
+				textWriter.WriteLine("childInfo = formatter.SerializeObject(mobileObject);");
+				textWriter.Write("info.AddChild(nameof(");
+				textWriter.Write(propertyDefinition.PropertyName);
+				textWriter.WriteLine("), childInfo.ReferenceId, true);");
+			}
+
+			textWriter.Indent--;
 			textWriter.WriteLine("}");
 			textWriter.WriteLine();
 		}
@@ -122,6 +147,42 @@ namespace CslaSerialization.Generators.AutoSerialization
 		{
 			textWriter.WriteLine("void IMobileObject.SetChildren(SerializationInfo info, MobileFormatter formatter)");
 			textWriter.WriteLine("{");
+			textWriter.Indent++;
+			if (classDefinition.Properties.Any(p => p.IsAutoSerializable || p.IsIMobileObject))
+			{
+				textWriter.WriteLine("SerializationInfo.ChildData childData;");
+				textWriter.WriteLine();
+			}
+
+			foreach (ExtractedPropertyDefinition propertyDefinition in classDefinition.Properties)
+			{
+				if (!propertyDefinition.IsAutoSerializable && !propertyDefinition.IsIMobileObject) continue;
+
+				textWriter.Write("if (info.Children.ContainsKey(nameof(");
+				textWriter.Write(propertyDefinition.PropertyName);
+				textWriter.WriteLine(")))");
+				textWriter.WriteLine("{");
+				textWriter.Indent++;
+
+				textWriter.Write("childData = info.Children[nameof(");
+				textWriter.Write(propertyDefinition.PropertyName);
+				textWriter.WriteLine(")];");
+				textWriter.WriteLine();
+				textWriter.Write(propertyDefinition.PropertyName);
+				textWriter.Write(" = formatter.GetObject(childData.ReferenceId) as ");
+				textWriter.Write(propertyDefinition.PropertyTypeName);
+				textWriter.WriteLine(";");
+				//textWriter.WriteLine("if (!childData.IsDirty)");
+				//textWriter.Indent++;
+				//textWriter.Write(propertyDefinition.PropertyName);
+				//textWriter.WriteLine(".MarkClean();");
+				//textWriter.Indent--;
+
+				textWriter.Indent--;
+				textWriter.WriteLine("}");
+			}
+
+			textWriter.Indent--;
 			textWriter.WriteLine("}");
 			textWriter.WriteLine();
 		}
@@ -139,6 +200,8 @@ namespace CslaSerialization.Generators.AutoSerialization
 
 			foreach (ExtractedPropertyDefinition propertyDefinition in classDefinition.Properties)
 			{
+				if (propertyDefinition.IsAutoSerializable || propertyDefinition.IsIMobileObject) continue;
+
 				textWriter.Write("info.AddValue(nameof(");
 				textWriter.Write(propertyDefinition.PropertyName);
 				textWriter.Write("), ");
@@ -164,6 +227,8 @@ namespace CslaSerialization.Generators.AutoSerialization
 
 			foreach (ExtractedPropertyDefinition propertyDefinition in classDefinition.Properties)
 			{
+				if (propertyDefinition.IsAutoSerializable || propertyDefinition.IsIMobileObject) continue;
+
 				textWriter.Write(propertyDefinition.PropertyName);
 				textWriter.Write(" = info.GetValue<");
 				textWriter.Write(propertyDefinition.PropertyTypeName);

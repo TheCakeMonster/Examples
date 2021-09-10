@@ -55,6 +55,8 @@ namespace CslaSerialization.Objects
 			return DateOfBirth;
 		}
 
+		public AddressPOCO Address { get; set; }
+
 	}
 
 }

@@ -52,7 +52,7 @@ namespace CslaSerialization.Generators.AutoSerialization
 		{
 			INamedTypeSymbol typeSymbol;
 
-			typeSymbol = _context.SemanticModel.GetDeclaredSymbol(typeSyntax) as INamedTypeSymbol;
+			typeSymbol = _context.SemanticModel.GetSymbolInfo(typeSyntax).Symbol as INamedTypeSymbol;
 			if (typeSymbol is null) return false;
 			return IsTypeDecoratedBy(typeSymbol, _autoSerializableAttributeSymbol);
 		}
