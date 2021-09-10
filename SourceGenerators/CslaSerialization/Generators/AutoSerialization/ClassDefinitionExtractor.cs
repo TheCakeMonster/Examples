@@ -34,6 +34,11 @@ namespace CslaSerialization.Generators.AutoSerialization
 				definition.Properties.Add(propertyDefinition);
 			}
 
+			foreach (ExtractedFieldDefinition fieldDefinition in FieldDefinitionsExtractor.ExtractFieldDefinitions(extractionContext, targetTypeDeclaration))
+			{
+				definition.Fields.Add(fieldDefinition);
+			}
+
 			return definition;
 		}
 

@@ -19,17 +19,17 @@ namespace CslaSerialization.Generators.AutoSerialization
 		/// </summary>
 		/// <param name="extractionContext">The definition extraction context in which the extraction is being performed</param>
 		/// <param name="fieldDeclaration">The FieldDeclarationSyntax from which to extract the necessary data</param>
-		/// <returns>A readonly list of ExtractedPropertyDefinition containing the data extracted from the syntax tree</returns>
-		public static ExtractedPropertyDefinition ExtractFieldDefinition(DefinitionExtractionContext extractionContext, FieldDeclarationSyntax fieldDeclaration)
+		/// <returns>A readonly list of ExtractedFieldDefinition containing the data extracted from the syntax tree</returns>
+		public static ExtractedFieldDefinition ExtractFieldDefinition(DefinitionExtractionContext extractionContext, FieldDeclarationSyntax fieldDeclaration)
 		{
-			ExtractedPropertyDefinition propertyDefinition = new ExtractedPropertyDefinition();
+			ExtractedFieldDefinition fieldDefinition = new ExtractedFieldDefinition();
 
-			propertyDefinition.PropertyName = GetFieldName(extractionContext, fieldDeclaration);
-			propertyDefinition.PropertyTypeName = GetFieldTypeName(extractionContext, fieldDeclaration);
-			propertyDefinition.IsAutoSerializable = extractionContext.IsTypeAutoSerializable(fieldDeclaration.Declaration.Type);
+			fieldDefinition.FieldName = GetFieldName(extractionContext, fieldDeclaration);
+			fieldDefinition.FieldTypeName = GetFieldTypeName(extractionContext, fieldDeclaration);
+			fieldDefinition.IsTypeAutoSerializable = extractionContext.IsTypeAutoSerializable(fieldDeclaration.Declaration.Type);
 			// propertyDefinition.IsIMobileObject = ???
 
-			return propertyDefinition;
+			return fieldDefinition;
 		}
 
 		#region Private Helper Methods
@@ -42,7 +42,7 @@ namespace CslaSerialization.Generators.AutoSerialization
 		/// <returns>The name of the field for which we are extracting information</returns>
 		private static string GetFieldName(DefinitionExtractionContext extractionContext, FieldDeclarationSyntax fieldDeclaration)
 		{
-			return fieldDeclaration.ToString();
+			return fieldDeclaration.Declaration.Variables[0].ToString();
 		}
 
 		/// <summary>

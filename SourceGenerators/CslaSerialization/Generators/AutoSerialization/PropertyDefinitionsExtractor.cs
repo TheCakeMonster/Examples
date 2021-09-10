@@ -113,6 +113,8 @@ namespace CslaSerialization.Generators.AutoSerialization
 			bool hasGetter = false;
 			bool hasSetter = false;
 
+			if (propertyDeclaration.AccessorList is null) return false;
+
 			foreach (AccessorDeclarationSyntax accessorDeclaration in propertyDeclaration.AccessorList.Accessors)
 			{
 				if (accessorDeclaration.Kind() == Microsoft.CodeAnalysis.CSharp.SyntaxKind.GetAccessorDeclaration)

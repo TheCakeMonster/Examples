@@ -26,7 +26,7 @@ namespace CslaSerialization.Generators.AutoSerialization
 
 			propertyDefinition.PropertyName = GetPropertyName(extractionContext, propertyDeclaration);
 			propertyDefinition.PropertyTypeName = GetPropertyTypeName(extractionContext, propertyDeclaration);
-			propertyDefinition.IsAutoSerializable = extractionContext.IsTypeAutoSerializable(propertyDeclaration.Type);
+			propertyDefinition.IsTypeAutoSerializable = extractionContext.IsTypeAutoSerializable(propertyDeclaration.Type);
 			// propertyDefinition.IsIMobileObject = ???
 
 			return propertyDefinition;

@@ -24,12 +24,12 @@ namespace CslaSerialization.Generators.AutoSerialization
 		/// <summary>
 		/// Whether this property is of a type that is itself auto serializable
 		/// </summary>
-		public bool IsAutoSerializable { get; set; } = false;
+		public bool IsTypeAutoSerializable { get; set; } = false;
 
 		/// <summary>
 		/// Whether this property is of a type that implements IMobileObject
 		/// </summary>
-		public bool IsIMobileObject { get; set; } = false;
+		public bool IsTypeIMobileObject { get; set; } = false;
 
 	}
 

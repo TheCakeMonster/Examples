@@ -14,11 +14,19 @@ namespace CslaSerialization.Objects
 
 		private string _fieldTest = "foo";
 
+		[AutoSerializationIncluded]
+		private string _middleName;
+
 		public int PersonId { get; set; }
 
 		public string FirstName { get; set; }
 
-		public string MiddleName { get; }
+		public string MiddleName => _middleName;
+
+		public void SetMiddleName(string middleName)
+		{
+			_middleName = middleName;
+		}
 
 		public string LastName { get; set; }
 

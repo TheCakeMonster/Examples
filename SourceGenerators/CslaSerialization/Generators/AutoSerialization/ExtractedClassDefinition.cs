@@ -31,6 +31,11 @@ namespace CslaSerialization.Generators.AutoSerialization
 		/// </summary>
 		public IList<ExtractedPropertyDefinition> Properties { get; private set; } = new List<ExtractedPropertyDefinition>();
 
+		/// <summary>
+		/// The fields to be included in serialization
+		/// </summary>
+		public IList<ExtractedFieldDefinition> Fields { get; private set; } = new List<ExtractedFieldDefinition>();
+
 	}
 
 }
