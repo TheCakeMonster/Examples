@@ -8,7 +8,7 @@ namespace CslaSerialization.Generators.AutoSerialization
 	/// <summary>
 	/// The definition of a field, extracted from the syntax tree provided by Roslyn
 	/// </summary>
-	public class ExtractedFieldDefinition
+	public class ExtractedFieldDefinition : IMemberDefinition
 	{
 
 		/// <summary>
@@ -17,19 +17,14 @@ namespace CslaSerialization.Generators.AutoSerialization
 		public string FieldName { get; set; }
 
 		/// <summary>
-		/// The string type name representing the type of this field
+		/// The definition of the type of this field
 		/// </summary>
-		public string FieldTypeName { get; set; }
+		public ExtractedTypeDefinition TypeDefinition { get; } = new ExtractedTypeDefinition();
 
 		/// <summary>
-		/// Whether this field is of a type that is itself auto serializable
+		/// The member name for the field
 		/// </summary>
-		public bool IsTypeAutoSerializable { get; set; } = false;
-
-		/// <summary>
-		/// Whether this field is of a type that implements IMobileObject
-		/// </summary>
-		public bool IsTypeIMobileObject { get; set; } = false;
+		string IMemberDefinition.MemberName => FieldName;
 
 	}
 

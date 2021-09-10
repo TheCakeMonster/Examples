@@ -32,7 +32,7 @@ namespace CslaSerialization.Generators.AutoSerialization
 			{ 
 				textWriter = new IndentedTextWriter(stringWriter, "\t");
 
-				AppendDefaultUsingStatements(textWriter, classDefinition);
+				AppendUsingStatements(textWriter, classDefinition);
 
 				AppendNamespaceDefinition(textWriter, classDefinition);
 				textWriter.WriteLine("{");
@@ -64,16 +64,49 @@ namespace CslaSerialization.Generators.AutoSerialization
 		#region Private Helper Methods
 
 		/// <summary>
-		/// Append the default using statements required on a partial class in
+		/// Append the required using statements required on a partial class in
 		/// order for it to compile the code we have generated
 		/// </summary>
 		/// <param name="textWriter">The IndentedTextWriter instance to which to append the usings</param>
 		/// <param name="classDefinition">The definition of the class for which we are generating</param>
-		private static void AppendDefaultUsingStatements(IndentedTextWriter textWriter, ExtractedClassDefinition classDefinition)
+		private void AppendUsingStatements(IndentedTextWriter textWriter, ExtractedClassDefinition classDefinition)
 		{
-			textWriter.WriteLine("using System;");
-			textWriter.WriteLine("using Csla.Serialization.Mobile;");
+			HashSet<string> requiredNamespaces;
+
+			requiredNamespaces = GetRequiredNamespaces(classDefinition);
+
+			foreach (string requiredNamespace in requiredNamespaces)
+			{
+				textWriter.Write("using ");
+				textWriter.Write(requiredNamespace);
+				textWriter.WriteLine(";");
+			}
+
 			textWriter.WriteLine();
+		}
+
+		/// <summary>
+		/// Retrieve all of the namespaces that are required for generation of the defined class
+		/// </summary>
+		/// <param name="classDefinition">The definition of the class for which generation is being performed</param>
+		/// <returns>A hashset of all of the namespaces required for generation</returns>
+		private HashSet<string> GetRequiredNamespaces(ExtractedClassDefinition classDefinition)
+		{
+			HashSet<string> requiredNamespaces = new HashSet<string>() { "System", "Csla.Serialization.Mobile" };
+
+			foreach (ExtractedFieldDefinition fieldDefinition in classDefinition.Fields)
+			{
+				requiredNamespaces.Add(fieldDefinition.TypeDefinition.TypeNamespace);
+			}
+
+			foreach (ExtractedPropertyDefinition propertyDefinition in classDefinition.Properties)
+			{
+				requiredNamespaces.Add(propertyDefinition.TypeDefinition.TypeNamespace);
+			}
+
+			requiredNamespaces.Remove(classDefinition.Namespace);
+
+			return requiredNamespaces;
 		}
 
 		/// <summary>
@@ -93,7 +126,7 @@ namespace CslaSerialization.Generators.AutoSerialization
 		/// </summary>
 		/// <param name="textWriter">The IndentedTextWriter instance to which to append the class definition</param>
 		/// <param name="classDefinition">The definition of the class for which we are generating</param>
-		private static void AppendClassDefinition(IndentedTextWriter textWriter, ExtractedClassDefinition classDefinition)
+		private void AppendClassDefinition(IndentedTextWriter textWriter, ExtractedClassDefinition classDefinition)
 		{
 			textWriter.WriteLine("[Serializable]");
 			textWriter.Write(classDefinition.Scope);
@@ -122,16 +155,16 @@ namespace CslaSerialization.Generators.AutoSerialization
 
 			foreach (ExtractedFieldDefinition fieldDefinition in classDefinition.Fields)
 			{
-				if (!fieldDefinition.IsTypeAutoSerializable && !fieldDefinition.IsTypeIMobileObject) continue;
+				if (!IsChildToExpose(fieldDefinition)) continue;
 
-				AppendSerializeChildFragment(textWriter, fieldDefinition.FieldName, fieldDefinition.FieldTypeName);
+				AppendSerializeChildFragment(textWriter, fieldDefinition);
 			}
 
 			foreach (ExtractedPropertyDefinition propertyDefinition in classDefinition.Properties)
 			{
-				if (!propertyDefinition.IsTypeAutoSerializable && !propertyDefinition.IsTypeIMobileObject) continue;
+				if (!IsChildToExpose(propertyDefinition)) continue;
 
-				AppendSerializeChildFragment(textWriter, propertyDefinition.PropertyName, propertyDefinition.PropertyTypeName);
+				AppendSerializeChildFragment(textWriter, propertyDefinition);
 			}
 
 			textWriter.Indent--;
@@ -143,16 +176,15 @@ namespace CslaSerialization.Generators.AutoSerialization
 		/// Append the code fragment necessary to serialize an individual child member
 		/// </summary>
 		/// <param name="textWriter">The IndentedTextWriter instance to which to append the fragment</param>
-		/// <param name="memberName">The name of the member we are writing for</param>
-		/// <param name="memberTypeName">The name of the type of the member we are writing for</param>
-		private void AppendSerializeChildFragment(IndentedTextWriter textWriter, string memberName, string memberTypeName)
+		/// <param name="memberDefinition">The definition of the member we are writing for</param>
+		private void AppendSerializeChildFragment(IndentedTextWriter textWriter, IMemberDefinition memberDefinition)
 		{
 			textWriter.Write("mobileObject = ");
-			textWriter.Write(memberName);
+			textWriter.Write(memberDefinition.MemberName);
 			textWriter.WriteLine(" as IMobileObject;");
 			textWriter.WriteLine("childInfo = formatter.SerializeObject(mobileObject);");
 			textWriter.Write("info.AddChild(nameof(");
-			textWriter.Write(memberName);
+			textWriter.Write(memberDefinition.MemberName);
 			textWriter.WriteLine("), childInfo.ReferenceId, true);");
 		}
 
@@ -174,16 +206,16 @@ namespace CslaSerialization.Generators.AutoSerialization
 
 			foreach (ExtractedFieldDefinition fieldDefinition in classDefinition.Fields)
 			{
-				if (!fieldDefinition.IsTypeAutoSerializable && !fieldDefinition.IsTypeIMobileObject) continue;
+				if (!IsChildToExpose(fieldDefinition)) continue;
 
-				AppendDeserializeChildFragment(textWriter, fieldDefinition.FieldName, fieldDefinition.FieldTypeName);
+				AppendDeserializeChildFragment(textWriter, fieldDefinition);
 			}
 
 			foreach (ExtractedPropertyDefinition propertyDefinition in classDefinition.Properties)
 			{
-				if (!propertyDefinition.IsTypeAutoSerializable && !propertyDefinition.IsTypeIMobileObject) continue;
+				if (!IsChildToExpose(propertyDefinition)) continue;
 
-				AppendDeserializeChildFragment(textWriter, propertyDefinition.PropertyName, propertyDefinition.PropertyTypeName);
+				AppendDeserializeChildFragment(textWriter, propertyDefinition);
 			}
 
 			textWriter.Indent--;
@@ -195,23 +227,22 @@ namespace CslaSerialization.Generators.AutoSerialization
 		/// Append the code fragment necessary to deserialize an individual child member
 		/// </summary>
 		/// <param name="textWriter">The IndentedTextWriter instance to which to append the fragment</param>
-		/// <param name="memberName">The name of the member we are writing for</param>
-		/// <param name="memberTypeName">The name of the type of the member we are writing for</param>
-		private void AppendDeserializeChildFragment(IndentedTextWriter textWriter, string memberName, string memberTypeName)
+		/// <param name="memberDefinition">The definition of the member we are writing for</param>
+		private void AppendDeserializeChildFragment(IndentedTextWriter textWriter, IMemberDefinition memberDefinition)	
 		{
 			textWriter.Write("if (info.Children.ContainsKey(nameof(");
-			textWriter.Write(memberName);
+			textWriter.Write(memberDefinition.MemberName);
 			textWriter.WriteLine(")))");
 			textWriter.WriteLine("{");
 			textWriter.Indent++;
 
 			textWriter.Write("childData = info.Children[nameof(");
-			textWriter.Write(memberName);
+			textWriter.Write(memberDefinition.MemberName);
 			textWriter.WriteLine(")];");
 			textWriter.WriteLine();
-			textWriter.Write(memberName);
+			textWriter.Write(memberDefinition.MemberName);
 			textWriter.Write(" = formatter.GetObject(childData.ReferenceId) as ");
-			textWriter.Write(memberTypeName);
+			textWriter.Write(memberDefinition.TypeDefinition.TypeName);
 			textWriter.WriteLine(";");
 
 			textWriter.Indent--;
@@ -231,16 +262,16 @@ namespace CslaSerialization.Generators.AutoSerialization
 
 			foreach (ExtractedFieldDefinition fieldDefinition in classDefinition.Fields)
 			{
-				if (fieldDefinition.IsTypeAutoSerializable || fieldDefinition.IsTypeIMobileObject) continue;
+				if (IsChildToExpose(fieldDefinition)) continue;
 
-				AppendGetMemberStateFragment(textWriter, fieldDefinition.FieldName, fieldDefinition.FieldTypeName);
+				AppendGetMemberStateFragment(textWriter, fieldDefinition);
 			}
 
 			foreach (ExtractedPropertyDefinition propertyDefinition in classDefinition.Properties)
 			{
-				if (propertyDefinition.IsTypeAutoSerializable || propertyDefinition.IsTypeIMobileObject) continue;
+				if (IsChildToExpose(propertyDefinition)) continue;
 
-				AppendGetMemberStateFragment(textWriter, propertyDefinition.PropertyName, propertyDefinition.PropertyTypeName);
+				AppendGetMemberStateFragment(textWriter, propertyDefinition);
 			}
 
 			textWriter.Indent--;
@@ -252,14 +283,13 @@ namespace CslaSerialization.Generators.AutoSerialization
 		/// Append the code fragment necessary to get the state of an individual member
 		/// </summary>
 		/// <param name="textWriter">The IndentedTextWriter instance to which to append the fragment</param>
-		/// <param name="memberName">The name of the member we are writing for</param>
-		/// <param name="memberTypeName">The name of the type of the member we are writing for</param>
-		private void AppendGetMemberStateFragment(IndentedTextWriter textWriter, string memberName, string memberTypeName)
+		/// <param name="memberDefinition">The definition of the member we are writing for</param>
+		private void AppendGetMemberStateFragment(IndentedTextWriter textWriter, IMemberDefinition memberDefinition)
 		{
 			textWriter.Write("info.AddValue(nameof(");
-			textWriter.Write(memberName);
+			textWriter.Write(memberDefinition.MemberName);
 			textWriter.Write("), ");
-			textWriter.Write(memberName);
+			textWriter.Write(memberDefinition.MemberName);
 			textWriter.WriteLine(");");
 		}
 
@@ -276,16 +306,16 @@ namespace CslaSerialization.Generators.AutoSerialization
 
 			foreach (ExtractedFieldDefinition fieldDefinition in classDefinition.Fields)
 			{
-				if (fieldDefinition.IsTypeAutoSerializable || fieldDefinition.IsTypeIMobileObject) continue;
+				if (IsChildToExpose(fieldDefinition)) continue;
 
-				AppendSetMemberStateMethod(textWriter, fieldDefinition.FieldName, fieldDefinition.FieldTypeName);
+				AppendSetMemberStateMethod(textWriter, fieldDefinition);
 			}
 
 			foreach (ExtractedPropertyDefinition propertyDefinition in classDefinition.Properties)
 			{
-				if (propertyDefinition.IsTypeAutoSerializable || propertyDefinition.IsTypeIMobileObject) continue;
+				if (IsChildToExpose(propertyDefinition)) continue;
 
-				AppendSetMemberStateMethod(textWriter, propertyDefinition.PropertyName, propertyDefinition.PropertyTypeName);
+				AppendSetMemberStateMethod(textWriter, propertyDefinition);
 			}
 
 			textWriter.Indent--;
@@ -297,15 +327,14 @@ namespace CslaSerialization.Generators.AutoSerialization
 		/// Append the code fragment necessary to set the state of an individual member
 		/// </summary>
 		/// <param name="textWriter">The IndentedTextWriter instance to which to append the fragment</param>
-		/// <param name="memberName">The name of the member we are writing for</param>
-		/// <param name="memberTypeName">The name of the type of the member we are writing for</param>
-		private void AppendSetMemberStateMethod(IndentedTextWriter textWriter, string memberName, string memberTypeName)
+		/// <param name="memberDefinition">The definition of the member we are writing for</param>
+		private void AppendSetMemberStateMethod(IndentedTextWriter textWriter, IMemberDefinition memberDefinition)
 		{
-			textWriter.Write(memberName);
+			textWriter.Write(memberDefinition.MemberName);
 			textWriter.Write(" = info.GetValue<");
-			textWriter.Write(memberTypeName);
+			textWriter.Write(memberDefinition.TypeDefinition.TypeName);
 			textWriter.Write(">(nameof(");
-			textWriter.Write(memberName);
+			textWriter.Write(memberDefinition.MemberName);
 			textWriter.WriteLine("));");
 		}
 
@@ -316,8 +345,18 @@ namespace CslaSerialization.Generators.AutoSerialization
 		/// <returns>Boolean true of the definition exposes any members that have to be treated as children</returns>
 		private bool HasChildrenToExpose(ExtractedClassDefinition classDefinition)
 		{
-			return classDefinition.Properties.Any(p => p.IsTypeAutoSerializable || p.IsTypeIMobileObject) ||
-				classDefinition.Fields.Any(p => p.IsTypeAutoSerializable || p.IsTypeIMobileObject);
+			return classDefinition.Properties.Any(p => IsChildToExpose(p)) ||
+				classDefinition.Fields.Any(f => IsChildToExpose(f));
+		}
+
+		/// <summary>
+		/// Determine if a class definition exposes any members that must be treated as children
+		/// </summary>
+		/// <param name="classDefinition">The class definition to be checked for children</param>
+		/// <returns>Boolean true of the definition exposes any members that have to be treated as children</returns>
+		private bool IsChildToExpose(IMemberDefinition memberDefinition)
+		{
+			return memberDefinition.TypeDefinition.IsAutoSerializable || memberDefinition.TypeDefinition.ImplementsIMobileObject;
 		}
 
 		#endregion

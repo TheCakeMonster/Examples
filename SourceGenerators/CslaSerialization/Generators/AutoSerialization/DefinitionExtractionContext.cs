@@ -31,6 +31,34 @@ namespace CslaSerialization.Generators.AutoSerialization
 		public GeneratorSyntaxContext Context => _context;
 
 		/// <summary>
+		/// Get the namespace of the type represented by a type declaration
+		/// </summary>
+		/// <param name="typeDeclarationSyntax">The type declaration syntax representing the type to be tested</param>
+		/// <returns>The namespace in which the type is declared, or an empty string if it is global</returns>
+		public string GetTypeNamespace(TypeDeclarationSyntax typeDeclarationSyntax)
+		{
+			INamedTypeSymbol typeSymbol;
+
+			typeSymbol = _context.SemanticModel.GetDeclaredSymbol(typeDeclarationSyntax) as INamedTypeSymbol;
+			if (typeSymbol is null || typeSymbol.ContainingNamespace is null) return string.Empty;
+			return typeSymbol.ContainingNamespace.ToString();
+		}
+
+		/// <summary>
+		/// Get the namespace of the type represented by a type declaration
+		/// </summary>
+		/// <param name="typeSyntax">The type syntax representing the type to be tested</param>
+		/// <returns>The namespace in which the type is declared, or an empty string if it is global</returns>
+		public string GetTypeNamespace(TypeSyntax typeSyntax)
+		{
+			INamedTypeSymbol typeSymbol;
+
+			typeSymbol = _context.SemanticModel.GetSymbolInfo(typeSyntax).Symbol as INamedTypeSymbol;
+			if (typeSymbol is null || typeSymbol.ContainingNamespace is null) return string.Empty;
+			return typeSymbol.ContainingNamespace.ToString();
+		}
+
+		/// <summary>
 		/// Determine if a type declaration represents a type that is auto serializable
 		/// </summary>
 		/// <param name="typeSymbol">The declaration representing the type to be tested</param>
