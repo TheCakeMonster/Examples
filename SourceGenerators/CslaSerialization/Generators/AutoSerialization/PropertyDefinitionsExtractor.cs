@@ -70,8 +70,9 @@ namespace CslaSerialization.Generators.AutoSerialization
 			// Get public or internal properties that are not specifically opted out with the [AutoSerializationExcluded] attribute
 			serializableProperties = targetTypeDeclaration.Members.Where(
 				m => m is PropertyDeclarationSyntax propertyDeclaration &&
-				HasOneOfScopes(extractionContext, propertyDeclaration, "public", "internal") &&
-				!extractionContext.IsPropertyAutoSerializationExcluded(propertyDeclaration))
+				HasOneOfScopes(extractionContext, propertyDeclaration, "public") &&
+				HasGetterAndSetter(extractionContext, propertyDeclaration) &&
+				!extractionContext.IsPropertyAutoSerializationExcluded(propertyDeclaration) )
 				.Cast<PropertyDeclarationSyntax>()
 				.ToList();
 
@@ -85,7 +86,8 @@ namespace CslaSerialization.Generators.AutoSerialization
 			// Get private or protected properties that are specifically opted in with the [AutoSerializationIncluded] attribute
 			serializableProperties = targetTypeDeclaration.Members.Where(
 				m => m is PropertyDeclarationSyntax propertyDeclaration &&
-				!HasOneOfScopes(extractionContext, propertyDeclaration, "public", "internal") &&
+				!HasOneOfScopes(extractionContext, propertyDeclaration, "public") &&
+				HasGetterAndSetter(extractionContext, propertyDeclaration) &&
 				extractionContext.IsPropertyAutoSerializationIncluded(propertyDeclaration))
 				.Cast<PropertyDeclarationSyntax>()
 				.ToList();
@@ -104,6 +106,26 @@ namespace CslaSerialization.Generators.AutoSerialization
 			}
 
 			return false;
+		}
+
+		private static bool HasGetterAndSetter(DefinitionExtractionContext context, PropertyDeclarationSyntax propertyDeclaration)
+		{
+			bool hasGetter = false;
+			bool hasSetter = false;
+
+			foreach (AccessorDeclarationSyntax accessorDeclaration in propertyDeclaration.AccessorList.Accessors)
+			{
+				if (accessorDeclaration.Kind() == Microsoft.CodeAnalysis.CSharp.SyntaxKind.GetAccessorDeclaration)
+				{
+					hasGetter = true;
+				}
+				if (accessorDeclaration.Kind() == Microsoft.CodeAnalysis.CSharp.SyntaxKind.SetAccessorDeclaration)
+				{
+					hasSetter = true;
+				}
+			}
+
+			return hasGetter && hasSetter;
 		}
 
 		#endregion

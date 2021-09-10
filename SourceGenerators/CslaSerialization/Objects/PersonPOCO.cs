@@ -18,6 +18,8 @@ namespace CslaSerialization.Objects
 
 		public string FirstName { get; set; }
 
+		public string MiddleName { get; }
+
 		public string LastName { get; set; }
 
 		[AutoSerializationExcluded]
