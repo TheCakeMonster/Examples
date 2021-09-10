@@ -19,6 +19,7 @@ namespace CslaSerialization.Generators.AutoSerialization
 		private readonly INamedTypeSymbol _autoSerializableAttributeSymbol;
 		private readonly INamedTypeSymbol _autoSerializationIncludedAttributeSymbol;
 		private readonly INamedTypeSymbol _autoSerializationExcludedAttributeSymbol;
+		private readonly INamedTypeSymbol _mobileObjectInterfaceSymbol;
 
 		public DefinitionExtractionContext(GeneratorSyntaxContext context)
 		{
@@ -26,6 +27,7 @@ namespace CslaSerialization.Generators.AutoSerialization
 			_autoSerializableAttributeSymbol = context.SemanticModel.Compilation.GetTypeByMetadataName(typeof(AutoSerializableAttribute).FullName);
 			_autoSerializationIncludedAttributeSymbol = context.SemanticModel.Compilation.GetTypeByMetadataName(typeof(AutoSerializationIncludedAttribute).FullName);
 			_autoSerializationExcludedAttributeSymbol = context.SemanticModel.Compilation.GetTypeByMetadataName(typeof(AutoSerializationExcludedAttribute).FullName);
+			_mobileObjectInterfaceSymbol = context.SemanticModel.Compilation.GetTypeByMetadataName(typeof(Csla.Serialization.Mobile.IMobileObject).FullName);
 		}
 
 		public GeneratorSyntaxContext Context => _context;
@@ -83,6 +85,24 @@ namespace CslaSerialization.Generators.AutoSerialization
 			typeSymbol = _context.SemanticModel.GetSymbolInfo(typeSyntax).Symbol as INamedTypeSymbol;
 			if (typeSymbol is null) return false;
 			return IsTypeDecoratedBy(typeSymbol, _autoSerializableAttributeSymbol);
+		}
+
+		public bool ImplementsIMobileObject(TypeSyntax typeSyntax)
+		{
+			INamedTypeSymbol typeSymbol;
+
+			typeSymbol = _context.SemanticModel.GetSymbolInfo(typeSyntax).Symbol as INamedTypeSymbol;
+			if (typeSymbol is null) return false;
+
+			foreach (ITypeSymbol interfaceSymbol in typeSymbol.AllInterfaces)
+			{
+				if (IsMatchingTypeSymbol(interfaceSymbol as INamedTypeSymbol, _mobileObjectInterfaceSymbol))
+				{
+					return true;
+				}
+			}
+
+			return false;
 		}
 
 		/// <summary>

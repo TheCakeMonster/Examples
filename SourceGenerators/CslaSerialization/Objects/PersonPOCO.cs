@@ -67,6 +67,8 @@ namespace CslaSerialization.Objects
 
 		public AddressPOCO Address { get; set; }
 
+		public EmailAddress EmailAddress {  get; set; }	
+
 	}
 
 }

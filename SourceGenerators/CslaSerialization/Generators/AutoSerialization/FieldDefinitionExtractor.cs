@@ -28,7 +28,7 @@ namespace CslaSerialization.Generators.AutoSerialization
 			fieldDefinition.TypeDefinition.TypeName = GetFieldTypeName(extractionContext, fieldDeclaration);
 			fieldDefinition.TypeDefinition.TypeNamespace = extractionContext.GetTypeNamespace(fieldDeclaration.Declaration.Type);
 			fieldDefinition.TypeDefinition.IsAutoSerializable = extractionContext.IsTypeAutoSerializable(fieldDeclaration.Declaration.Type);
-			// fieldDefinition.TypeDefinition.ImplementsIMobileObject = ???
+			fieldDefinition.TypeDefinition.ImplementsIMobileObject = extractionContext.ImplementsIMobileObject(fieldDeclaration.Declaration.Type);
 
 			return fieldDefinition;
 		}
