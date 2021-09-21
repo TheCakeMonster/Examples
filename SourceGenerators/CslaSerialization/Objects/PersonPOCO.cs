@@ -13,6 +13,7 @@ namespace CslaSerialization.Objects
 	{
 
 		private string _fieldTest = "foo";
+		private string _lastName;
 
 		[AutoSerialized]
 		private string _middleName;
@@ -28,7 +29,11 @@ namespace CslaSerialization.Objects
 			_middleName = middleName;
 		}
 
-		public string LastName { get; set; }
+		public string LastName
+		{
+			get { return _lastName; }
+			set {  _lastName = value; }
+		}
 
 		[AutoNonSerialized]
 		public string NonSerializedText { get; set; } = string.Empty;

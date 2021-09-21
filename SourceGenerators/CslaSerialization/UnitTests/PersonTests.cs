@@ -423,6 +423,26 @@ namespace CslaSerialization.UnitTests
 		}
 
 		[TestMethod]
+		public void SerializeThenDeserialize_WithPublicPropertyLastNameSmith_HasLastNameSmith()
+		{
+
+			// Arrange
+			string actual;
+			string expected = "Smith";
+			PersonPOCO person = new PersonPOCO();
+			person.LastName = "Smith";
+			PersonPOCO deserializedPerson;
+
+			// Act
+			deserializedPerson = SerializeThenDeserialisePersonPOCO(person);
+			actual = deserializedPerson.LastName;
+
+			// Assert
+			Assert.AreEqual(expected, actual);
+
+		}
+
+		[TestMethod]
 		public void SerializeThenDeserialize_WithIncludedPrivateFieldMiddleNameMid_HasMiddleNameMid()
 		{
 
