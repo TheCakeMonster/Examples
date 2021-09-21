@@ -273,7 +273,7 @@ namespace CslaSerialization.UnitTests
 			serializationInfo.Values["PrivateText"].Value = "Fred";
 			mobileObject = (IMobileObject)person;
 			mobileObject.SetState(serializationInfo);
-			actual = person.GetPrivateText();
+			actual = person.GetUnderlyingPrivateText();
 
 			// Assert
 			Assert.AreEqual(expected, actual);
@@ -322,6 +322,327 @@ namespace CslaSerialization.UnitTests
 			// Assert
 			Assert.AreEqual(expected, actual);
 
+		}
+
+		#endregion
+
+		#region GetChildren
+
+		[TestMethod]
+		public void GetChildren_WithAddress1HighStreet_IncludesAddressKey()
+		{
+
+			// Arrange
+			SerializationInfo serializationInfo = new SerializationInfo();
+			bool expected = true;
+			bool actual;
+			IMobileObject mobileObject;
+			PersonPOCO person = new PersonPOCO();
+			person.Address = new AddressPOCO() { AddressLine1="1 High Street" };
+			MobileFormatter formatter = new MobileFormatter();
+
+			// Act
+			mobileObject = (IMobileObject)person;
+			mobileObject.GetChildren(serializationInfo, formatter);
+			actual = serializationInfo.Children.ContainsKey("Address");
+
+			// Assert
+			Assert.AreEqual(expected, actual);
+
+		}
+
+		[TestMethod]
+		public void GetChildren_WithEmailAddress_IncludesEmailAddressKey()
+		{
+
+			// Arrange
+			SerializationInfo serializationInfo = new SerializationInfo();
+			bool expected = true;
+			bool actual;
+			IMobileObject mobileObject;
+			PersonPOCO person = new PersonPOCO();
+			person.EmailAddress = new EmailAddress() { Email = "a@b.com" };
+			MobileFormatter formatter = new MobileFormatter();
+
+			// Act
+			mobileObject = (IMobileObject)person;
+			mobileObject.GetChildren(serializationInfo, formatter);
+			actual = serializationInfo.Children.ContainsKey("EmailAddress");
+
+			// Assert
+			Assert.AreEqual(expected, actual);
+
+		}
+
+		#endregion
+
+		#region SetChildren
+
+		#endregion
+
+		#region Serialize Then Deserialize
+
+		[TestMethod]
+		public void SerializeThenDeserialize_WithPublicAutoImpPropertyPersonId5_HasPersonId5()
+		{
+
+			// Arrange
+			int actual;
+			int expected = 5;
+			PersonPOCO person = new PersonPOCO();
+			person.PersonId = 5;
+			PersonPOCO deserializedPerson;
+
+			// Act
+			deserializedPerson = SerializeThenDeserialisePersonPOCO(person);
+			actual = deserializedPerson.PersonId;
+
+			// Assert
+			Assert.AreEqual(expected, actual);
+
+		}
+
+		[TestMethod]
+		public void SerializeThenDeserialize_WithPublicAutoImpPropertyFirstNameJoe_HasFirstNameJoe()
+		{
+
+			// Arrange
+			string actual;
+			string expected = "Joe";
+			PersonPOCO person = new PersonPOCO();
+			person.FirstName = "Joe";
+			PersonPOCO deserializedPerson;
+
+			// Act
+			deserializedPerson = SerializeThenDeserialisePersonPOCO(person);
+			actual = deserializedPerson.FirstName;
+
+			// Assert
+			Assert.AreEqual(expected, actual);
+
+		}
+
+		[TestMethod]
+		public void SerializeThenDeserialize_WithIncludedPrivateFieldMiddleNameMid_HasMiddleNameMid()
+		{
+
+			// Arrange
+			string actual;
+			string expected = "Mid";
+			PersonPOCO person = new PersonPOCO();
+			person.SetMiddleName("Mid");
+			PersonPOCO deserializedPerson;
+
+			// Act
+			deserializedPerson = SerializeThenDeserialisePersonPOCO(person);
+			actual = deserializedPerson.MiddleName;
+
+			// Assert
+			Assert.AreEqual(expected, actual);
+
+		}
+
+		[TestMethod]
+		public void SerializeThenDeserialize_WithExcludedPublicAutoImpPropertyNonSerializedTextNon_HasEmptyNonSerializedText()
+		{
+
+			// Arrange
+			string actual;
+			string expected = "";
+			PersonPOCO person = new PersonPOCO();
+			person.NonSerializedText = "Non";
+			PersonPOCO deserializedPerson;
+
+			// Act
+			deserializedPerson = SerializeThenDeserialisePersonPOCO(person);
+			actual = deserializedPerson.NonSerializedText;
+
+			// Assert
+			Assert.AreEqual(expected, actual);
+
+		}
+
+		[TestMethod]
+		public void SerializeThenDeserialize_WithIncludedPrivateAutoImpPropertyPrivateSerializedTextPri_HasPrivateSerializedTextPri()
+		{
+
+			// Arrange
+			string actual;
+			string expected = "Pri";
+			PersonPOCO person = new PersonPOCO();
+			person.SetPrivateSerializedText("Pri");
+			PersonPOCO deserializedPerson;
+
+			// Act
+			deserializedPerson = SerializeThenDeserialisePersonPOCO(person);
+			actual = deserializedPerson.GetPrivateSerializedText();
+
+			// Assert
+			Assert.AreEqual(expected, actual);
+
+		}
+
+		[TestMethod]
+		public void SerializeThenDeserialize_WithPrivateAutoImpPropertyPrivateTextPriv_HasEmptyPrivateText()
+		{
+
+			// Arrange
+			string actual;
+			string expected = "";
+			PersonPOCO person = new PersonPOCO();
+			person.SetUnderlyingPrivateText("Priv");
+			PersonPOCO deserializedPerson;
+
+			// Act
+			deserializedPerson = SerializeThenDeserialisePersonPOCO(person);
+			actual = deserializedPerson.GetUnderlyingPrivateText();
+
+			// Assert
+			Assert.AreEqual(expected, actual);
+
+		}
+
+		[TestMethod]
+		public void SerializeThenDeserialize_WithInternalAutoImpPropertyDateOfBirth20210412165753_HasMinDateOfBirth()
+		{
+
+			// Arrange
+			DateTime actual;
+			DateTime expected = DateTime.MinValue;
+			PersonPOCO person = new PersonPOCO();
+			person.SetDateOfBirth(new DateTime(2021, 04, 12, 16, 57, 53));
+			PersonPOCO deserializedPerson;
+
+			// Act
+			deserializedPerson = SerializeThenDeserialisePersonPOCO(person);
+			actual = deserializedPerson.GetDateOfBirth();
+
+			// Assert
+			Assert.AreEqual(expected, actual);
+
+		}
+
+		[TestMethod]
+		public void SerializeThenDeserialize_WithAutoSerializableAddress1HighStreet_HasAddressOf1HighStreet()
+		{
+
+			// Arrange
+			string actual;
+			string expected = "1 High Street";
+			PersonPOCO person = new PersonPOCO();
+			person.Address = new AddressPOCO() { AddressLine1 = "1 High Street" };
+			PersonPOCO deserializedPerson;
+
+			// Act
+			deserializedPerson = SerializeThenDeserialisePersonPOCO(person);
+			actual = deserializedPerson?.Address?.AddressLine1;
+
+			// Assert
+			Assert.AreEqual(expected, actual);
+
+		}
+
+		[TestMethod]
+		public void SerializeThenDeserialize_WithAutoSerializableAddressNull_HasNullAddress()
+		{
+
+			// Arrange
+			AddressPOCO actual;
+			PersonPOCO person = new PersonPOCO();
+			PersonPOCO deserializedPerson;
+
+			// Act
+			deserializedPerson = SerializeThenDeserialisePersonPOCO(person);
+			actual = deserializedPerson.Address;
+
+			// Assert
+			Assert.IsNull(actual);
+
+		}
+
+		[TestMethod]
+		public void SerializeThenDeserialize_WithAutoSerializableAddressTownsville_HasAddressOfTownsville()
+		{
+
+			// Arrange
+			string actual;
+			string expected = "Townsville";
+			PersonPOCO person = new PersonPOCO();
+			person.Address = new AddressPOCO() { Town = "Townsville" };
+			PersonPOCO deserializedPerson;
+
+			// Act
+			deserializedPerson = SerializeThenDeserialisePersonPOCO(person);
+			actual = deserializedPerson?.Address?.Town;
+
+			// Assert
+			Assert.AreEqual(expected, actual);
+
+		}
+
+		[TestMethod]
+		public void SerializeThenDeserialize_WithIMobileObjectEmailAddressNull_HasEmailAddressNull()
+		{
+
+			// Arrange
+			EmailAddress actual;
+			PersonPOCO person = new PersonPOCO();
+			PersonPOCO deserializedPerson;
+
+			// Act
+			deserializedPerson = SerializeThenDeserialisePersonPOCO(person);
+			actual = deserializedPerson.EmailAddress;
+
+			// Assert
+			Assert.IsNull(actual);
+
+		}
+
+		[TestMethod]
+		public void SerializeThenDeserialize_WithIMobileObjectEmailAddressAatBdotCom_HasEmailAddressAatBdotCom()
+		{
+
+			// Arrange
+			string actual;
+			string expected = "a@b.com";
+			PersonPOCO person = new PersonPOCO();
+			person.EmailAddress = new EmailAddress() { Email = "a@b.com" };
+			PersonPOCO deserializedPerson;
+
+			// Act
+			deserializedPerson = SerializeThenDeserialisePersonPOCO(person);
+			actual = deserializedPerson?.EmailAddress?.Email;
+
+			// Assert
+			Assert.AreEqual(expected, actual);
+
+		}
+
+		#endregion
+
+		#region Private Helper Methods
+
+		/// <summary>
+		/// Serialize and then deserialize a PersonPOCO object, exercising the generated code
+		/// associated with these two operations on the PersonPOCO test object
+		/// </summary>
+		/// <param name="person">The object to be serialized</param>
+		/// <returns>The PersonPOCO that results from serialization then deserialization</returns>
+		private PersonPOCO SerializeThenDeserialisePersonPOCO(PersonPOCO person)
+		{
+			System.IO.MemoryStream serializationStream;
+			PersonPOCO deserializedPerson;
+			MobileFormatter formatter = new MobileFormatter();
+
+			// Act
+			using (serializationStream = new System.IO.MemoryStream())
+			{
+				formatter.Serialize(serializationStream, person);
+				serializationStream.Seek(0, System.IO.SeekOrigin.Begin);
+				deserializedPerson = formatter.Deserialize(serializationStream) as PersonPOCO;
+			}
+
+			return deserializedPerson;
 		}
 
 		#endregion

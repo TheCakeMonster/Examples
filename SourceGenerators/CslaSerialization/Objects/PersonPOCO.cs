@@ -48,9 +48,14 @@ namespace CslaSerialization.Objects
 
 		private string PrivateText { get; set; } = string.Empty;
 
-		public string GetPrivateText()
+		public string GetUnderlyingPrivateText()
 		{ 
 			return PrivateText;
+		}
+
+		public void SetUnderlyingPrivateText(string value)
+		{
+			PrivateText = value;
 		}
 
 		internal DateTime DateOfBirth { get; set; }
