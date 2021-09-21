@@ -23,11 +23,11 @@ namespace CslaSerialization.Generators.AutoSerialization
 		public void Initialize(GeneratorInitializationContext context)
 		{
 #if (DEBUG)
-			// Uncomment this to enable debugging of the source generator
-			if (!Debugger.IsAttached)
-			{
-				Debugger.Launch();
-			}
+			//// Uncomment this to enable debugging of the source generator
+			//if (!Debugger.IsAttached)
+			//{
+			//	Debugger.Launch();
+			//}
 
 #endif
 			context.RegisterForSyntaxNotifications(() => new AutoSerializableReceiver());

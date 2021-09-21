@@ -14,7 +14,7 @@ namespace CslaSerialization.Objects
 
 		private string _fieldTest = "foo";
 
-		[AutoSerializationIncluded]
+		[AutoSerialized]
 		private string _middleName;
 
 		public int PersonId { get; set; }
@@ -30,10 +30,10 @@ namespace CslaSerialization.Objects
 
 		public string LastName { get; set; }
 
-		[AutoSerializationExcluded]
+		[AutoNonSerialized]
 		public string NonSerializedText { get; set; } = string.Empty;
 
-		[AutoSerializationIncluded]
+		[AutoSerialized]
 		private string PrivateSerializedText { get; set; } = string.Empty;
 
 		public string GetPrivateSerializedText()

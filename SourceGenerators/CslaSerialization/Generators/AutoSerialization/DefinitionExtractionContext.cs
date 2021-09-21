@@ -25,8 +25,8 @@ namespace CslaSerialization.Generators.AutoSerialization
 		{
 			_context = context;
 			_autoSerializableAttributeSymbol = context.SemanticModel.Compilation.GetTypeByMetadataName(typeof(AutoSerializableAttribute).FullName);
-			_autoSerializationIncludedAttributeSymbol = context.SemanticModel.Compilation.GetTypeByMetadataName(typeof(AutoSerializationIncludedAttribute).FullName);
-			_autoSerializationExcludedAttributeSymbol = context.SemanticModel.Compilation.GetTypeByMetadataName(typeof(AutoSerializationExcludedAttribute).FullName);
+			_autoSerializationIncludedAttributeSymbol = context.SemanticModel.Compilation.GetTypeByMetadataName(typeof(AutoSerializedAttribute).FullName);
+			_autoSerializationExcludedAttributeSymbol = context.SemanticModel.Compilation.GetTypeByMetadataName(typeof(AutoNonSerializedAttribute).FullName);
 			_mobileObjectInterfaceSymbol = context.SemanticModel.Compilation.GetTypeByMetadataName(typeof(Csla.Serialization.Mobile.IMobileObject).FullName);
 		}
 
