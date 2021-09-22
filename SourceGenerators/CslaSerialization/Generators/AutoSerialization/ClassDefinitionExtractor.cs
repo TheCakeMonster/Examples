@@ -9,14 +9,14 @@ namespace CslaSerialization.Generators.AutoSerialization
 {
 
 	/// <summary>
-	/// Extract the definition of a class for which generation is required
+	/// Extract the definition of a class for which source generation is required
 	/// This is used to detach the builder from the Roslyn infrastructure, to enable testing
 	/// </summary>
 	public static class ClassDefinitionExtractor
 	{
 
 		/// <summary>
-		/// Extract the data that will be needed for code generation from the syntax tree provided
+		/// Extract the data that will be needed for source generation from the syntax tree provided
 		/// </summary>
 		/// <param name="extractionContext">The definition extraction context in which the extraction is being performed</param>
 		/// <param name="targetTypeDeclaration">The TypeDeclarationSyntax from which to extract the necessary data</param>

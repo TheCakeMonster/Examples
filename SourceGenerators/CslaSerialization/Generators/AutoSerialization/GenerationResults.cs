@@ -6,7 +6,7 @@ namespace CslaSerialization.Generators.AutoSerialization
 {
 
 	/// <summary>
-	/// A generated class, namely the output from source code generation
+	/// The results of source generation
 	/// </summary>
 	public class GenerationResults
 	{

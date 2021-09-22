@@ -10,7 +10,7 @@ namespace CslaSerialization.Generators.AutoSerialization
 
 	/// <summary>
 	/// Source Generator for generating partial classes to complete decorated types that
-	/// must offer automated serialization
+	/// must offer automated serialization through the IMobileObject interface
 	/// </summary>
 	[Generator]
 	public class SerializationPartialsGenerator : ISourceGenerator
@@ -55,7 +55,7 @@ namespace CslaSerialization.Generators.AutoSerialization
 			}
 			catch (Exception ex)
 			{
-				Debug.WriteLine($"Exception in SerializationPartialsGenerator!\r\n{ex.ToString()}");
+				context.ReportDiagnostic(ex.ToUsageDiagnostic());
 			}
 		}
 

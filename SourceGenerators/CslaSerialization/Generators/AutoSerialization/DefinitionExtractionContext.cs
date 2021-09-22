@@ -10,23 +10,23 @@ namespace CslaSerialization.Generators.AutoSerialization
 {
 
 	/// <summary>
-	/// Helper for definition extraction
+	/// Helper for definition extraction, used to optimise symbol recognition
 	/// </summary>
 	public class DefinitionExtractionContext
 	{
 
 		private readonly GeneratorSyntaxContext _context;
 		private readonly INamedTypeSymbol _autoSerializableAttributeSymbol;
-		private readonly INamedTypeSymbol _autoSerializationIncludedAttributeSymbol;
-		private readonly INamedTypeSymbol _autoSerializationExcludedAttributeSymbol;
+		private readonly INamedTypeSymbol _autoSerializedAttributeSymbol;
+		private readonly INamedTypeSymbol _autoNonSerializedAttributeSymbol;
 		private readonly INamedTypeSymbol _mobileObjectInterfaceSymbol;
 
 		public DefinitionExtractionContext(GeneratorSyntaxContext context)
 		{
 			_context = context;
 			_autoSerializableAttributeSymbol = context.SemanticModel.Compilation.GetTypeByMetadataName(typeof(AutoSerializableAttribute).FullName);
-			_autoSerializationIncludedAttributeSymbol = context.SemanticModel.Compilation.GetTypeByMetadataName(typeof(AutoSerializedAttribute).FullName);
-			_autoSerializationExcludedAttributeSymbol = context.SemanticModel.Compilation.GetTypeByMetadataName(typeof(AutoNonSerializedAttribute).FullName);
+			_autoSerializedAttributeSymbol = context.SemanticModel.Compilation.GetTypeByMetadataName(typeof(AutoSerializedAttribute).FullName);
+			_autoNonSerializedAttributeSymbol = context.SemanticModel.Compilation.GetTypeByMetadataName(typeof(AutoNonSerializedAttribute).FullName);
 			_mobileObjectInterfaceSymbol = context.SemanticModel.Compilation.GetTypeByMetadataName(typeof(Csla.Serialization.Mobile.IMobileObject).FullName);
 		}
 
@@ -87,7 +87,13 @@ namespace CslaSerialization.Generators.AutoSerialization
 			return IsTypeDecoratedBy(typeSymbol, _autoSerializableAttributeSymbol);
 		}
 
-		public bool ImplementsIMobileObject(TypeSyntax typeSyntax)
+		/// <summary>
+		/// Determine if a type declaration represents a type that implements the IMobileObject interface
+		/// </summary>
+		/// <param name="typeSymbol">The declaration representing the type to be tested</param>
+		/// <remarks>Determines if the type either implements the interface directly or via inheritance</remarks>
+		/// <returns>Boolean true if the type implements the IMobileObject interface, otherwise false</returns>
+		public bool DoesTypeImplementIMobileObject(TypeSyntax typeSyntax)
 		{
 			INamedTypeSymbol typeSymbol;
 
@@ -109,40 +115,40 @@ namespace CslaSerialization.Generators.AutoSerialization
 		/// Determine if a property declaration is marked as included in serialization
 		/// </summary>
 		/// <param name="propertyDeclaration">The declaration of the property being inspected</param>
-		/// <returns>Boolean true if the property is decorated with the AutoSerializationIncluded attribute, otherwise false</returns>
-		public bool IsPropertyAutoSerializationIncluded(PropertyDeclarationSyntax propertyDeclaration)
+		/// <returns>Boolean true if the property is decorated with the AutoSerialized attribute, otherwise false</returns>
+		public bool IsPropertyDecoratedWithAutoSerialized(PropertyDeclarationSyntax propertyDeclaration)
 		{
-			return IsPropertyDecoratedWith(propertyDeclaration, _autoSerializationIncludedAttributeSymbol);
+			return IsPropertyDecoratedWith(propertyDeclaration, _autoSerializedAttributeSymbol);
 		}
 
 		/// <summary>
 		/// Determine if a property declaration is marked as excluded from serialization
 		/// </summary>
 		/// <param name="propertyDeclaration">The declaration of the property being inspected</param>
-		/// <returns>Boolean true if the property is decorated with the AutoSerializationExcluded attribute, otherwise false</returns>
-		public bool IsPropertyAutoSerializationExcluded(PropertyDeclarationSyntax propertyDeclaration)
+		/// <returns>Boolean true if the property is decorated with the AutoNonSerialized attribute, otherwise false</returns>
+		public bool IsPropertyDecoratedWithAutoNonSerialized(PropertyDeclarationSyntax propertyDeclaration)
 		{
-			return IsPropertyDecoratedWith(propertyDeclaration, _autoSerializationExcludedAttributeSymbol);
+			return IsPropertyDecoratedWith(propertyDeclaration, _autoNonSerializedAttributeSymbol);
 		}
 
 		/// <summary>
 		/// Determine if a field declaration is marked as included in serialization
 		/// </summary>
 		/// <param name="fieldDeclaration">The declaration of the field being inspected</param>
-		/// <returns>Boolean true if the field is decorated with the AutoSerializationIncluded attribute, otherwise false</returns>
-		public bool IsFieldAutoSerializationIncluded(FieldDeclarationSyntax fieldDeclaration)
+		/// <returns>Boolean true if the field is decorated with the AutoSerialized attribute, otherwise false</returns>
+		public bool IsFieldDecoratedWithAutoSerialized(FieldDeclarationSyntax fieldDeclaration)
 		{
-			return IsFieldDecoratedWith(fieldDeclaration, _autoSerializationIncludedAttributeSymbol);
+			return IsFieldDecoratedWith(fieldDeclaration, _autoSerializedAttributeSymbol);
 		}
 
 		/// <summary>
 		/// Determine if a field declaration is marked as excluded from serialization
 		/// </summary>
 		/// <param name="fieldDeclaration">The declaration of the field being inspected</param>
-		/// <returns>Boolean true if the field is decorated with the AutoSerializationExcluded attribute, otherwise false</returns>
-		public bool IsFieldAutoSerializationExcluded(FieldDeclarationSyntax fieldDeclaration)
+		/// <returns>Boolean true if the field is decorated with the AutoNonSerialized attribute, otherwise false</returns>
+		public bool IsFieldDecoratedWithAutoNonSerialized(FieldDeclarationSyntax fieldDeclaration)
 		{
-			return IsFieldDecoratedWith(fieldDeclaration, _autoSerializationExcludedAttributeSymbol);
+			return IsFieldDecoratedWith(fieldDeclaration, _autoNonSerializedAttributeSymbol);
 		}
 
 		#region Private Helper Methods

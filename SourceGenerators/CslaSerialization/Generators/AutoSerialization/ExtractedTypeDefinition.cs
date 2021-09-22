@@ -6,7 +6,7 @@ namespace CslaSerialization.Generators.AutoSerialization
 {
 
 	/// <summary>
-	/// The definition of a property, extracted from the syntax tree provided by Roslyn
+	/// The definition of a type, extracted from the syntax tree provided by Roslyn
 	/// </summary>
 	public class ExtractedTypeDefinition
 	{

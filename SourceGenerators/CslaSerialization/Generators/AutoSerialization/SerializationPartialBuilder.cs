@@ -35,21 +35,17 @@ namespace CslaSerialization.Generators.AutoSerialization
 				AppendUsingStatements(textWriter, classDefinition);
 
 				AppendNamespaceDefinition(textWriter, classDefinition);
-				textWriter.WriteLine("{");
-				textWriter.Indent++;
+				AppendBlockStart(textWriter);
 				AppendClassDefinition(textWriter, classDefinition);
-				textWriter.WriteLine("{");
-				textWriter.Indent++;
+				AppendBlockStart(textWriter);
 
 				AppendGetChildrenMethod(textWriter, classDefinition);
 				AppendGetStateMethod(textWriter, classDefinition);
 				AppendSetChildrenMethod(textWriter, classDefinition);
 				AppendSetStateMethod(textWriter, classDefinition);
 
-				textWriter.Indent--;
-				textWriter.WriteLine("}");
-				textWriter.Indent--;
-				textWriter.WriteLine("}");
+				AppendBlockEnd(textWriter);
+				AppendBlockEnd(textWriter);
 
 				generationResults = new GenerationResults()
 				{
@@ -62,6 +58,26 @@ namespace CslaSerialization.Generators.AutoSerialization
 		}
 
 		#region Private Helper Methods
+
+		/// <summary>
+		/// Append the start of a code block, indenting the writer
+		/// </summary>
+		/// <param name="textWriter">The IndentedTextWriter instance to which to append the block start</param>
+		private void AppendBlockStart(IndentedTextWriter textWriter)
+		{
+			textWriter.WriteLine("{");
+			textWriter.Indent++;
+		}
+
+		/// <summary>
+		/// Append the end of a code block, having first unindented the writer
+		/// </summary>
+		/// <param name="textWriter">The IndentedTextWriter instance to which to append the block end</param>
+		private void AppendBlockEnd(IndentedTextWriter textWriter)
+		{
+			textWriter.Indent--;
+			textWriter.WriteLine("}");
+		}
 
 		/// <summary>
 		/// Append the required using statements required on a partial class in
@@ -144,8 +160,7 @@ namespace CslaSerialization.Generators.AutoSerialization
 		private void AppendGetChildrenMethod(IndentedTextWriter textWriter, ExtractedClassDefinition classDefinition)
 		{
 			textWriter.WriteLine("void IMobileObject.GetChildren(SerializationInfo info, MobileFormatter formatter)");
-			textWriter.WriteLine("{");
-			textWriter.Indent++;
+			AppendBlockStart(textWriter);
 			if (HasChildrenToExpose(classDefinition))
 			{
 				textWriter.WriteLine("IMobileObject mobileObject;");
@@ -167,8 +182,7 @@ namespace CslaSerialization.Generators.AutoSerialization
 				AppendSerializeChildFragment(textWriter, propertyDefinition);
 			}
 
-			textWriter.Indent--;
-			textWriter.WriteLine("}");
+			AppendBlockEnd(textWriter);
 			textWriter.WriteLine();
 		}
 
@@ -196,8 +210,8 @@ namespace CslaSerialization.Generators.AutoSerialization
 		private void AppendSetChildrenMethod(IndentedTextWriter textWriter, ExtractedClassDefinition classDefinition)
 		{
 			textWriter.WriteLine("void IMobileObject.SetChildren(SerializationInfo info, MobileFormatter formatter)");
-			textWriter.WriteLine("{");
-			textWriter.Indent++;
+			AppendBlockStart(textWriter);
+
 			if (HasChildrenToExpose(classDefinition))
 			{
 				textWriter.WriteLine("SerializationInfo.ChildData childData;");
@@ -218,8 +232,7 @@ namespace CslaSerialization.Generators.AutoSerialization
 				AppendDeserializeChildFragment(textWriter, propertyDefinition);
 			}
 
-			textWriter.Indent--;
-			textWriter.WriteLine("}");
+			AppendBlockEnd(textWriter);
 			textWriter.WriteLine();
 		}
 
@@ -233,8 +246,7 @@ namespace CslaSerialization.Generators.AutoSerialization
 			textWriter.Write("if (info.Children.ContainsKey(nameof(");
 			textWriter.Write(memberDefinition.MemberName);
 			textWriter.WriteLine(")))");
-			textWriter.WriteLine("{");
-			textWriter.Indent++;
+			AppendBlockStart(textWriter);
 
 			textWriter.Write("childData = info.Children[nameof(");
 			textWriter.Write(memberDefinition.MemberName);
@@ -245,8 +257,7 @@ namespace CslaSerialization.Generators.AutoSerialization
 			textWriter.Write(memberDefinition.TypeDefinition.TypeName);
 			textWriter.WriteLine(";");
 
-			textWriter.Indent--;
-			textWriter.WriteLine("}");
+			AppendBlockEnd(textWriter);
 		}
 
 		/// <summary>
@@ -257,8 +268,7 @@ namespace CslaSerialization.Generators.AutoSerialization
 		private void AppendGetStateMethod(IndentedTextWriter textWriter, ExtractedClassDefinition classDefinition)
 		{
 			textWriter.WriteLine("void IMobileObject.GetState(SerializationInfo info)");
-			textWriter.WriteLine("{");
-			textWriter.Indent++;
+			AppendBlockStart(textWriter);
 
 			foreach (ExtractedFieldDefinition fieldDefinition in classDefinition.Fields)
 			{
@@ -274,8 +284,7 @@ namespace CslaSerialization.Generators.AutoSerialization
 				AppendGetMemberStateFragment(textWriter, propertyDefinition);
 			}
 
-			textWriter.Indent--;
-			textWriter.WriteLine("}");
+			AppendBlockEnd(textWriter);
 			textWriter.WriteLine();
 		}
 
@@ -301,8 +310,7 @@ namespace CslaSerialization.Generators.AutoSerialization
 		private void AppendSetStateMethod(IndentedTextWriter textWriter, ExtractedClassDefinition classDefinition)
 		{
 			textWriter.WriteLine("void IMobileObject.SetState(SerializationInfo info)");
-			textWriter.WriteLine("{");
-			textWriter.Indent++;
+			AppendBlockStart(textWriter);
 
 			foreach (ExtractedFieldDefinition fieldDefinition in classDefinition.Fields)
 			{
@@ -318,8 +326,7 @@ namespace CslaSerialization.Generators.AutoSerialization
 				AppendSetMemberStateMethod(textWriter, propertyDefinition);
 			}
 
-			textWriter.Indent--;
-			textWriter.WriteLine("}");
+			AppendBlockEnd(textWriter);
 			textWriter.WriteLine();
 		}
 
