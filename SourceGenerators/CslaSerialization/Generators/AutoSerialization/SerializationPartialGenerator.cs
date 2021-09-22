@@ -12,7 +12,7 @@ namespace CslaSerialization.Generators.AutoSerialization
 	/// Source generator capable of completing the generation of a single partial class that is
 	/// needed to automatically perform mobile serialization of a type in a consuming assembly
 	/// </summary>
-	public class SerializationPartialGenerator
+	internal class SerializationPartialGenerator
 	{
 
 		/// <summary>
@@ -22,15 +22,15 @@ namespace CslaSerialization.Generators.AutoSerialization
 		/// <param name="typeDeclaration">The declaration of the type for which to generate code</param>
 		public void GeneratePartialType(GeneratorExecutionContext context, ExtractedTypeDefinition typeDefinition)
 		{
-			GenerationResults generatedTypeDefinition;
+			GenerationResults generationResults;
 			SerializationPartialBuilder builder = new SerializationPartialBuilder();
 
-			// Build the generated type using the builder
-			generatedTypeDefinition = builder.BuildPartialTypeDefinition(typeDefinition);
+			// Build the text for the generated type using the builder
+			generationResults = builder.BuildPartialTypeDefinition(typeDefinition);
 
 			// Add the generated source to the output
-			context.AddSource($"{typeDefinition.FullyQualifiedName}.g",
-				SourceText.From(generatedTypeDefinition.GeneratedSource, Encoding.UTF8));
+			context.AddSource($"{generationResults.FullyQualifiedName}.g",
+				SourceText.From(generationResults.GeneratedSource, Encoding.UTF8));
 		}
 
 	}

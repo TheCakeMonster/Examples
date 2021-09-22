@@ -6,13 +6,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace CslaSerialization.Generators.AutoSerialization
+namespace CslaSerialization.Generators.AutoSerialization.Discovery
 {
 
 	/// <summary>
 	/// Helper for definition extraction, used to optimise symbol recognition
 	/// </summary>
-	public class DefinitionExtractionContext
+	internal class DefinitionExtractionContext
 	{
 
 		private readonly GeneratorSyntaxContext _context;

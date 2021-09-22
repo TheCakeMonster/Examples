@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace CslaSerialization.Generators.AutoSerialization
+namespace CslaSerialization.Generators.AutoSerialization.Discovery
 {
 	internal static class ContainerDefinitionsExtractor
 	{

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace CslaSerialization.Generators.AutoSerialization
+namespace CslaSerialization.Generators.AutoSerialization.Discovery
 {
 
 	/// <summary>
@@ -14,7 +14,7 @@ namespace CslaSerialization.Generators.AutoSerialization
 	/// </summary>
 	/// <remarks>Only the properties to be included in serialization are extracted; those manually excluded
 	/// from serialization through use of the [AutoNonSerialized] attribute are not returned</remarks>
-	public static class FieldDefinitionsExtractor
+	internal static class FieldDefinitionsExtractor
 	{
 
 		/// <summary>

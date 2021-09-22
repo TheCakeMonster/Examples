@@ -5,14 +5,14 @@ using System.Collections.Generic;
 using System.Net.Mime;
 using System.Text;
 
-namespace CslaSerialization.Generators.AutoSerialization
+namespace CslaSerialization.Generators.AutoSerialization.Discovery
 {
 
 	/// <summary>
 	/// Extract the definition of a type for which source generation is required
 	/// This is used to detach the builder from the Roslyn infrastructure, to enable testing
 	/// </summary>
-	public static class TypeDefinitionExtractor
+	internal static class TypeDefinitionExtractor
 	{
 
 		/// <summary>

@@ -4,14 +4,14 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace CslaSerialization.Generators.AutoSerialization
+namespace CslaSerialization.Generators.AutoSerialization.Discovery
 {
 
 	/// <summary>
 	/// Extract the definition of a single field of a class for which code generation is being performed
 	/// This is used to detach the builder from the Roslyn infrastructure, to enable testing
 	/// </summary>
-	public static class FieldDefinitionExtractor
+	internal static class FieldDefinitionExtractor
 	{
 
 		/// <summary>

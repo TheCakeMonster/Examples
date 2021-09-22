@@ -16,6 +16,10 @@
     <ProjectReference Include="..\Core\CslaSerialization.Core.csproj" OutputItemType="Analyzer" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="AutoSerialization\Discovery\" />
+  </ItemGroup>
+
   <PropertyGroup>
     <GetTargetPathDependsOn>$(GetTargetPathDependsOn);GetDependencyTargetPaths</GetTargetPathDependsOn>
   </PropertyGroup>

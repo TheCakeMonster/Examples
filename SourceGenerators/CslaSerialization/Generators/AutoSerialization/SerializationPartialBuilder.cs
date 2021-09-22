@@ -49,7 +49,7 @@ namespace CslaSerialization.Generators.AutoSerialization
 
 				generationResults = new GenerationResults()
 				{
-					TypeName = typeDefinition.FullyQualifiedName,
+					FullyQualifiedName = typeDefinition.FullyQualifiedName,
 					GeneratedSource = stringWriter.ToString()
 				};
 			}

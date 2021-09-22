@@ -4,9 +4,9 @@ namespace CslaSerialization.Core
 {
 
 	/// <summary>
-	/// Indicate that a class should be auto serialized
+	/// Indicate that a type should be auto serialized
 	/// </summary>
-	[AttributeUsage(AttributeTargets.Class)]
+	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
 	public class AutoSerializableAttribute : Attribute
 	{
 
