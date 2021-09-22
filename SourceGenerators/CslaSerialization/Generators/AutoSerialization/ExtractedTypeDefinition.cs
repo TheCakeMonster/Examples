@@ -12,24 +12,45 @@ namespace CslaSerialization.Generators.AutoSerialization
 	{
 
 		/// <summary>
-		/// The name of the type
+		/// The namespace in which the type resides
+		/// </summary>
+		public string Namespace { get; set; }
+
+		/// <summary>
+		/// The scope of the class
+		/// </summary>
+		public string Scope { get; set; } = "public";
+
+		/// <summary>
+		/// The name of the type, excluding any namespace
 		/// </summary>
 		public string TypeName { get; set; }
 
 		/// <summary>
-		/// The namespace in which the type is defined
+		/// The name of the kind of type being represented
 		/// </summary>
-		public string TypeNamespace { get; set; }
+		public string TypeKind { get; set; }
 
 		/// <summary>
-		/// Whether the type is marked as AutoSerialiable
+		/// The fully qualified name of the type, including namespace
 		/// </summary>
-		public bool IsAutoSerializable { get; set; } = false;
+		public string FullyQualifiedName { get; set; }
 
 		/// <summary>
-		/// Whether the type implements the IMobileObject interface (directly or indirectly)
+		/// The container definitions for this type
 		/// </summary>
-		public bool ImplementsIMobileObject { get; set; } = false;
+		public IList<ExtractedContainerDefinition> ContainerDefinitions { get; private set; } = new List<ExtractedContainerDefinition>();
+
+		/// <summary>
+		/// The properties to be included in serialization
+		/// </summary>
+		public IList<ExtractedPropertyDefinition> Properties { get; private set; } = new List<ExtractedPropertyDefinition>();
+
+		/// <summary>
+		/// The fields to be included in serialization
+		/// </summary>
+		public IList<ExtractedFieldDefinition> Fields { get; private set; } = new List<ExtractedFieldDefinition>();
 
 	}
+
 }

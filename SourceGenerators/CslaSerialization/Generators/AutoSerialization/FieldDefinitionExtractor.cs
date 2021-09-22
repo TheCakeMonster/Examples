@@ -43,7 +43,7 @@ namespace CslaSerialization.Generators.AutoSerialization
 		/// <returns>The name of the field for which we are extracting information</returns>
 		private static string GetFieldName(DefinitionExtractionContext extractionContext, FieldDeclarationSyntax fieldDeclaration)
 		{
-			return fieldDeclaration.Declaration.Variables[0].ToString();
+			return fieldDeclaration.Declaration.Variables[0].Identifier.ToString();
 		}
 
 		/// <summary>

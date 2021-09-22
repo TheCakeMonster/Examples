@@ -45,11 +45,11 @@ namespace CslaSerialization.Generators.AutoSerialization
 			{
 				if (context.SyntaxContextReceiver is AutoSerializableReceiver receiver)
 				{
-					// Generate a partial class for each of the types identified
-					foreach (ExtractedClassDefinition classDefinition in receiver.Targets)
+					// Generate a partial type to extend each of the types identified
+					foreach (ExtractedTypeDefinition typeDefinition in receiver.Targets)
 					{
 						generator = new SerializationPartialGenerator();
-						generator.GeneratePartialClass(context, classDefinition);
+						generator.GeneratePartialType(context, typeDefinition);
 					}
 				}
 			}

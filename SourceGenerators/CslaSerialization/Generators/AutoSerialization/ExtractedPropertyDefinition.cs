@@ -19,7 +19,7 @@ namespace CslaSerialization.Generators.AutoSerialization
 		/// <summary>
 		/// The definition of the type of this property
 		/// </summary>
-		public ExtractedTypeDefinition TypeDefinition { get; } = new ExtractedTypeDefinition();
+		public ExtractedMemberTypeDefinition TypeDefinition { get; } = new ExtractedMemberTypeDefinition();
 
 		/// <summary>
 		/// The member name for the field

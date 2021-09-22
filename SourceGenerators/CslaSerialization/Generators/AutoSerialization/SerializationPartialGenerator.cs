@@ -16,21 +16,21 @@ namespace CslaSerialization.Generators.AutoSerialization
 	{
 
 		/// <summary>
-		/// Generate a partial class to complete a type that has been identified as a target
+		/// Generate a partial type to complete a type that has been identified as a target
 		/// </summary>
 		/// <param name="context">The execution context of generation</param>
-		/// <param name="typeDeclaration">The declaration of the class for which to generate code</param>
-		public void GeneratePartialClass(GeneratorExecutionContext context, ExtractedClassDefinition classDefinition)
+		/// <param name="typeDeclaration">The declaration of the type for which to generate code</param>
+		public void GeneratePartialType(GeneratorExecutionContext context, ExtractedTypeDefinition typeDefinition)
 		{
-			GenerationResults generatedClassDefinition;
+			GenerationResults generatedTypeDefinition;
 			SerializationPartialBuilder builder = new SerializationPartialBuilder();
 
-			// Build the generated class using the builder
-			generatedClassDefinition = builder.BuildPartialClass(classDefinition);
+			// Build the generated type using the builder
+			generatedTypeDefinition = builder.BuildPartialTypeDefinition(typeDefinition);
 
 			// Add the generated source to the output
-			context.AddSource($"SerializerPartialGenerator_{classDefinition.ClassName}",
-				SourceText.From(generatedClassDefinition.GeneratedSource, Encoding.UTF8));
+			context.AddSource($"{typeDefinition.FullyQualifiedName}.g",
+				SourceText.From(generatedTypeDefinition.GeneratedSource, Encoding.UTF8));
 		}
 
 	}

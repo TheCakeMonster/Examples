@@ -11,19 +11,19 @@ namespace CslaSerialization.Generators.AutoSerialization
 {
 
 	/// <summary>
-	/// Builds the text of a partial class that implements the IMobileObject
-	/// interface so that the target class automatically offers mobile serialization
+	/// Builds the text of a partial type that implements the IMobileObject
+	/// interface so that the target type automatically offers mobile serialization
 	/// </summary>
 	internal class SerializationPartialBuilder
 	{
 
 		/// <summary>
-		/// Build the text of a partial class that implements the IMobileObject
-		/// interface so that the target class automatically offers mobile serialization
+		/// Build the text of a partial type that implements the IMobileObject
+		/// interface so that the target type automatically offers mobile serialization
 		/// </summary>
-		/// <param name="classDefinition">The definition of the class for which serialization is required</param>
+		/// <param name="typeDefinition">The definition of the type for which serialization is required</param>
 		/// <returns>Generated code to fulfil the required serialization</returns>
-		internal GenerationResults BuildPartialClass(ExtractedClassDefinition classDefinition)
+		internal GenerationResults BuildPartialTypeDefinition(ExtractedTypeDefinition typeDefinition)
 		{
 			GenerationResults generationResults;
 			IndentedTextWriter textWriter;
@@ -32,24 +32,24 @@ namespace CslaSerialization.Generators.AutoSerialization
 			{ 
 				textWriter = new IndentedTextWriter(stringWriter, "\t");
 
-				AppendUsingStatements(textWriter, classDefinition);
+				AppendUsingStatements(textWriter, typeDefinition);
+				AppendContainerDefinitions(textWriter, typeDefinition);
 
-				AppendNamespaceDefinition(textWriter, classDefinition);
-				AppendBlockStart(textWriter);
-				AppendClassDefinition(textWriter, classDefinition);
+				AppendTypeDefinition(textWriter, typeDefinition);
 				AppendBlockStart(textWriter);
 
-				AppendGetChildrenMethod(textWriter, classDefinition);
-				AppendGetStateMethod(textWriter, classDefinition);
-				AppendSetChildrenMethod(textWriter, classDefinition);
-				AppendSetStateMethod(textWriter, classDefinition);
+				AppendGetChildrenMethod(textWriter, typeDefinition);
+				AppendGetStateMethod(textWriter, typeDefinition);
+				AppendSetChildrenMethod(textWriter, typeDefinition);
+				AppendSetStateMethod(textWriter, typeDefinition);
 
 				AppendBlockEnd(textWriter);
-				AppendBlockEnd(textWriter);
+				
+				AppendContainerDefinitionClosures(textWriter, typeDefinition);
 
 				generationResults = new GenerationResults()
 				{
-					ClassName = classDefinition.ClassName,
+					TypeName = typeDefinition.FullyQualifiedName,
 					GeneratedSource = stringWriter.ToString()
 				};
 			}
@@ -84,12 +84,12 @@ namespace CslaSerialization.Generators.AutoSerialization
 		/// order for it to compile the code we have generated
 		/// </summary>
 		/// <param name="textWriter">The IndentedTextWriter instance to which to append the usings</param>
-		/// <param name="classDefinition">The definition of the class for which we are generating</param>
-		private void AppendUsingStatements(IndentedTextWriter textWriter, ExtractedClassDefinition classDefinition)
+		/// <param name="typeDefinition">The definition of the type for which we are generating</param>
+		private void AppendUsingStatements(IndentedTextWriter textWriter, ExtractedTypeDefinition typeDefinition)
 		{
 			HashSet<string> requiredNamespaces;
 
-			requiredNamespaces = GetRequiredNamespaces(classDefinition);
+			requiredNamespaces = GetRequiredNamespaces(typeDefinition);
 
 			foreach (string requiredNamespace in requiredNamespaces)
 			{
@@ -102,52 +102,69 @@ namespace CslaSerialization.Generators.AutoSerialization
 		}
 
 		/// <summary>
-		/// Retrieve all of the namespaces that are required for generation of the defined class
+		/// Retrieve all of the namespaces that are required for generation of the defined type
 		/// </summary>
-		/// <param name="classDefinition">The definition of the class for which generation is being performed</param>
+		/// <param name="typeDefinition">The definition of the type for which generation is being performed</param>
 		/// <returns>A hashset of all of the namespaces required for generation</returns>
-		private HashSet<string> GetRequiredNamespaces(ExtractedClassDefinition classDefinition)
+		private HashSet<string> GetRequiredNamespaces(ExtractedTypeDefinition typeDefinition)
 		{
 			HashSet<string> requiredNamespaces = new HashSet<string>() { "System", "Csla.Serialization.Mobile" };
 
-			foreach (ExtractedFieldDefinition fieldDefinition in classDefinition.Fields)
+			foreach (ExtractedFieldDefinition fieldDefinition in typeDefinition.Fields)
 			{
 				requiredNamespaces.Add(fieldDefinition.TypeDefinition.TypeNamespace);
 			}
 
-			foreach (ExtractedPropertyDefinition propertyDefinition in classDefinition.Properties)
+			foreach (ExtractedPropertyDefinition propertyDefinition in typeDefinition.Properties)
 			{
 				requiredNamespaces.Add(propertyDefinition.TypeDefinition.TypeNamespace);
 			}
 
-			requiredNamespaces.Remove(classDefinition.Namespace);
+			requiredNamespaces.Remove(typeDefinition.Namespace);
 
 			return requiredNamespaces;
 		}
 
 		/// <summary>
-		/// Append the definition of the namespace in which the partial class is to reside
+		/// Append the definitions of the containers in which the partial type is to reside
 		/// </summary>
-		/// <param name="textWriter">The IndentedTextWriter instance to which to append the usings</param>
-		/// <param name="classDefinition">The definition of the class for which we are generating</param>
-		private void AppendNamespaceDefinition(IndentedTextWriter textWriter, ExtractedClassDefinition classDefinition)
+		/// <param name="textWriter">The IndentedTextWriter instance to which to append the definitions</param>
+		/// <param name="typeDefinition">The definition of the type for which we are generating</param>
+		private void AppendContainerDefinitions(IndentedTextWriter textWriter, ExtractedTypeDefinition typeDefinition)
 		{
-			textWriter.Write("namespace ");
-			textWriter.Write(classDefinition.Namespace);
-			textWriter.WriteLine();
+			foreach (ExtractedContainerDefinition containerDefinition in typeDefinition.ContainerDefinitions)
+			{
+				textWriter.WriteLine(containerDefinition.FullDefinition);
+				AppendBlockStart(textWriter);
+			}
 		}
 
 		/// <summary>
-		/// Append the class definition of the partial class we are generating
+		/// Append the definitions of the containers in which the partial type is to reside
 		/// </summary>
-		/// <param name="textWriter">The IndentedTextWriter instance to which to append the class definition</param>
-		/// <param name="classDefinition">The definition of the class for which we are generating</param>
-		private void AppendClassDefinition(IndentedTextWriter textWriter, ExtractedClassDefinition classDefinition)
+		/// <param name="textWriter">The IndentedTextWriter instance to which to append the definitions</param>
+		/// <param name="typeDefinition">The definition of the type for which we are generating</param>
+		private void AppendContainerDefinitionClosures(IndentedTextWriter textWriter, ExtractedTypeDefinition typeDefinition)
+		{
+			foreach (ExtractedContainerDefinition containerDefinition in typeDefinition.ContainerDefinitions)
+			{
+				AppendBlockEnd(textWriter);
+			}
+		}
+
+		/// <summary>
+		/// Append the type definition of the partial we are generating
+		/// </summary>
+		/// <param name="textWriter">The IndentedTextWriter instance to which to append the type definition</param>
+		/// <param name="typeDefinition">The definition of the type for which we are generating</param>
+		private void AppendTypeDefinition(IndentedTextWriter textWriter, ExtractedTypeDefinition typeDefinition)
 		{
 			textWriter.WriteLine("[Serializable]");
-			textWriter.Write(classDefinition.Scope);
-			textWriter.Write(" partial class ");
-			textWriter.Write(classDefinition.ClassName);
+			textWriter.Write(typeDefinition.Scope);
+			textWriter.Write(" partial ");
+			textWriter.Write(typeDefinition.TypeKind);
+			textWriter.Write(" ");
+			textWriter.Write(typeDefinition.TypeName);
 			textWriter.Write(" : IMobileObject");
 			textWriter.WriteLine();
 		}
@@ -156,26 +173,26 @@ namespace CslaSerialization.Generators.AutoSerialization
 		/// Append the definition of the GetChildren method required to fulfil the IMobileObject interface
 		/// </summary>
 		/// <param name="textWriter">The IndentedTextWriter instance to which to append the method definition</param>
-		/// <param name="classDefinition">The definition of the class for which we are generating</param>
-		private void AppendGetChildrenMethod(IndentedTextWriter textWriter, ExtractedClassDefinition classDefinition)
+		/// <param name="typeDefinition">The definition of the type for which we are generating</param>
+		private void AppendGetChildrenMethod(IndentedTextWriter textWriter, ExtractedTypeDefinition typeDefinition)
 		{
 			textWriter.WriteLine("void IMobileObject.GetChildren(SerializationInfo info, MobileFormatter formatter)");
 			AppendBlockStart(textWriter);
-			if (HasChildrenToExpose(classDefinition))
+			if (HasChildrenToExpose(typeDefinition))
 			{
 				textWriter.WriteLine("IMobileObject mobileObject;");
 				textWriter.WriteLine("SerializationInfo childInfo;");
 				textWriter.WriteLine();
 			}
 
-			foreach (ExtractedFieldDefinition fieldDefinition in classDefinition.Fields)
+			foreach (ExtractedFieldDefinition fieldDefinition in typeDefinition.Fields)
 			{
 				if (!IsChildToExpose(fieldDefinition)) continue;
 
 				AppendSerializeChildFragment(textWriter, fieldDefinition);
 			}
 
-			foreach (ExtractedPropertyDefinition propertyDefinition in classDefinition.Properties)
+			foreach (ExtractedPropertyDefinition propertyDefinition in typeDefinition.Properties)
 			{
 				if (!IsChildToExpose(propertyDefinition)) continue;
 
@@ -206,26 +223,26 @@ namespace CslaSerialization.Generators.AutoSerialization
 		/// Append the definition of the SetChildren method required to fulfil the IMobileObject interface
 		/// </summary>
 		/// <param name="textWriter">The IndentedTextWriter instance to which to append the method definition</param>
-		/// <param name="classDefinition">The definition of the class for which we are generating</param>
-		private void AppendSetChildrenMethod(IndentedTextWriter textWriter, ExtractedClassDefinition classDefinition)
+		/// <param name="typeDefinition">The definition of the type for which we are generating</param>
+		private void AppendSetChildrenMethod(IndentedTextWriter textWriter, ExtractedTypeDefinition typeDefinition)
 		{
 			textWriter.WriteLine("void IMobileObject.SetChildren(SerializationInfo info, MobileFormatter formatter)");
 			AppendBlockStart(textWriter);
 
-			if (HasChildrenToExpose(classDefinition))
+			if (HasChildrenToExpose(typeDefinition))
 			{
 				textWriter.WriteLine("SerializationInfo.ChildData childData;");
 				textWriter.WriteLine();
 			}
 
-			foreach (ExtractedFieldDefinition fieldDefinition in classDefinition.Fields)
+			foreach (ExtractedFieldDefinition fieldDefinition in typeDefinition.Fields)
 			{
 				if (!IsChildToExpose(fieldDefinition)) continue;
 
 				AppendDeserializeChildFragment(textWriter, fieldDefinition);
 			}
 
-			foreach (ExtractedPropertyDefinition propertyDefinition in classDefinition.Properties)
+			foreach (ExtractedPropertyDefinition propertyDefinition in typeDefinition.Properties)
 			{
 				if (!IsChildToExpose(propertyDefinition)) continue;
 
@@ -264,20 +281,20 @@ namespace CslaSerialization.Generators.AutoSerialization
 		/// Append the definition of the GetState method required to fulfil the IMobileObject interface
 		/// </summary>
 		/// <param name="textWriter">The IndentedTextWriter instance to which to append the method definition</param>
-		/// <param name="classDefinition">The definition of the class for which we are generating</param>
-		private void AppendGetStateMethod(IndentedTextWriter textWriter, ExtractedClassDefinition classDefinition)
+		/// <param name="typeDefinition">The definition of the type for which we are generating</param>
+		private void AppendGetStateMethod(IndentedTextWriter textWriter, ExtractedTypeDefinition typeDefinition)
 		{
 			textWriter.WriteLine("void IMobileObject.GetState(SerializationInfo info)");
 			AppendBlockStart(textWriter);
 
-			foreach (ExtractedFieldDefinition fieldDefinition in classDefinition.Fields)
+			foreach (ExtractedFieldDefinition fieldDefinition in typeDefinition.Fields)
 			{
 				if (IsChildToExpose(fieldDefinition)) continue;
 
 				AppendGetMemberStateFragment(textWriter, fieldDefinition);
 			}
 
-			foreach (ExtractedPropertyDefinition propertyDefinition in classDefinition.Properties)
+			foreach (ExtractedPropertyDefinition propertyDefinition in typeDefinition.Properties)
 			{
 				if (IsChildToExpose(propertyDefinition)) continue;
 
@@ -306,20 +323,20 @@ namespace CslaSerialization.Generators.AutoSerialization
 		/// Append the definition of the SetState method required to fulfil the IMobileObject interface
 		/// </summary>
 		/// <param name="textWriter">The IndentedTextWriter instance to which to append the method definition</param>
-		/// <param name="classDefinition">The definition of the class for which we are generating</param>
-		private void AppendSetStateMethod(IndentedTextWriter textWriter, ExtractedClassDefinition classDefinition)
+		/// <param name="typeDefinition">The definition of the type for which we are generating</param>
+		private void AppendSetStateMethod(IndentedTextWriter textWriter, ExtractedTypeDefinition typeDefinition)
 		{
 			textWriter.WriteLine("void IMobileObject.SetState(SerializationInfo info)");
 			AppendBlockStart(textWriter);
 
-			foreach (ExtractedFieldDefinition fieldDefinition in classDefinition.Fields)
+			foreach (ExtractedFieldDefinition fieldDefinition in typeDefinition.Fields)
 			{
 				if (IsChildToExpose(fieldDefinition)) continue;
 
 				AppendSetMemberStateMethod(textWriter, fieldDefinition);
 			}
 
-			foreach (ExtractedPropertyDefinition propertyDefinition in classDefinition.Properties)
+			foreach (ExtractedPropertyDefinition propertyDefinition in typeDefinition.Properties)
 			{
 				if (IsChildToExpose(propertyDefinition)) continue;
 
@@ -346,21 +363,21 @@ namespace CslaSerialization.Generators.AutoSerialization
 		}
 
 		/// <summary>
-		/// Determine if a class definition exposes any members that must be treated as children
+		/// Determine if a type definition exposes any members that must be treated as children
 		/// </summary>
-		/// <param name="classDefinition">The class definition to be checked for children</param>
+		/// <param name="typeDefinition">The type definition to be checked for children</param>
 		/// <returns>Boolean true of the definition exposes any members that have to be treated as children</returns>
-		private bool HasChildrenToExpose(ExtractedClassDefinition classDefinition)
+		private bool HasChildrenToExpose(ExtractedTypeDefinition typeDefinition)
 		{
-			return classDefinition.Properties.Any(p => IsChildToExpose(p)) ||
-				classDefinition.Fields.Any(f => IsChildToExpose(f));
+			return typeDefinition.Properties.Any(p => IsChildToExpose(p)) ||
+				typeDefinition.Fields.Any(f => IsChildToExpose(f));
 		}
 
 		/// <summary>
-		/// Determine if a class definition exposes any members that must be treated as children
+		/// Determine if a member definition defines a type that must be treated as a child
 		/// </summary>
-		/// <param name="classDefinition">The class definition to be checked for children</param>
-		/// <returns>Boolean true of the definition exposes any members that have to be treated as children</returns>
+		/// <param name="memberDefinition">The definition of the member to be inspected</param>
+		/// <returns>Boolean true if the definition is of a type that has to be treated as a child</returns>
 		private bool IsChildToExpose(IMemberDefinition memberDefinition)
 		{
 			return memberDefinition.TypeDefinition.IsAutoSerializable || memberDefinition.TypeDefinition.ImplementsIMobileObject;

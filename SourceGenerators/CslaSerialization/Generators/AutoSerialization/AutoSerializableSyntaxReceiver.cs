@@ -10,11 +10,11 @@ namespace CslaSerialization.Generators.AutoSerialization
 {
 
 	/// <summary>
-	/// Class to determine the class declarations for which we must perform code generation
+	/// Class to determine the type declarations for which we must perform code generation
 	/// </summary>
 	public class AutoSerializableReceiver : ISyntaxContextReceiver
 	{
-		public IList<ExtractedClassDefinition> Targets = new List<ExtractedClassDefinition>();
+		public IList<ExtractedTypeDefinition> Targets = new List<ExtractedTypeDefinition>();
 
 		/// <summary>
 		/// Test syntax nodes to see if they represent a type for which we must generate code
@@ -25,7 +25,7 @@ namespace CslaSerialization.Generators.AutoSerialization
 			SyntaxNode syntaxNode;
 			SemanticModel model;
 			DefinitionExtractionContext context;
-			ExtractedClassDefinition classDefinition;
+			ExtractedTypeDefinition typeDefinition;
 
 			syntaxNode = generatorSyntaxContext.Node;
 			model = generatorSyntaxContext.SemanticModel;
@@ -35,8 +35,8 @@ namespace CslaSerialization.Generators.AutoSerialization
 
 			if (context.IsTypeAutoSerializable(typeDeclarationSyntax))
 			{
-				classDefinition = ClassDefinitionExtractor.ExtractClassDefinition(context, typeDeclarationSyntax);
-				Targets.Add(classDefinition);
+				typeDefinition = TypeDefinitionExtractor.ExtractTypeDefinition(context, typeDeclarationSyntax);
+				Targets.Add(typeDefinition);
 			}
 		}
 
