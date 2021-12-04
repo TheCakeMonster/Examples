@@ -7,8 +7,8 @@ public class Program
 		IList<string> names;
 
 		// Get the data to display
-		await Initialise();
-		names = await GetNames();
+		await InitialiseAsync();
+		names = await GetNamesAsync();
 
 		// Use the data
 		foreach (string name in names)
@@ -17,13 +17,13 @@ public class Program
 		}
 	}
 
-	private static async Task Initialise()
+	private static async Task InitialiseAsync()
 	{
 		// TODO: Do intial setup work here
 		await Task.Delay(200);
 	}
 
-	private static async Task<IList<string>> GetNames()
+	private static async Task<IList<string>> GetNamesAsync()
 	{
 		IList<string> names;
 
