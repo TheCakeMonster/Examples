@@ -2,13 +2,13 @@
 
 public class Program
 { 
-	static void Main(string[] args)
+	static async Task Main(string[] args)
 	{
 		IList<string> names;
 
 		// Get the data to display
-		Initialise();
-		names = GetNames();
+		await Initialise();
+		names = await GetNames();
 
 		// Use the data
 		foreach (string name in names)
@@ -17,12 +17,13 @@ public class Program
 		}
 	}
 
-	private static void Initialise()
+	private static Task Initialise()
 	{
 		// TODO: Do intial setup work here
+		return Task.CompletedTask;
 	}
 
-	private static IList<string> GetNames()
+	private static Task<IList<string>> GetNames()
 	{
 		IList<string> names;
 
@@ -33,6 +34,6 @@ public class Program
 			"Alice"
 		};
 
-		return names;
+		return Task.FromResult(names);
 	}
 }
