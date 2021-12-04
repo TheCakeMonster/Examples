@@ -17,16 +17,17 @@ public class Program
 		}
 	}
 
-	private static Task Initialise()
+	private static async Task Initialise()
 	{
 		// TODO: Do intial setup work here
-		return Task.CompletedTask;
+		await Task.Delay(200);
 	}
 
-	private static Task<IList<string>> GetNames()
+	private static async Task<IList<string>> GetNames()
 	{
 		IList<string> names;
 
+		await Task.Delay(200);
 		names = new List<string>()
 		{
 			"Sue,",
@@ -34,6 +35,6 @@ public class Program
 			"Alice"
 		};
 
-		return Task.FromResult(names);
+		return names;
 	}
 }
