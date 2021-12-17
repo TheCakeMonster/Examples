@@ -10,6 +10,25 @@ namespace CslaSerialization.UnitTests
 	public class PersonTests
 	{
 
+		#region IMobileObject
+
+		[TestMethod]
+		public void PersonPOCO_Build_ImplementsIMobileObject()
+		{
+			IMobileObject mobileObject;
+			PersonPOCO person = new PersonPOCO();
+			person.PersonId = 5;
+
+			// Act
+			mobileObject = person as IMobileObject;
+
+			// Assert
+			Assert.IsNotNull(mobileObject, "Type does not implement IMobileObject!");
+
+		}
+
+		#endregion
+
 		#region GetState
 
 		[TestMethod]
