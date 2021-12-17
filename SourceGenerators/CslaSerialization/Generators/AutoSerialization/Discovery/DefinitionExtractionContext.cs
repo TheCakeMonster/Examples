@@ -16,18 +16,16 @@ namespace CslaSerialization.Generators.AutoSerialization.Discovery
 	{
 
 		private readonly GeneratorSyntaxContext _context;
-		private readonly INamedTypeSymbol _autoSerializableAttributeSymbol;
-		private readonly INamedTypeSymbol _autoSerializedAttributeSymbol;
-		private readonly INamedTypeSymbol _autoNonSerializedAttributeSymbol;
-		private readonly INamedTypeSymbol _mobileObjectInterfaceSymbol;
+		private const string _serializationNamespace = "Csla.Serialization";
+		private const string _autoSerializableAttributeName = "AutoSerializable";
+		private const string _autoSerializedAttributeName = "AutoSerialized";
+		private const string _autoNonSerializedAttributeName = "AutoNonSerialized";
+		private const string _iMobileObjectInterfaceNamespace = "Csla.Serialization.Mobile";
+		private const string _iMobileObjectInterfaceName = "IMobileObject";
 
 		public DefinitionExtractionContext(GeneratorSyntaxContext context)
 		{
 			_context = context;
-			_autoSerializableAttributeSymbol = context.SemanticModel.Compilation.GetTypeByMetadataName(typeof(AutoSerializableAttribute).FullName);
-			_autoSerializedAttributeSymbol = context.SemanticModel.Compilation.GetTypeByMetadataName(typeof(AutoSerializedAttribute).FullName);
-			_autoNonSerializedAttributeSymbol = context.SemanticModel.Compilation.GetTypeByMetadataName(typeof(AutoNonSerializedAttribute).FullName);
-			_mobileObjectInterfaceSymbol = context.SemanticModel.Compilation.GetTypeByMetadataName(typeof(Csla.Serialization.Mobile.IMobileObject).FullName);
 		}
 
 		public GeneratorSyntaxContext Context => _context;
@@ -70,7 +68,7 @@ namespace CslaSerialization.Generators.AutoSerialization.Discovery
 			INamedTypeSymbol typeSymbol;
 
 			typeSymbol = _context.SemanticModel.GetDeclaredSymbol(typeDeclarationSyntax) as INamedTypeSymbol;
-			return IsTypeDecoratedBy(typeSymbol, _autoSerializableAttributeSymbol);
+			return IsTypeDecoratedBy(typeSymbol, _autoSerializableAttributeName, _serializationNamespace);
 		}
 
 		/// <summary>
@@ -84,7 +82,7 @@ namespace CslaSerialization.Generators.AutoSerialization.Discovery
 
 			typeSymbol = _context.SemanticModel.GetSymbolInfo(typeSyntax).Symbol as INamedTypeSymbol;
 			if (typeSymbol is null) return false;
-			return IsTypeDecoratedBy(typeSymbol, _autoSerializableAttributeSymbol);
+			return IsTypeDecoratedBy(typeSymbol, _autoSerializableAttributeName, _serializationNamespace);
 		}
 
 		/// <summary>
@@ -102,7 +100,7 @@ namespace CslaSerialization.Generators.AutoSerialization.Discovery
 
 			foreach (ITypeSymbol interfaceSymbol in typeSymbol.AllInterfaces)
 			{
-				if (IsMatchingTypeSymbol(interfaceSymbol as INamedTypeSymbol, _mobileObjectInterfaceSymbol))
+				if (IsMatchingTypeSymbol(interfaceSymbol as INamedTypeSymbol, _iMobileObjectInterfaceName, _iMobileObjectInterfaceNamespace))
 				{
 					return true;
 				}
@@ -118,7 +116,7 @@ namespace CslaSerialization.Generators.AutoSerialization.Discovery
 		/// <returns>Boolean true if the property is decorated with the AutoSerialized attribute, otherwise false</returns>
 		public bool IsPropertyDecoratedWithAutoSerialized(PropertyDeclarationSyntax propertyDeclaration)
 		{
-			return IsPropertyDecoratedWith(propertyDeclaration, _autoSerializedAttributeSymbol);
+			return IsPropertyDecoratedWith(propertyDeclaration, _autoSerializedAttributeName, _serializationNamespace);
 		}
 
 		/// <summary>
@@ -128,7 +126,7 @@ namespace CslaSerialization.Generators.AutoSerialization.Discovery
 		/// <returns>Boolean true if the property is decorated with the AutoNonSerialized attribute, otherwise false</returns>
 		public bool IsPropertyDecoratedWithAutoNonSerialized(PropertyDeclarationSyntax propertyDeclaration)
 		{
-			return IsPropertyDecoratedWith(propertyDeclaration, _autoNonSerializedAttributeSymbol);
+			return IsPropertyDecoratedWith(propertyDeclaration, _autoNonSerializedAttributeName, _serializationNamespace);
 		}
 
 		/// <summary>
@@ -138,7 +136,7 @@ namespace CslaSerialization.Generators.AutoSerialization.Discovery
 		/// <returns>Boolean true if the field is decorated with the AutoSerialized attribute, otherwise false</returns>
 		public bool IsFieldDecoratedWithAutoSerialized(FieldDeclarationSyntax fieldDeclaration)
 		{
-			return IsFieldDecoratedWith(fieldDeclaration, _autoSerializedAttributeSymbol);
+			return IsFieldDecoratedWith(fieldDeclaration, _autoSerializedAttributeName, _serializationNamespace);
 		}
 
 		/// <summary>
@@ -148,7 +146,7 @@ namespace CslaSerialization.Generators.AutoSerialization.Discovery
 		/// <returns>Boolean true if the field is decorated with the AutoNonSerialized attribute, otherwise false</returns>
 		public bool IsFieldDecoratedWithAutoNonSerialized(FieldDeclarationSyntax fieldDeclaration)
 		{
-			return IsFieldDecoratedWith(fieldDeclaration, _autoNonSerializedAttributeSymbol);
+			return IsFieldDecoratedWith(fieldDeclaration, _autoNonSerializedAttributeName, _serializationNamespace);
 		}
 
 		#region Private Helper Methods
@@ -159,10 +157,10 @@ namespace CslaSerialization.Generators.AutoSerialization.Discovery
 		/// <param name="typeSymbol">The symbol representing the type</param>
 		/// <param name="desiredAttributeSymbol">The symbol representing the attribute of interest</param>
 		/// <returns>Boolean true if the type is decorated with the attribute, otherwise false</returns>
-		private bool IsTypeDecoratedBy(INamedTypeSymbol typeSymbol, INamedTypeSymbol desiredAttributeSymbol)
+		private bool IsTypeDecoratedBy(INamedTypeSymbol typeSymbol, string desiredAttributeTypeName, string desiredAttributeTypeNamespace)
 		{
 			return typeSymbol.GetAttributes().Any(
-				attr => IsMatchingTypeSymbol(attr.AttributeClass, desiredAttributeSymbol));
+				attr => IsMatchingTypeSymbol(attr.AttributeClass, desiredAttributeTypeName, desiredAttributeTypeNamespace));
 		}
 
 		/// <summary>
@@ -171,14 +169,14 @@ namespace CslaSerialization.Generators.AutoSerialization.Discovery
 		/// <param name="propertyDeclaration">The syntax node representing the property being investigated</param>
 		/// <param name="desiredAttributeSymbol">The symbol representing the attribute of interest</param>
 		/// <returns>Boolean true if the type is decorated with the attribute, otherwise false</returns>
-		private bool IsPropertyDecoratedWith(PropertyDeclarationSyntax propertyDeclaration, INamedTypeSymbol desiredAttributeSymbol)
+		private bool IsPropertyDecoratedWith(PropertyDeclarationSyntax propertyDeclaration, string desiredAttributeTypeName, string desiredAttributeTypeNamespace)
 		{
 			INamedTypeSymbol appliedAttributeSymbol;
 
 			foreach (AttributeSyntax attributeSyntax in propertyDeclaration.AttributeLists.SelectMany(al => al.Attributes))
 			{
 				appliedAttributeSymbol = _context.SemanticModel.GetTypeInfo(attributeSyntax).Type as INamedTypeSymbol;
-				if (IsMatchingTypeSymbol(appliedAttributeSymbol, desiredAttributeSymbol))
+				if (IsMatchingTypeSymbol(appliedAttributeSymbol, desiredAttributeTypeName, desiredAttributeTypeNamespace))
 				{
 					return true;
 				}
@@ -192,14 +190,14 @@ namespace CslaSerialization.Generators.AutoSerialization.Discovery
 		/// <param name="fieldDeclaration">The syntax node representing the field being investigated</param>
 		/// <param name="desiredAttributeSymbol">The symbol representing the attribute of interest</param>
 		/// <returns>Boolean true if the type is decorated with the attribute, otherwise false</returns>
-		private bool IsFieldDecoratedWith(FieldDeclarationSyntax fieldDeclaration, INamedTypeSymbol desiredAttributeSymbol)
+		private bool IsFieldDecoratedWith(FieldDeclarationSyntax fieldDeclaration, string desiredAttributeTypeName, string desiredAttributeTypeNamespace)
 		{
 			INamedTypeSymbol appliedAttributeSymbol;
 
 			foreach (AttributeSyntax attributeSyntax in fieldDeclaration.AttributeLists.SelectMany(al => al.Attributes))
 			{
 				appliedAttributeSymbol = _context.SemanticModel.GetTypeInfo(attributeSyntax).Type as INamedTypeSymbol;
-				if (IsMatchingTypeSymbol(appliedAttributeSymbol, desiredAttributeSymbol))
+				if (IsMatchingTypeSymbol(appliedAttributeSymbol, desiredAttributeTypeName, desiredAttributeTypeNamespace))
 				{
 					return true;
 				}
@@ -213,9 +211,21 @@ namespace CslaSerialization.Generators.AutoSerialization.Discovery
 		/// <param name="appliedAttributeSymbol">The attribute applied to the type we are testing</param>
 		/// <param name="desiredAttributeSymbol">The attribute whose presence we are testing for</param>
 		/// <returns>Boolean true if the two symbols represent the same types</returns>
-		private bool IsMatchingTypeSymbol(INamedTypeSymbol appliedAttributeSymbol, INamedTypeSymbol desiredAttributeSymbol)
+		private bool IsMatchingTypeSymbol(INamedTypeSymbol appliedAttributeSymbol, string desiredTypeName, string desiredTypeNamespace)
 		{
-			return SymbolEqualityComparer.Default.Equals(appliedAttributeSymbol, desiredAttributeSymbol);
+			INamespaceSymbol namespaceSymbol;
+
+			// Match on the type name
+			if (!appliedAttributeSymbol.Name.Equals(desiredTypeName, StringComparison.InvariantCultureIgnoreCase)) return false;
+			return true;
+
+			// Match on the namespace of the type
+			namespaceSymbol = appliedAttributeSymbol.ContainingNamespace;
+			if (namespaceSymbol is null) return false;
+			if (!namespaceSymbol.Name.Equals(desiredTypeNamespace, StringComparison.InvariantCultureIgnoreCase)) return false;
+
+			// All matches have succeeded, so we consider it the desired type
+			return true;
 		}
 
 		#endregion
