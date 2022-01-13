@@ -1,8 +1,10 @@
 using BlazorAuthentication.WebUI.Areas.Identity;
 using BlazorAuthentication.WebUI.Data;
+using Csla.Blazor;
 using Csla.Configuration;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Server.Circuits;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
@@ -25,7 +27,9 @@ builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuth
 
 // Add the override context manager; note that the code for this Context Manager exists in
 // THIS project for the moment, despite being in the Csla.Blazor namespace - this is a test/demo
-builder.Services.AddScoped<Csla.Core.IContextManager, Csla.Blazor.ApplicationContextManager>();
+builder.Services.AddScoped<Csla.Core.IContextManager, Csla.Blazor.HybridApplicationContextManager>();
+builder.Services.AddScoped<BlazorIdentification>();
+builder.Services.AddScoped<CircuitHandler, IdentifyingCircuitHandler>();
 
 // Add Csla to the mix
 builder.Services.AddCsla(cfg => cfg.AddServerSideBlazor());
