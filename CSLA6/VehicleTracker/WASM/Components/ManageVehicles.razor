@@ -1,0 +1,34 @@
+﻿@page "/Vehicles"
+@inject ManageVehiclesViewModel _vm
+@implements IDisposable
+
+@if (_vm.CurrentView == ManageVehiclesViewModel.AvailableViews.List)
+{
+	<ListVehicles ViewModel="_vm" />
+}
+
+@if (_vm.CurrentView == ManageVehiclesViewModel.AvailableViews.EditModel)
+{
+	<EditVehicle ViewModel="_vm" />
+}
+
+@code {
+	protected override async Task OnInitializedAsync()
+	{
+		await base.OnInitializedAsync();
+		await _vm.InitialiseAsync();
+
+		// Wire up event handler to let us know when a child changes our state
+		_vm.OnViewChanged += OnViewChanged;
+	}
+
+	private void OnViewChanged()
+	{
+		StateHasChanged();
+	}
+
+	public void Dispose()
+	{
+		_vm.OnViewChanged -= OnViewChanged;
+	}
+}

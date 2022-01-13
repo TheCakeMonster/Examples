@@ -1,0 +1,32 @@
+﻿<h3>Edit Vehicles</h3>
+
+<div>
+	<div class="list-grid grid-2col Vehicle-grid">
+		<div class="list-grid-header Vehicle-field-name">Name</div>
+		<div class="list-grid-header Vehicle-field-buttons"></div>
+		@foreach (VehicleInfo info in ViewModel.List)
+		{
+			<div>@info.NickName</div>
+			<div>
+				<button @onclick="async () => await ViewModel.BeginEditModelAsync(info.VehicleId)" class="btn btn-outline-secondary">Edit</button>
+				<button @onclick="async () => await ViewModel.DeleteModelAsync(info.VehicleId)" class="btn btn-outline-secondary">Delete</button>
+			</div>
+		}
+	</div>
+</div>
+<div class="action-buttons">
+	<button @onclick="ViewModel.BeginAddModelAsync" class="btn btn-outline-secondary">Add</button>
+	<button @onclick="ViewModel.CancelList" class="btn btn-outline-secondary">Cancel</button>
+</div>
+
+@code {
+
+	[Parameter]
+	public ManageVehiclesViewModel ViewModel { get; set; }
+
+	protected override async Task OnInitializedAsync()
+	{
+		await base.OnInitializedAsync();
+	}
+
+}
