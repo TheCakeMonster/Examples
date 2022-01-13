@@ -18,16 +18,17 @@ namespace Csla.Blazor
     /// </summary>
     /// <param name="blazorIdentification">The identification of in what context we are running</param>
     /// <param name="authenticationStateProvider">The provider used to retrieve authentication state in Blazor</param>
-    public HybridApplicationContextManager(BlazorIdentification blazorIdentification, AuthenticationStateProvider authenticationStateProvider)
+    public HybridApplicationContextManager(BlazorIdentification blazorIdentification, AuthenticationStateProvider authenticationStateProvider, IHttpContextAccessor httpContextAccessor)
     {
       if (blazorIdentification.IsServerSideBlazor)
       {
-        _wrappedContextManager = new ApplicationContextManager(authenticationStateProvider);
+        _wrappedContextManager = new BlazorApplicationContextManager(authenticationStateProvider);
         return;
       }
-      // TODO: This would need to be the one from Csla.AspNetCore; we might need to copy it 
-      // into Csla.Blazor, as the latter assembly doesn't reference the former :-(
-      _wrappedContextManager = new Csla.Core.ApplicationContextManager();
+      // TODO: This needs to be the context manager from Csla.AspNetCore. I have currently copied that
+      // implementation into this demo project, as the Csla.Blazor assembly doesn't reference Csla.AspNetCore :-(
+      // This suggests we would probably need to copy it into Csla.Blazor rather than reference it
+      _wrappedContextManager = new HttpApplicationContextManager(httpContextAccessor);
     }
 
     /// <summary>

@@ -9,7 +9,7 @@ namespace Csla.Blazor
   /// <summary>
   /// IContextManager implementation for use in Blazor
   /// </summary>
-  public class ApplicationContextManager : IContextManager, IDisposable
+  public class BlazorApplicationContextManager : IContextManager, IDisposable
   {
     private readonly AuthenticationStateProvider _authenticationStateProvider;
     private CslaClaimsPrincipal _storedPrincipal { get; set; }
@@ -21,7 +21,7 @@ namespace Csla.Blazor
     /// Creates an instance of the object, initializing it with its dependencies.
     /// </summary>
     /// <param name="authenticationStateProvider">Blazor's authentication state provider</param>
-    public ApplicationContextManager(AuthenticationStateProvider authenticationStateProvider)
+    public BlazorApplicationContextManager(AuthenticationStateProvider authenticationStateProvider)
     {
       if (authenticationStateProvider is not IHostEnvironmentAuthenticationStateProvider)
       {
