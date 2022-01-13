@@ -11,11 +11,10 @@ namespace Csla.Blazor
   /// </summary>
   public class ApplicationContextManager : IContextManager, IDisposable
   {
-    private bool _respondingToStateProviderEvent = false;
     private readonly AuthenticationStateProvider _authenticationStateProvider;
-    private System.Security.Principal.IPrincipal Principal { get; set; }
-    private ContextDictionary LocalContext { get; set; } = new ContextDictionary();
-    private ContextDictionary ClientContext { get; set; } = new ContextDictionary();
+    private CslaClaimsPrincipal _storedPrincipal { get; set; }
+    private ContextDictionary _localContext { get; set; } = new ContextDictionary();
+    private ContextDictionary _clientContext { get; set; } = new ContextDictionary();
     private ApplicationContext _applicationContext { get; set; }
 
     /// <summary>
@@ -79,9 +78,22 @@ namespace Csla.Blazor
     {
       // The task is now complete, and the Result property won't block
       // Use the Result property to get the ClaimsPrincipal in play in Blazor
-      _respondingToStateProviderEvent = true;
-      SetUser(completedStateTask.Result.User);
-      _respondingToStateProviderEvent = false;
+      StorePrincipal(completedStateTask.Result.User);
+    }
+
+    /// <summary>
+    /// Store the principal that has been provided for return to Csla when needed
+    /// </summary>
+    /// <param name="principal">The IPrincipal that is active at the moment</param>
+    private void StorePrincipal(System.Security.Principal.IPrincipal principal)
+    {
+      CslaClaimsPrincipal? cslaPrincipal = principal as CslaClaimsPrincipal;
+      if (cslaPrincipal is null)
+      {
+        cslaPrincipal = new CslaClaimsPrincipal(principal);
+      }
+
+      _storedPrincipal = cslaPrincipal;
     }
 
     /// <summary>
@@ -89,11 +101,11 @@ namespace Csla.Blazor
     /// </summary>
     public System.Security.Principal.IPrincipal GetUser()
     {
-      var result = Principal;
+      var result = _storedPrincipal;
       if (result is null)
       {
         result = new CslaClaimsPrincipal();
-        Principal = result;
+        _storedPrincipal = result;
       }
       return result;
     }
@@ -104,23 +116,26 @@ namespace Csla.Blazor
     /// <param name="principal">Principal object.</param>
     public void SetUser(System.Security.Principal.IPrincipal principal)
     {
-      CslaClaimsPrincipal? cslaPrincipal = principal as CslaClaimsPrincipal;
-      if (cslaPrincipal is null)
-      {
-        cslaPrincipal = new CslaClaimsPrincipal(principal);
-      }
+      // Store the principal and then tell Blazor that it has changed
+      StorePrincipal(principal);
+      NotifyAuthenticationStateChanged(principal);
+    }
 
-      Principal = cslaPrincipal;
-
-      // Check if this information is being passed to us from somewhere other than Blazor itself
-      if (!_respondingToStateProviderEvent)
+    /// <summary>
+    /// Raise an event to inform Blazor and its consumers of the state change
+    /// </summary>
+    private void NotifyAuthenticationStateChanged(System.Security.Principal.IPrincipal principal)
+    {
+      ClaimsPrincipal? claimsPrincipal = principal as ClaimsPrincipal;
+      if (claimsPrincipal is null)
       {
-        // Inform the rest of Blazor that the authentication state has been changed
-        IHostEnvironmentAuthenticationStateProvider? stateProvider =
-          _authenticationStateProvider as IHostEnvironmentAuthenticationStateProvider;
-        Task<AuthenticationState> authenticationState = Task.FromResult(new AuthenticationState(cslaPrincipal));
-        stateProvider?.SetAuthenticationState(authenticationState);
+        claimsPrincipal = new ClaimsPrincipal(principal);
       }
+      
+      IHostEnvironmentAuthenticationStateProvider? stateProvider =
+        _authenticationStateProvider as IHostEnvironmentAuthenticationStateProvider;
+      Task<AuthenticationState> authenticationState = Task.FromResult(new AuthenticationState(claimsPrincipal));
+      stateProvider?.SetAuthenticationState(authenticationState);
     }
 
     /// <summary>
@@ -128,7 +143,7 @@ namespace Csla.Blazor
     /// </summary>
     public ContextDictionary GetLocalContext()
     {
-      return LocalContext;
+      return _localContext;
     }
 
     /// <summary>
@@ -137,7 +152,7 @@ namespace Csla.Blazor
     /// <param name="localContext">Local context.</param>
     public void SetLocalContext(ContextDictionary localContext)
     {
-      LocalContext = localContext;
+      _localContext = localContext;
     }
 
     /// <summary>
@@ -146,7 +161,7 @@ namespace Csla.Blazor
     /// <param name="executionLocation"></param>
     public ContextDictionary GetClientContext(ApplicationContext.ExecutionLocations executionLocation)
     {
-      return ClientContext;
+      return _clientContext;
     }
 
     /// <summary>
@@ -156,7 +171,7 @@ namespace Csla.Blazor
     /// <param name="executionLocation"></param>
     public void SetClientContext(ContextDictionary clientContext, ApplicationContext.ExecutionLocations executionLocation)
     {
-      ClientContext = clientContext;
+      _clientContext = clientContext;
     }
 
     /// <summary>
