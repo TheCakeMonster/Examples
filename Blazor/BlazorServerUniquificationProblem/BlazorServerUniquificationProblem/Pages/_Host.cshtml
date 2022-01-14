@@ -1,0 +1,31 @@
+﻿@page "/"
+@namespace BlazorServerUniquificationProblem.Pages
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = "_Layout";
+}
+@using BlazorServerUniquificationProblem.Data
+@inject ExfiltratedData _exfiltratedData
+
+<component type="typeof(App)" render-mode="ServerPrerendered" />
+
+<div>
+    <p>
+        Hello from ASP.NET! Lovely day, isn't it? My CircuitId? Oh, well, OK. Seeing as it's you.
+    </p>
+    <p>
+        My CircuitId is: @GetCircuitId()
+    </p>
+    <div>
+        <a target="_blank" href="">Click me to trigger an interesting thought</a>
+    </div>
+</div>
+
+@functions {
+
+    private string GetCircuitId()
+    {
+        return _exfiltratedData.CircuitId ?? "Blazor you say? Sorry mate, never heard of it!";
+    }
+
+}

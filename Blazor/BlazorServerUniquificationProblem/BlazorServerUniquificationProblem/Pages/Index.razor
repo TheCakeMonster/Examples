@@ -1,0 +1,17 @@
+﻿@page "/"
+@using BlazorServerUniquificationProblem.Data;
+@inject ExfiltratedData _circuitData
+
+<PageTitle>Blazor</PageTitle>
+
+<h1>Hello, world!</h1>
+
+<p>
+    Hello from Blazor! <i>Waves</i>
+</p>
+<p>
+    It's really, supposed to be a secret, but we're friends, right?
+</p>
+<p>
+    My CircuitId is: @_circuitData.CircuitId
+</p>
