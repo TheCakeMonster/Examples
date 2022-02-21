@@ -7,9 +7,12 @@ namespace ComplexJsonSerialization
     {
         static void Main(string[] args)
         {
-            TestBaseClassWithExtensionDataAndImplementations();
+            TestJsonElement();
         }
 
+        /// <summary>
+        /// Test 1
+        /// </summary>
         private static void TestNestedJson()
         {
             Template1Serialiser serialiser = new Template1Serialiser(new ValidationRuleSerialiser());
@@ -27,6 +30,9 @@ namespace ComplexJsonSerialization
 
         }
 
+        /// <summary>
+        /// Test 2
+        /// </summary>
         private static void TestExtensionData()
         {
             Template2Serialiser serialiser = new Template2Serialiser();
@@ -49,6 +55,9 @@ namespace ComplexJsonSerialization
             Console.WriteLine($"Validation Rules Json is: {deserialisedTemplate.ValidationRulesJson}");
         }
 
+        /// <summary>
+        /// Test 3
+        /// </summary>
         private static void TestCustomJsonConverter()
         {
             Template3Serialiser serialiser = new Template3Serialiser();
@@ -71,6 +80,9 @@ namespace ComplexJsonSerialization
             Console.WriteLine($"{deserialisedTemplate.ValidationRules.Count} validation rules deserialised");
         }
 
+        /// <summary>
+        /// Test 4
+        /// </summary>
         private static void TestBaseClassWithExtensionDataAndImplementations()
         {
             Template4Serialiser serialiser = new Template4Serialiser();
@@ -91,6 +103,31 @@ namespace ComplexJsonSerialization
             deserialisedTemplate = serialiser.Deserialise(serialisedTemplate);
             Console.WriteLine("Deserialisation succeeded :-)");
             Console.WriteLine($"{deserialisedTemplate.ValidationRules.Count} validation rules deserialised");
+        }
+
+        /// <summary>
+        /// Test 5
+        /// </summary>
+        private static void TestJsonElement()
+        {
+            Template5Serialiser serialiser = new Template5Serialiser();
+            Template5 template = new Template5();
+            Template5 deserialisedTemplate;
+
+            template.TemplateName = "Template3";
+            template.TemplateDescription = "This is Template 3";
+            template.ValidationRules.Add(new Required());
+            template.ValidationRules.Add(new NoTrailingSlash());
+            template.ValidationRules.Add(new CharacterSet() { CharacterSetCode = "SomeCode" });
+
+            string serialisedTemplate = serialiser.Serialise(template);
+            Console.WriteLine(serialisedTemplate);
+            Console.WriteLine("Press Enter to continue ...");
+            Console.ReadLine();
+
+            deserialisedTemplate = serialiser.Deserialise(serialisedTemplate);
+            Console.WriteLine("Deserialisation succeeded :-)");
+            Console.WriteLine($"{deserialisedTemplate.SerialisedValidationRules.GetArrayLength()} validation rules deserialised");
         }
     }
 }
