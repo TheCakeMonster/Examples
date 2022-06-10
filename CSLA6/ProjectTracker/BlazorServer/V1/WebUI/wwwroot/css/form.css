@@ -1,0 +1,83 @@
+.form-field {
+	margin-bottom: .75rem;
+}
+
+.form-label {
+	display: inline-block;
+	width: 200px;
+	vertical-align: top;
+	margin-left: 15px;
+}
+
+.form-input-container {
+	display: inline-block;
+}
+
+.form-input {
+	font-size: 1rem;
+	font-weight: 400;
+	line-height: 1.5;
+	color: #495057;
+	background-color: #fff;
+	background-clip: padding-box;
+	border: 1px solid #ced4da;
+	border-radius: .25rem;
+	transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+
+	.form-input textarea {
+		overflow: auto;
+		resize: vertical;
+	}
+
+.form-input-xs {
+	width: 100px;
+}
+
+.form-input-sm {
+	width: 200px;
+}
+
+.form-input-med {
+	width: 400px;
+}
+
+.form-input-lg {
+	width: 600px;
+}
+
+.form-input-xl {
+	width: 800px;
+}
+
+.form-input-max {
+	position: relative;
+	width: 100%;
+}
+
+.form-input.is-valid, .was-validated form-input:valid {
+	border-color: #28a745;
+}
+
+.form-input.is-invalid, .was-validated form-input:invalid {
+	border-color: #dc3545;
+}
+
+.form-input-plaintext {
+	background-color: transparent;
+	border: solid transparent;
+	border-width: 1px 0;
+	color: #495057;
+}
+
+.form-validation-messages {
+	padding-left: 215px;
+}
+
+.action-buttons {
+	margin: 15px;
+}
+
+.form-buttons {
+	margin: 15px;
+}

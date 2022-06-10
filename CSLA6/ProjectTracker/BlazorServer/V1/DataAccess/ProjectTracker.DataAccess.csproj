@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+	<TargetFramework>net6.0</TargetFramework>
+	<Nullable>enable</Nullable>
+	<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Csla" Version="6.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="6.0.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
+		<PackageReference Include="Microsoft.Data.SqlClient" Version="4.1.0" />
+		<PackageReference Include="DotNotStandard.DataAccess" Version="1.0.0" />
+		<PackageReference Include="DotNotStandard.DataAccess.SqlServer" Version="1.0.0" />
+		<PackageReference Include="DotNotStandard.DependencyInjection.AutoDiscovery" Version="1.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Objects\ProjectTracker.Objects.csproj" />
+	</ItemGroup>
+
+</Project>

@@ -1,0 +1,35 @@
+﻿@page "/Projects"
+@inject ManageProjectsViewModel _vm
+@implements IDisposable
+@attribute [Authorize(Roles = "ProjectManager,Administrator")]
+
+@if (_vm.CurrentView == ManageProjectsViewModel.AvailableViews.List)
+{
+	<ListProjects ViewModel="_vm" />
+}
+
+@if (_vm.CurrentView == ManageProjectsViewModel.AvailableViews.EditModel)
+{
+	<EditProject ViewModel="_vm" />
+}
+
+@code {
+	protected override async Task OnInitializedAsync()
+	{
+		await base.OnInitializedAsync();
+		await _vm.InitialiseAsync();
+
+		// Wire up event handler to let us know when a child changes our state
+		_vm.OnViewChanged += OnViewChanged;
+	}
+
+	private void OnViewChanged()
+	{
+		StateHasChanged();
+	}
+
+	public void Dispose()
+	{
+		_vm.OnViewChanged -= OnViewChanged;
+	}
+}

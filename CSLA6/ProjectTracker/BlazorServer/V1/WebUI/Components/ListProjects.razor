@@ -1,0 +1,32 @@
+﻿<h3>Edit Projects</h3>
+
+<div>
+	<div class="list-grid grid-2col Project-grid">
+		<div class="list-grid-header Project-field-name">Name</div>
+		<div class="list-grid-header Project-field-buttons"></div>
+		@foreach (ProjectInfo info in ViewModel.List)
+		{
+			<div>@info.Name</div>
+			<div>
+				<button @onclick="async () => await ViewModel.BeginEditModelAsync(info.Id)" class="btn btn-outline-secondary">Edit</button>
+				<button @onclick="async () => await ViewModel.DeleteModelAsync(info.Id)" class="btn btn-outline-secondary">Delete</button>
+			</div>
+		}
+	</div>
+</div>
+<div class="action-buttons">
+	<button @onclick="ViewModel.BeginAddModelAsync" class="btn btn-outline-secondary">Add</button>
+	<button @onclick="ViewModel.CancelList" class="btn btn-outline-secondary">Cancel</button>
+</div>
+
+@code {
+
+	[Parameter]
+	public ManageProjectsViewModel ViewModel { get; set; }
+
+	protected override async Task OnInitializedAsync()
+	{
+		await base.OnInitializedAsync();
+	}
+
+}

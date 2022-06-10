@@ -1,0 +1,61 @@
+﻿<h3>Edit Project</h3>
+
+<div>
+	<EditForm Model="ViewModel.Model" OnValidSubmit="ViewModel.AcceptModelEditAsync" OnInvalidSubmit="ViewModel.ValidationFailedAsync" autocomplete="off">
+		<CslaValidator />
+		<div>
+			<div class="form-field">
+				<label for="Name" class="form-label">Name:</label>
+				<div class="form-input-container">
+					<InputText Id="Name" @bind-Value="ViewModel.Model.Name" aria-describedby="NameMessages" 
+								class="form-input form-input-med" autocomplete="not-applicable" />
+				</div>
+				<CslaValidationMessages WrapperId="NameMessages" WrapperClass="form-validation-messages" 
+										For="() => ViewModel.Model.Name" />
+			</div>
+			<div class="form-field">
+				<label for="Description" class="form-label">Description:</label>
+				<div class="form-input-container">
+					<InputText Id="Description" @bind-Value="ViewModel.Model.Description" aria-describedby="DescriptionMessages" 
+								class="form-input form-input-med" autocomplete="not-applicable" />
+				</div>
+				<CslaValidationMessages WrapperId="DescriptionMessages" WrapperClass="form-validation-messages" 
+										For="() => ViewModel.Model.Description" />
+			</div>
+@*			<div class="form-field">
+				<label for="Started" class="form-label">Started:</label>
+				<div class="form-input-container">
+					<InputText Id="Started" @bind-Value="ViewModel.Model.Started" aria-describedby="StartedMessages" 
+								class="form-input form-input-med" autocomplete="not-applicable" />
+				</div>
+				<CslaValidationMessages WrapperId="StartedMessages" WrapperClass="form-validation-messages" 
+										For="() => ViewModel.Model.Started" />
+			</div>
+			<div class="form-field">
+				<label for="Ended" class="form-label">Ended:</label>
+				<div class="form-input-container">
+					<InputText Id="Ended" @bind-Value="ViewModel.Model.Ended" aria-describedby="EndedMessages" 
+								class="form-input form-input-med" autocomplete="not-applicable" />
+				</div>
+				<CslaValidationMessages WrapperId="EndedMessages" WrapperClass="form-validation-messages" 
+										For="() => ViewModel.Model.Ended" />
+			</div>
+*@		</div>
+		<div class="form-buttons">
+			<input type="submit" class="btn btn-primary" value="Save" />
+			<button type="button" @onclick="ViewModel.CancelModelEdit" class="btn btn-outline-secondary">Cancel</button>
+		</div>
+	</EditForm>
+</div>
+
+@code {
+
+	[Parameter]
+	public ManageProjectsViewModel ViewModel { get; set; }
+
+	protected override async Task OnInitializedAsync()
+	{
+		await base.OnInitializedAsync();
+	}
+
+}

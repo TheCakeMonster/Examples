@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Csla.AspNetCore" Version="6.0.0" />
+        <PackageReference Include="Csla.Blazor" Version="6.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
+        <PackageReference Include="DotNotStandard.Validation" Version="2.0.0" />
+        <PackageReference Include="DotNotStandard.Validation.Repositories.InMemoryRepository" Version="1.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\DataAccess\ProjectTracker.DataAccess.csproj" />
+      <ProjectReference Include="..\Objects\ProjectTracker.Objects.csproj" />
+      <ProjectReference Include="..\UIControl\ProjectTracker.UIControl.csproj" />
+    </ItemGroup>
+  
+</Project>
+
