@@ -12,61 +12,61 @@ namespace ProjectTracker.Objects
 	public class ProjectInfo : ReadOnlyBase<ProjectInfo>
 	{
 
-		private static readonly PropertyInfo<int> _idProperty = RegisterProperty<int>(nameof(Id));
-		private static readonly PropertyInfo<string> _nameProperty = RegisterProperty<string>(nameof(Name));
-		private static readonly PropertyInfo<string> _descriptionProperty = RegisterProperty<string>(nameof(Description));
-		private static readonly PropertyInfo<DateTime> _startedProperty = RegisterProperty<DateTime>(nameof(Started));
-		private static readonly PropertyInfo<DateTime> _endedProperty = RegisterProperty<DateTime>(nameof(Ended));
-		private static readonly PropertyInfo<DateTime> _createdAtProperty = RegisterProperty<DateTime>(nameof(CreatedAt));
-		private static readonly PropertyInfo<string> _createdByProperty = RegisterProperty<string>(nameof(CreatedBy));
-		private static readonly PropertyInfo<DateTime> _updatedAtProperty = RegisterProperty<DateTime>(nameof(UpdatedAt));
-		private static readonly PropertyInfo<string> _updatedByProperty = RegisterProperty<string>(nameof(UpdatedBy));
+		public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(nameof(Id));
+		public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
+		public static readonly PropertyInfo<string> DescriptionProperty = RegisterProperty<string>(nameof(Description));
+		public static readonly PropertyInfo<DateTime> StartedProperty = RegisterProperty<DateTime>(nameof(Started));
+		public static readonly PropertyInfo<DateTime> EndedProperty = RegisterProperty<DateTime>(nameof(Ended));
+		public static readonly PropertyInfo<DateTime> CreatedAtProperty = RegisterProperty<DateTime>(nameof(CreatedAt));
+		public static readonly PropertyInfo<string> CreatedByProperty = RegisterProperty<string>(nameof(CreatedBy));
+		public static readonly PropertyInfo<DateTime> UpdatedAtProperty = RegisterProperty<DateTime>(nameof(UpdatedAt));
+		public static readonly PropertyInfo<string> UpdatedByProperty = RegisterProperty<string>(nameof(UpdatedBy));
 		
 		#region Exposed Properties and Methods
 
 		public int Id
 		{
-			get { return GetProperty(_idProperty); }
+			get { return GetProperty(IdProperty); }
 		}
 
 		public string Name
 		{
-			get { return GetProperty(_nameProperty); }
+			get { return GetProperty(NameProperty); }
 		}
 
 		public string Description
 		{
-			get { return GetProperty(_descriptionProperty); }
+			get { return GetProperty(DescriptionProperty); }
 		}
 
 		public DateTime Started
 		{
-			get { return GetProperty(_startedProperty); }
+			get { return GetProperty(StartedProperty); }
 		}
 
 		public DateTime Ended
 		{
-			get { return GetProperty(_endedProperty); }
+			get { return GetProperty(EndedProperty); }
 		}
 
 		public DateTime CreatedAt
 		{
-			get { return GetProperty(_createdAtProperty); }
+			get { return GetProperty(CreatedAtProperty); }
 		}
 
 		public string CreatedBy
 		{
-			get { return GetProperty(_createdByProperty); }
+			get { return GetProperty(CreatedByProperty); }
 		}
 
 		public DateTime UpdatedAt
 		{
-			get { return GetProperty(_updatedAtProperty); }
+			get { return GetProperty(UpdatedAtProperty); }
 		}
 
 		public string UpdatedBy
 		{
-			get { return GetProperty(_updatedByProperty); }
+			get { return GetProperty(UpdatedByProperty); }
 		}
 
 
@@ -86,15 +86,15 @@ namespace ProjectTracker.Objects
 
 		private Task LoadObjectAsync(ProjectDTO data)
 		{
-			LoadProperty(_idProperty, data.Id);
-			LoadProperty(_nameProperty, data.Name);
-			LoadProperty(_descriptionProperty, data.Description);
-			LoadProperty(_startedProperty, data.Started);
-			LoadProperty(_endedProperty, data.Ended);
-			LoadProperty(_createdAtProperty, data.CreatedAt);
-			LoadProperty(_createdByProperty, data.CreatedBy);
-			LoadProperty(_updatedAtProperty, data.UpdatedAt);
-			LoadProperty(_updatedByProperty, data.UpdatedBy);
+			LoadProperty(IdProperty, data.Id);
+			LoadProperty(NameProperty, data.Name);
+			LoadProperty(DescriptionProperty, data.Description);
+			LoadProperty(StartedProperty, data.Started);
+			LoadProperty(EndedProperty, data.Ended);
+			LoadProperty(CreatedAtProperty, data.CreatedAt);
+			LoadProperty(CreatedByProperty, data.CreatedBy);
+			LoadProperty(UpdatedAtProperty, data.UpdatedAt);
+			LoadProperty(UpdatedByProperty, data.UpdatedBy);
 			// Complete the load by requesting children load themselves
 
 			return Task.CompletedTask;

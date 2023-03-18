@@ -17,22 +17,22 @@ namespace ProjectTracker.Objects
 	public class ProjectEdit : BusinessBase<ProjectEdit>
 	{
 
-		private static readonly PropertyInfo<int> _idProperty = RegisterProperty<int>(nameof(Id));
-		private static readonly PropertyInfo<string> _nameProperty = RegisterProperty<string>(nameof(Name));
-		private static readonly PropertyInfo<string> _descriptionProperty = RegisterProperty<string>(nameof(Description));
-		private static readonly PropertyInfo<DateTime> _startedProperty = RegisterProperty<DateTime>(nameof(Started));
-		private static readonly PropertyInfo<DateTime> _endedProperty = RegisterProperty<DateTime>(nameof(Ended));
-		private static readonly PropertyInfo<DateTime> _createdAtProperty = RegisterProperty<DateTime>(nameof(CreatedAt));
-		private static readonly PropertyInfo<string> _createdByProperty = RegisterProperty<string>(nameof(CreatedBy));
-		private static readonly PropertyInfo<DateTime> _updatedAtProperty = RegisterProperty<DateTime>(nameof(UpdatedAt));
-		private static readonly PropertyInfo<string> _updatedByProperty = RegisterProperty<string>(nameof(UpdatedBy));
-		private static readonly PropertyInfo<ProjectResources> _projectResourcesProperty = RegisterProperty<ProjectResources> (nameof(ProjectResources));
+		public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(nameof(Id));
+		public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
+		public static readonly PropertyInfo<string> DescriptionProperty = RegisterProperty<string>(nameof(Description));
+		public static readonly PropertyInfo<DateTime> StartedProperty = RegisterProperty<DateTime>(nameof(Started));
+		public static readonly PropertyInfo<DateTime> EndedProperty = RegisterProperty<DateTime>(nameof(Ended));
+		public static readonly PropertyInfo<DateTime> CreatedAtProperty = RegisterProperty<DateTime>(nameof(CreatedAt));
+		public static readonly PropertyInfo<string> CreatedByProperty = RegisterProperty<string>(nameof(CreatedBy));
+		public static readonly PropertyInfo<DateTime> UpdatedAtProperty = RegisterProperty<DateTime>(nameof(UpdatedAt));
+		public static readonly PropertyInfo<string> UpdatedByProperty = RegisterProperty<string>(nameof(UpdatedBy));
+		public static readonly PropertyInfo<ProjectResources> ProjectResourcesProperty = RegisterProperty<ProjectResources> (nameof(ProjectResources));
 		
 		#region Exposed Properties and Methods
 
 		public int Id
 		{
-			get { return GetProperty(_idProperty); }
+			get { return GetProperty(IdProperty); }
 		}
 
 		[Required]
@@ -40,59 +40,59 @@ namespace ProjectTracker.Objects
 		//[CharacterSet(BuiltInRules.CharacterSet.LatinAlphanumeric)]
 		public string Name
 		{
-			get { return GetProperty(_nameProperty); }
-			set { SetProperty(_nameProperty, value); }
+			get { return GetProperty(NameProperty); }
+			set { SetProperty(NameProperty, value); }
 		}
 
 		[MaxLength(1000)]
 		//[CharacterSet(BuiltInRules.CharacterSet.LatinAlphanumeric)]
 		public string Description
 		{
-			get { return GetProperty(_descriptionProperty); }
-			set { SetProperty(_descriptionProperty, value); }
+			get { return GetProperty(DescriptionProperty); }
+			set { SetProperty(DescriptionProperty, value); }
 		}
 
 		public DateTime Started
 		{
-			get { return GetProperty(_startedProperty); }
-			set { SetProperty(_startedProperty, value); }
+			get { return GetProperty(StartedProperty); }
+			set { SetProperty(StartedProperty, value); }
 		}
 
 		public DateTime Ended
 		{
-			get { return GetProperty(_endedProperty); }
-			set { SetProperty(_endedProperty, value); }
+			get { return GetProperty(EndedProperty); }
+			set { SetProperty(EndedProperty, value); }
 		}
 
 		[Required]
 		public DateTime CreatedAt
 		{
-			get { return GetProperty(_createdAtProperty); }
+			get { return GetProperty(CreatedAtProperty); }
 		}
 
 		[Required]
 		public string CreatedBy
 		{
-			get { return GetProperty(_createdByProperty); }
-			set { SetProperty(_createdByProperty, value); }
+			get { return GetProperty(CreatedByProperty); }
+			set { SetProperty(CreatedByProperty, value); }
 		}
 
 		[Required]
 		public DateTime UpdatedAt
 		{
-			get { return GetProperty(_updatedAtProperty); }
+			get { return GetProperty(UpdatedAtProperty); }
 		}
 
 		[Required]
 		public string UpdatedBy
 		{
-			get { return GetProperty(_updatedByProperty); }
-			set { SetProperty(_updatedByProperty, value); }
+			get { return GetProperty(UpdatedByProperty); }
+			set { SetProperty(UpdatedByProperty, value); }
 		}
 
 		public ProjectResources ProjectResources
 		{
-			 get { return ReadProperty(_projectResourcesProperty); }
+			 get { return ReadProperty(ProjectResourcesProperty); }
 		}
 
 		#endregion
@@ -177,7 +177,7 @@ namespace ProjectTracker.Objects
 		private class Criteria : CriteriaBase<Criteria>
 		{
 
-			private static readonly PropertyInfo<int> _idProperty = RegisterProperty<int>(nameof(Id));
+			public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(nameof(Id));
 
 			public Criteria()
 			{
@@ -191,8 +191,8 @@ namespace ProjectTracker.Objects
 		
 			public int Id
 			{
-				get { return ReadProperty(_idProperty); }
-				private set { LoadProperty(_idProperty, value); }
+				get { return ReadProperty(IdProperty); }
+				private set { LoadProperty(IdProperty, value); }
 			}
 
 		}
@@ -206,11 +206,11 @@ namespace ProjectTracker.Objects
 			using (BypassPropertyChecks)
 			{
 				// TODO: Set default values for any fields that need to be initialised
-				LoadProperty(_createdByProperty, ApplicationContext.User?.Identity?.Name ?? string.Empty);
-				LoadProperty(_updatedByProperty, ApplicationContext.User?.Identity?.Name ?? string.Empty);
-				LoadProperty(_createdAtProperty, DateTime.Now);
-				LoadProperty(_updatedAtProperty, DateTime.Now);
-				LoadProperty(_projectResourcesProperty, await projectResourcesDataPortal.CreateChildAsync());
+				LoadProperty(CreatedByProperty, ApplicationContext.User?.Identity?.Name ?? string.Empty);
+				LoadProperty(UpdatedByProperty, ApplicationContext.User?.Identity?.Name ?? string.Empty);
+				LoadProperty(CreatedAtProperty, DateTime.Now);
+				LoadProperty(UpdatedAtProperty, DateTime.Now);
+				LoadProperty(ProjectResourcesProperty, await projectResourcesDataPortal.CreateChildAsync());
 			}
 			BusinessRules.CheckRules();
 
@@ -238,17 +238,17 @@ namespace ProjectTracker.Objects
 			// Load the object from the DTO
 			using (BypassPropertyChecks)
 			{
-				LoadProperty(_idProperty, data.Id);
-				LoadProperty(_nameProperty, data.Name);
-				LoadProperty(_descriptionProperty, data.Description);
-				LoadProperty(_startedProperty, data.Started);
-				LoadProperty(_endedProperty, data.Ended);
-				LoadProperty(_createdAtProperty, data.CreatedAt);
-				LoadProperty(_createdByProperty, data.CreatedBy);
-				LoadProperty(_updatedAtProperty, data.UpdatedAt);
-				LoadProperty(_updatedByProperty, data.UpdatedBy);
+				LoadProperty(IdProperty, data.Id);
+				LoadProperty(NameProperty, data.Name);
+				LoadProperty(DescriptionProperty, data.Description);
+				LoadProperty(StartedProperty, data.Started);
+				LoadProperty(EndedProperty, data.Ended);
+				LoadProperty(CreatedAtProperty, data.CreatedAt);
+				LoadProperty(CreatedByProperty, data.CreatedBy);
+				LoadProperty(UpdatedAtProperty, data.UpdatedAt);
+				LoadProperty(UpdatedByProperty, data.UpdatedBy);
 				// Complete the load by requesting any children load themselves
-				LoadProperty(_projectResourcesProperty, await projectResourcesDataPortal.FetchChildAsync(data.Id));
+				LoadProperty(ProjectResourcesProperty, await projectResourcesDataPortal.FetchChildAsync(data.Id));
 			}
 
 			// Check that the object retrieved from the store meets the latest business rules
@@ -305,15 +305,15 @@ namespace ProjectTracker.Objects
 		{
 			ProjectDTO data = new ProjectDTO();
 
-			data.Id = ReadProperty(_idProperty);
-			data.Name = ReadProperty(_nameProperty);
-			data.Description = ReadProperty(_descriptionProperty);
-			data.Started = ReadProperty(_startedProperty);
-			data.Ended = ReadProperty(_endedProperty);
-			data.CreatedAt = ReadProperty(_createdAtProperty);
-			data.CreatedBy = ReadProperty(_createdByProperty);
-			data.UpdatedAt = ReadProperty(_updatedAtProperty);
-			data.UpdatedBy = ReadProperty(_updatedByProperty);
+			data.Id = ReadProperty(IdProperty);
+			data.Name = ReadProperty(NameProperty);
+			data.Description = ReadProperty(DescriptionProperty);
+			data.Started = ReadProperty(StartedProperty);
+			data.Ended = ReadProperty(EndedProperty);
+			data.CreatedAt = ReadProperty(CreatedAtProperty);
+			data.CreatedBy = ReadProperty(CreatedByProperty);
+			data.UpdatedAt = ReadProperty(UpdatedAtProperty);
+			data.UpdatedBy = ReadProperty(UpdatedByProperty);
 
 			return data;
 		}
@@ -322,9 +322,9 @@ namespace ProjectTracker.Objects
 		{
 			using (BypassPropertyChecks)
 			{
-				LoadProperty(_idProperty, data.Id);
-				LoadProperty(_createdAtProperty, data.CreatedAt);
-				LoadProperty(_updatedAtProperty, data.UpdatedAt);
+				LoadProperty(IdProperty, data.Id);
+				LoadProperty(CreatedAtProperty, data.CreatedAt);
+				LoadProperty(UpdatedAtProperty, data.UpdatedAt);
 			}
 		}
 

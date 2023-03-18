@@ -16,72 +16,72 @@ namespace ProjectTracker.Objects
 	public class ProjectResourceEdit : BusinessBase<ProjectResourceEdit>
 	{
 
-		private static readonly PropertyInfo<int> _idProperty = RegisterProperty<int>(nameof(Id));
-		private static readonly PropertyInfo<int> _projectIdProperty = RegisterProperty<int>(nameof(ProjectId));
-		private static readonly PropertyInfo<int> _resourceIdProperty = RegisterProperty<int>(nameof(ResourceId));
-		private static readonly PropertyInfo<int> _roleIdProperty = RegisterProperty<int>(nameof(RoleId));
-		private static readonly PropertyInfo<DateTime> _assignedProperty = RegisterProperty<DateTime>(nameof(Assigned));
-		private static readonly PropertyInfo<DateTime> _createdAtProperty = RegisterProperty<DateTime>(nameof(CreatedAt));
-		private static readonly PropertyInfo<string> _createdByProperty = RegisterProperty<string>(nameof(CreatedBy));
-		private static readonly PropertyInfo<DateTime> _updatedAtProperty = RegisterProperty<DateTime>(nameof(UpdatedAt));
-		private static readonly PropertyInfo<string> _updatedByProperty = RegisterProperty<string>(nameof(UpdatedBy));
+		public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(nameof(Id));
+		public static readonly PropertyInfo<int> ProjectIdProperty = RegisterProperty<int>(nameof(ProjectId));
+		public static readonly PropertyInfo<int> ResourceIdProperty = RegisterProperty<int>(nameof(ResourceId));
+		public static readonly PropertyInfo<int> RoleIdProperty = RegisterProperty<int>(nameof(RoleId));
+		public static readonly PropertyInfo<DateTime> AssignedProperty = RegisterProperty<DateTime>(nameof(Assigned));
+		public static readonly PropertyInfo<DateTime> CreatedAtProperty = RegisterProperty<DateTime>(nameof(CreatedAt));
+		public static readonly PropertyInfo<string> CreatedByProperty = RegisterProperty<string>(nameof(CreatedBy));
+		public static readonly PropertyInfo<DateTime> UpdatedAtProperty = RegisterProperty<DateTime>(nameof(UpdatedAt));
+		public static readonly PropertyInfo<string> UpdatedByProperty = RegisterProperty<string>(nameof(UpdatedBy));
 
 		#region Exposed Properties and Methods
 
 		public int Id
 		{
-			get { return GetProperty(_idProperty); }
+			get { return GetProperty(IdProperty); }
 		}
 
 		public int ProjectId
 		{
-			get { return GetProperty(_projectIdProperty); }
-			set { SetProperty(_projectIdProperty, value); }
+			get { return GetProperty(ProjectIdProperty); }
+			set { SetProperty(ProjectIdProperty, value); }
 		}
 
 		public int ResourceId
 		{
-			get { return GetProperty(_resourceIdProperty); }
-			set { SetProperty(_resourceIdProperty, value); }
+			get { return GetProperty(ResourceIdProperty); }
+			set { SetProperty(ResourceIdProperty, value); }
 		}
 
 		public int RoleId
 		{
-			get { return GetProperty(_roleIdProperty); }
-			set { SetProperty(_roleIdProperty, value); }
+			get { return GetProperty(RoleIdProperty); }
+			set { SetProperty(RoleIdProperty, value); }
 		}
 
 		[Required]
 		public DateTime Assigned
 		{
-			get { return GetProperty(_assignedProperty); }
-			set { SetProperty(_assignedProperty, value); }
+			get { return GetProperty(AssignedProperty); }
+			set { SetProperty(AssignedProperty, value); }
 		}
 
 		[Required]
 		public DateTime CreatedAt
 		{
-			get { return GetProperty(_createdAtProperty); }
+			get { return GetProperty(CreatedAtProperty); }
 		}
 
 		[Required]
 		public string CreatedBy
 		{
-			get { return GetProperty(_createdByProperty); }
-			set { SetProperty(_createdByProperty, value); }
+			get { return GetProperty(CreatedByProperty); }
+			set { SetProperty(CreatedByProperty, value); }
 		}
 
 		[Required]
 		public DateTime UpdatedAt
 		{
-			get { return GetProperty(_updatedAtProperty); }
+			get { return GetProperty(UpdatedAtProperty); }
 		}
 
 		[Required]
 		public string UpdatedBy
 		{
-			get { return GetProperty(_updatedByProperty); }
-			set { SetProperty(_updatedByProperty, value); }
+			get { return GetProperty(UpdatedByProperty); }
+			set { SetProperty(UpdatedByProperty, value); }
 		}
 
 
@@ -120,10 +120,10 @@ namespace ProjectTracker.Objects
 			using (BypassPropertyChecks)
 			{
 				// TODO: Set default values for any fields that need to be initialised
-				LoadProperty(_createdByProperty, ApplicationContext.User?.Identity?.Name ?? string.Empty);
-				LoadProperty(_updatedByProperty, ApplicationContext.User?.Identity?.Name ?? string.Empty);
-				LoadProperty(_createdAtProperty, DateTime.Now);
-				LoadProperty(_updatedAtProperty, DateTime.Now);
+				LoadProperty(CreatedByProperty, ApplicationContext.User?.Identity?.Name ?? string.Empty);
+				LoadProperty(UpdatedByProperty, ApplicationContext.User?.Identity?.Name ?? string.Empty);
+				LoadProperty(CreatedAtProperty, DateTime.Now);
+				LoadProperty(UpdatedAtProperty, DateTime.Now);
 			}
 			BusinessRules.CheckRules();
 
@@ -141,15 +141,15 @@ namespace ProjectTracker.Objects
 			// Load the object from the DTO
 			using (BypassPropertyChecks)
 			{
-				LoadProperty(_idProperty, data.Id);
-				LoadProperty(_projectIdProperty, data.ProjectId);
-				LoadProperty(_resourceIdProperty, data.ResourceId);
-				LoadProperty(_roleIdProperty, data.RoleId);
-				LoadProperty(_assignedProperty, data.Assigned);
-				LoadProperty(_createdAtProperty, data.CreatedAt);
-				LoadProperty(_createdByProperty, data.CreatedBy);
-				LoadProperty(_updatedAtProperty, data.UpdatedAt);
-				LoadProperty(_updatedByProperty, data.UpdatedBy);
+				LoadProperty(IdProperty, data.Id);
+				LoadProperty(ProjectIdProperty, data.ProjectId);
+				LoadProperty(ResourceIdProperty, data.ResourceId);
+				LoadProperty(RoleIdProperty, data.RoleId);
+				LoadProperty(AssignedProperty, data.Assigned);
+				LoadProperty(CreatedAtProperty, data.CreatedAt);
+				LoadProperty(CreatedByProperty, data.CreatedBy);
+				LoadProperty(UpdatedAtProperty, data.UpdatedAt);
+				LoadProperty(UpdatedByProperty, data.UpdatedBy);
 				// Complete the load by requesting any children load themselves
 			}
 
@@ -167,7 +167,7 @@ namespace ProjectTracker.Objects
 			if (repository is null) throw new ArgumentNullException(nameof(repository));
 
 			// Write parent's unique identifiers into the child
-			LoadProperty(_projectIdProperty, parent.Id);
+			LoadProperty(ProjectIdProperty, parent.Id);
 			data = LoadDTO();
 			data = await repository.InsertAsync(data);
 			LoadObjectChanges(data);
@@ -199,15 +199,15 @@ namespace ProjectTracker.Objects
 		{
 			AssignmentDTO data = new AssignmentDTO();
 
-			data.Id = ReadProperty(_idProperty);
-			data.ProjectId = ReadProperty(_projectIdProperty);
-			data.ResourceId = ReadProperty(_resourceIdProperty);
-			data.RoleId = ReadProperty(_roleIdProperty);
-			data.Assigned = ReadProperty(_assignedProperty);
-			data.CreatedAt = ReadProperty(_createdAtProperty);
-			data.CreatedBy = ReadProperty(_createdByProperty);
-			data.UpdatedAt = ReadProperty(_updatedAtProperty);
-			data.UpdatedBy = ReadProperty(_updatedByProperty);
+			data.Id = ReadProperty(IdProperty);
+			data.ProjectId = ReadProperty(ProjectIdProperty);
+			data.ResourceId = ReadProperty(ResourceIdProperty);
+			data.RoleId = ReadProperty(RoleIdProperty);
+			data.Assigned = ReadProperty(AssignedProperty);
+			data.CreatedAt = ReadProperty(CreatedAtProperty);
+			data.CreatedBy = ReadProperty(CreatedByProperty);
+			data.UpdatedAt = ReadProperty(UpdatedAtProperty);
+			data.UpdatedBy = ReadProperty(UpdatedByProperty);
 
 			return data;
 		}
@@ -216,9 +216,9 @@ namespace ProjectTracker.Objects
 		{
 			using (BypassPropertyChecks)
 			{
-				LoadProperty(_idProperty, data.Id);
-				LoadProperty(_createdAtProperty, data.CreatedAt);
-				LoadProperty(_updatedAtProperty, data.UpdatedAt);
+				LoadProperty(IdProperty, data.Id);
+				LoadProperty(CreatedAtProperty, data.CreatedAt);
+				LoadProperty(UpdatedAtProperty, data.UpdatedAt);
 			}
 		}
 
@@ -227,7 +227,7 @@ namespace ProjectTracker.Objects
 		{
 			if (repository is null) throw new ArgumentNullException(nameof(repository));
 
-			int id = ReadProperty(_idProperty);
+			int id = ReadProperty(IdProperty);
 			await repository.DeleteAsync(id);
 		}
 
