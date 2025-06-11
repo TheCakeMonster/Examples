@@ -1,16 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Csla" Version="5.5.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Core\CslaSerialization.Core.csproj" />
-    <ProjectReference Include="..\Generators\CslaSerialization.Generators.csproj" OutputItemType="Analyzer" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Csla" Version="9.0.0" />
+		<PackageReference Include="Csla.Generator.AutoSerialization.CSharp" Version="9.0.0" OutputItemType="Analyzer" PrivateAssets="all" ReferenceOutputAssembly="false" />
+	</ItemGroup>
 
 </Project>

@@ -1,7 +1,4 @@
-﻿using CslaSerialization.Core;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Csla.Serialization;
 
 namespace CslaSerialization.Objects
 {

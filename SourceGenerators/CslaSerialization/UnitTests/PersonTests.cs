@@ -1,6 +1,9 @@
+using Csla;
+using Csla.Configuration;
 using Csla.Serialization.Mobile;
 using CslaSerialization.Objects;
 using CslaSerialization.UnitTests.Helpers;
+using DotNotStandard.UnitTesting.Csla;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 
@@ -9,10 +12,18 @@ namespace CslaSerialization.UnitTests
 	[TestClass]
 	public class PersonTests
 	{
+        private TestDIContext _testDIContext;
 
-		#region IMobileObject
+        public PersonTests()
+        {
+            _testDIContext = new TestDIContextBuilder()
+				.AddCsla(cfg => cfg.AddConsoleApp())
+				.Build();
+        }
 
-		[TestMethod]
+        #region IMobileObject
+
+        [TestMethod]
 		public void PersonPOCO_Build_ImplementsIMobileObject()
 		{
 			IMobileObject mobileObject;
@@ -256,28 +267,6 @@ namespace CslaSerialization.UnitTests
 		}
 
 		[TestMethod]
-		public void SetState_WithNonSerializedTextFred_ReturnsEmptyString()
-		{
-
-			// Arrange
-			SerializationInfo serializationInfo = PersonSerializationInfoFactory.GetDefaultSerializationInfo();
-			string actual;
-			string expected = string.Empty;
-			PersonPOCO person = new PersonPOCO();
-			IMobileObject mobileObject;
-
-			// Act
-			serializationInfo.Values["NonSerializedText"].Value = "Fred";
-			mobileObject = (IMobileObject)person;
-			mobileObject.SetState(serializationInfo);
-			actual = person.NonSerializedText;
-
-			// Assert
-			Assert.AreEqual(expected, actual);
-
-		}
-
-		[TestMethod]
 		public void SetState_WithPrivateTextFred_ReturnsEmptyString()
 		{
 
@@ -358,7 +347,7 @@ namespace CslaSerialization.UnitTests
 			IMobileObject mobileObject;
 			PersonPOCO person = new PersonPOCO();
 			person.Address = new AddressPOCO() { AddressLine1="1 High Street" };
-			MobileFormatter formatter = new MobileFormatter();
+			MobileFormatter formatter = new MobileFormatter(_testDIContext.GetRequiredService<ApplicationContext>());
 
 			// Act
 			mobileObject = (IMobileObject)person;
@@ -381,10 +370,10 @@ namespace CslaSerialization.UnitTests
 			IMobileObject mobileObject;
 			PersonPOCO person = new PersonPOCO();
 			person.EmailAddress = new EmailAddress() { Email = "a@b.com" };
-			MobileFormatter formatter = new MobileFormatter();
+            MobileFormatter formatter = new MobileFormatter(_testDIContext.GetRequiredService<ApplicationContext>());
 
-			// Act
-			mobileObject = (IMobileObject)person;
+            // Act
+            mobileObject = (IMobileObject)person;
 			mobileObject.GetChildren(serializationInfo, formatter);
 			actual = serializationInfo.Children.ContainsKey("EmailAddress");
 
@@ -475,26 +464,6 @@ namespace CslaSerialization.UnitTests
 			// Act
 			deserializedPerson = SerializeThenDeserialisePersonPOCO(person);
 			actual = deserializedPerson.MiddleName;
-
-			// Assert
-			Assert.AreEqual(expected, actual);
-
-		}
-
-		[TestMethod]
-		public void SerializeThenDeserialize_WithExcludedPublicAutoImpPropertyNonSerializedTextNon_HasEmptyNonSerializedText()
-		{
-
-			// Arrange
-			string actual;
-			string expected = "";
-			PersonPOCO person = new PersonPOCO();
-			person.NonSerializedText = "Non";
-			PersonPOCO deserializedPerson;
-
-			// Act
-			deserializedPerson = SerializeThenDeserialisePersonPOCO(person);
-			actual = deserializedPerson.NonSerializedText;
 
 			// Assert
 			Assert.AreEqual(expected, actual);
@@ -671,10 +640,10 @@ namespace CslaSerialization.UnitTests
 		{
 			System.IO.MemoryStream serializationStream;
 			PersonPOCO deserializedPerson;
-			MobileFormatter formatter = new MobileFormatter();
+            MobileFormatter formatter = new MobileFormatter(_testDIContext.GetRequiredService<ApplicationContext>());
 
-			// Act
-			using (serializationStream = new System.IO.MemoryStream())
+            // Act
+            using (serializationStream = new System.IO.MemoryStream())
 			{
 				formatter.Serialize(serializationStream, person);
 				serializationStream.Seek(0, System.IO.SeekOrigin.Begin);

@@ -1,5 +1,5 @@
-﻿using System;
-using CslaSerialization.Core;
+﻿using Csla.Serialization;
+using System;
 
 namespace CslaSerialization.Objects
 {
@@ -34,9 +34,6 @@ namespace CslaSerialization.Objects
 			get { return _lastName; }
 			set {  _lastName = value; }
 		}
-
-		[AutoNonSerialized]
-		public string NonSerializedText { get; set; } = string.Empty;
 
 		[AutoSerialized]
 		private string PrivateSerializedText { get; set; } = string.Empty;

@@ -33,15 +33,6 @@ namespace CslaSerialization.Objects
 
         #endregion
 
-        #region Factory Methods
-
-        public static BusinessPerson NewBusinessPerson()
-        {
-            return DataPortal.Create<BusinessPerson>();
-        }
-
-        #endregion
-
         #region Data Access
 
         [RunLocal]
