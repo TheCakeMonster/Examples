@@ -54,8 +54,8 @@ namespace FakeClaimsPrincipalSystem
     /// </remarks>
     internal class FakeApplicationContextManager : IContextManager
     {
-        private ContextDictionary _clientContext = new ContextDictionary();
-        private ContextDictionary _localContext = new ContextDictionary();
+        private IContextDictionary _clientContext = new ContextDictionary();
+        private IContextDictionary _localContext = new ContextDictionary();
         private readonly FakeClaimsPrincipalStore _principalStore;
 
         public FakeApplicationContextManager(FakeClaimsPrincipalStore principalStore)
@@ -69,12 +69,12 @@ namespace FakeClaimsPrincipalSystem
 
         public ApplicationContext ApplicationContext { get; set; }
 
-        public ContextDictionary GetClientContext(ApplicationContext.ExecutionLocations executionLocation)
+        public IContextDictionary GetClientContext(ApplicationContext.ExecutionLocations executionLocation)
         {
             return _clientContext;
         }
 
-        public ContextDictionary GetLocalContext()
+        public IContextDictionary GetLocalContext()
         {
             return _localContext;
         }
@@ -84,12 +84,12 @@ namespace FakeClaimsPrincipalSystem
             return _principalStore.GetPrincipal();
         }
 
-        public void SetClientContext(ContextDictionary clientContext, ApplicationContext.ExecutionLocations executionLocation)
+        public void SetClientContext(IContextDictionary clientContext, ApplicationContext.ExecutionLocations executionLocation)
         {
             _clientContext = clientContext;
         }
 
-        public void SetLocalContext(ContextDictionary localContext)
+        public void SetLocalContext(IContextDictionary localContext)
         {
             _localContext = localContext;
         }

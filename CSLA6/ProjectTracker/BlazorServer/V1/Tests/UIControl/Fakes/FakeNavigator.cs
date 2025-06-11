@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using ProjectTracker.UIControl.Navigation;
 
 // Generated from the built-in Scriban FakeNavigator template
 

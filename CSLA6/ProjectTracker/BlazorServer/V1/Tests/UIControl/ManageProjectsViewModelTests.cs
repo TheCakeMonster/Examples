@@ -1,5 +1,9 @@
-﻿using DotNotStandard.UnitTesting.Csla;
+﻿using Csla.Configuration;
+using DotNotStandard.UnitTesting.Csla;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using ProjectTracker.Objects;
+using ProjectTracker.Objects.DataContracts;
+using ProjectTracker.UIControl.Navigation;
 using System.Threading.Tasks;
 
 // Generated from the built-in Scriban CSLA 6 ViewModelTests template
@@ -18,7 +22,7 @@ namespace ProjectTracker.UIControl.UnitTests
 		public static void Initialise(TestContext testContext)
 		{
 			_testDIContext = new TestDIContextBuilder()
-				.AddCsla()
+				.AddCsla(cfg => cfg.AddConsoleApp())
 				.AddTransient<ProjectList.Factory>()
 				.AddTransient<ProjectEdit.Factory>()
 				.AddTransient<ManageProjectsViewModel>()
