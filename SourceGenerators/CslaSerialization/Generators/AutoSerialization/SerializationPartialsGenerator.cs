@@ -13,15 +13,15 @@ namespace CslaSerialization.Generators.AutoSerialization
 	/// Source Generator for generating partial classes to complete decorated types that
 	/// must offer automated serialization through the IMobileObject interface
 	/// </summary>
-	[Generator]
-	public class SerializationPartialsGenerator : ISourceGenerator
+	[Generator(LanguageNames.CSharp)]
+	public class SerializationPartialsGenerator : IIncrementalGenerator
 	{
 
 		/// <summary>
 		/// Initialise the generator prior to performing any work
 		/// </summary>
 		/// <param name="context">The execution context provided by the Roslyn compiler</param>
-		public void Initialize(GeneratorInitializationContext context)
+		public void Initialize(IncrementalGeneratorInitializationContext context)
 		{
 #if (DEBUG)
 			//// Uncomment this to enable debugging of the source generator
