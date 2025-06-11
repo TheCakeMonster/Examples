@@ -1,9 +1,13 @@
 ﻿using Csla.Configuration;
+using DotNotStandard.DependencyInjection.AutoDiscovery.Filters;
 using DotNotStandard.UnitTesting.Csla;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ProjectTracker.Objects;
 using ProjectTracker.Objects.DataContracts;
 using ProjectTracker.UIControl.Navigation;
+using System;
+using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 // Generated from the built-in Scriban CSLA 6 ViewModelTests template
@@ -21,7 +25,12 @@ namespace ProjectTracker.UIControl.UnitTests
 		[ClassInitialize]
 		public static void Initialise(TestContext testContext)
 		{
+			var claims = new List<Claim> { new Claim(ClaimTypes.Role, "ProjectManager") };
+			var identity = new ClaimsIdentity(claims);
+			var principal = new ClaimsPrincipal(identity);
+
 			_testDIContext = new TestDIContextBuilder()
+				.UsePrincipal(principal)
 				.AddCsla(cfg => cfg.AddConsoleApp())
 				.AddTransient<ProjectList.Factory>()
 				.AddTransient<ProjectEdit.Factory>()
@@ -275,9 +284,12 @@ namespace ProjectTracker.UIControl.UnitTests
 		private void AssignValidModelData(ManageProjectsViewModel viewModel)
 		{
 			// TODO: Set valid data against the Model object's properties to enable saving of it
-		}
+			viewModel.Model.Name = "Fred Smith";
+			viewModel.Model.CreatedBy = "Fred Smith";
+            viewModel.Model.UpdatedBy = "Fred Smith";
+        }
 
-		#endregion
+        #endregion
 
-	}
+    }
 }
