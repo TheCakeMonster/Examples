@@ -41,7 +41,7 @@ namespace CslaSerialization.Generators
 		/// <returns>A string containing the full details of an exception using semicolon separators</returns>
 		private static string GenerateSingleLineExceptionMessage(Exception ex)
 		{
-			return ex.ToString().Replace(Environment.NewLine, "; ");
+			return ex.ToString().Replace("\r\n", "; ").Replace("\n", "; ");
 		}
 
 		#endregion
