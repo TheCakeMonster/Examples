@@ -34,13 +34,13 @@ namespace CslaSerialization.Generators.AutoSerialization
             //}
 
 #endif
-            IncrementalValuesProvider<ExtractedTypeDefinition> classDeclarations = context.SyntaxProvider
+            IncrementalValuesProvider<ExtractedTypeDefinition?> classDeclarations = context.SyntaxProvider
 				.CreateSyntaxProvider(
 					predicate: static (s, _) => IsSyntaxTargetForGeneration(s),
 					transform: static (ctx, _) => GetSemanticTargetForGeneration(ctx))
 				.Where(static m => m is not null);
 
-            IncrementalValueProvider<(Compilation, ImmutableArray<ExtractedTypeDefinition>)> compilationAndClasses
+            IncrementalValueProvider<(Compilation, ImmutableArray<ExtractedTypeDefinition?>)> compilationAndClasses
                 = context.CompilationProvider.Combine(classDeclarations.Collect());
 
             context.RegisterSourceOutput(compilationAndClasses,
@@ -60,7 +60,7 @@ namespace CslaSerialization.Generators.AutoSerialization
             {
                 foreach (AttributeSyntax attributeSyntax in attributeListSyntax.Attributes)
                 {
-                    IMethodSymbol attributeSymbol = context.SemanticModel.GetSymbolInfo(attributeSyntax).Symbol as IMethodSymbol;
+                    IMethodSymbol? attributeSymbol = context.SemanticModel.GetSymbolInfo(attributeSyntax).Symbol as IMethodSymbol;
                     if (attributeSymbol == null)
                     {
                         // weird, we couldn't get the symbol, ignore it
@@ -84,15 +84,20 @@ namespace CslaSerialization.Generators.AutoSerialization
             return null;
 		}
 
-        private static void Execute(Compilation compilation, ImmutableArray<ExtractedTypeDefinition> typeDefinitions, SourceProductionContext context)
+        private static void Execute(Compilation compilation, ImmutableArray<ExtractedTypeDefinition?> typeDefinitions, SourceProductionContext context)
         {
             SerializationPartialGenerator generator;
 
             try
             {
                 // Generate a partial type to extend each of the types identified
-                foreach (ExtractedTypeDefinition typeDefinition in typeDefinitions)
+                foreach (ExtractedTypeDefinition? typeDefinition in typeDefinitions)
                 {
+                    if (typeDefinition is null)
+                    {
+                        continue;
+                    }
+
                     // Generate the code needed for the identified type
                     generator = new SerializationPartialGenerator();
                     generator.GeneratePartialType(context, typeDefinition);
